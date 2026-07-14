@@ -1,8 +1,20 @@
 [gd_scene format=3 uid="uid://iwr2u5j4pgj4"]
 
+[sub_resource type="GDScript" id="GDScript_ke6l1"]
+script/source = "extends Area2D
+
+@export var speed := 700.0
+
+var direction := Vector2.ZERO
+
+func _physics_process(delta):
+	position += direction * speed * delta
+"
+
 [node name="Egg" type="Node2D" unique_id=638595875]
 
 [node name="Egg" type="Area2D" parent="." unique_id=1890707529]
+script = SubResource("GDScript_ke6l1")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Egg" unique_id=22679666]
 
