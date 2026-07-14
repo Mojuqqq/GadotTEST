@@ -3,6 +3,7 @@
 [ext_resource type="PackedScene" uid="uid://d0eu2fyd2sbyv" path="res://Scenes/Player.tscn" id="1_idj7w"]
 [ext_resource type="PackedScene" uid="uid://c3n2wnyisqs65" path="res://Scenes/Enemy.tscn" id="2_kln2b"]
 [ext_resource type="PackedScene" uid="uid://iwr2u5j4pgj4" path="res://Scenes/Egg.tscn" id="3_kln2b"]
+[ext_resource type="PackedScene" uid="uid://nqq6as3gyh7a" path="res://Scenes/Enemy_chicken.tscn" id="4_rgh2o"]
 
 [sub_resource type="GDScript" id="GDScript_m1htj"]
 script/source = "extends Node2D
@@ -114,4 +115,4 @@ egg_scene = ExtResource("3_kln2b")
 
 [node name="Enemies" type="Node2D" parent="." unique_id=1835854547]
 
-[node name="Enemy" parent="Enemies" unique_id=240231144 instance=ExtResource("2_kln2b")]
+[node name="Enemy_chicken" parent="Enemies" unique_id=240231144 instance=ExtResource("4_rgh2o")]
