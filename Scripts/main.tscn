@@ -1,15 +1,21 @@
 [gd_scene format=3 uid="uid://rti8dkcewb4h"]
 
-[ext_resource type="Texture2D" uid="uid://chahr7gd7xrss" path="res://Export/Player.png" id="1_ig7tw"]
+[ext_resource type="Texture2D" uid="uid://chahr7gd7xrss" path="res://Export/Player.png" id="1_m8x5s"]
 
 [sub_resource type="GDScript" id="GDScript_esf5t"]
 script/source = "extends CharacterBody2D
 
-var speed: float = 250.0
+var speed: float = 300.0
 
 func _physics_process(delta):
 	var direction = Vector2.ZERO
 	print(\"работает\")
+	print(Input.get_vector(
+		\"move_left\",
+		\"move_right\",
+		\"move_up\",
+		\"move_down\"
+		))
 
 	if Input.is_action_pressed(\"move_left\"):
 		direction.x -= 1
@@ -44,4 +50,4 @@ shape = SubResource("CapsuleShape2D_spwcu")
 
 [node name="Sprite2D" type="Sprite2D" parent="CharacterBody2D/CollisionShape2D" unique_id=1577028723]
 texture_filter = 1
-texture = ExtResource("1_ig7tw")
+texture = ExtResource("1_m8x5s")
