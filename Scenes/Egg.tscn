@@ -1,23 +1,65 @@
 [gd_scene format=3 uid="uid://iwr2u5j4pgj4"]
 
+[ext_resource type="Texture2D" uid="uid://k4buhqdu1e1g" path="res://Export/Egg.png" id="1_eh8xx"]
+
 [sub_resource type="GDScript" id="GDScript_ke6l1"]
 script/source = "extends Area2D
 
 @export var speed := 700.0
-
 var direction := Vector2.ZERO
 
 func _physics_process(delta):
 	position += direction * speed * delta
+	if direction != Vector2.ZERO:
+		rotation = direction.angle()
+
+func _ready():
+	rotation = direction.angle()
+
+func _on_visible_on_screen_notifier_2d_screen_exited():
+	queue_free()
+
+func _process(_delta):
+	# Если яйцо улетело далеко за экран - удаляем
+	if abs(position.x) > 2000 or abs(position.y) > 2000:
+		queue_free()
+
+func _on_body_entered(body):
+	print(\"=== ЯЙЦО СТОЛКНУЛОСЬ ===\")
+	print(\"Объект: \", body.name)
+	print(\"Тип: \", body.get_class())
+	print(\"Есть метод take_damage? \", body.has_method(\"take_damage\"))
+	
+	# Игнорируем игрока
+	if body.name == \"Player\":
+		print(\"Это игрок, игнорируем\")
+		return
+	
+	# Если это враг - наносим урон
+	if body.has_method(\"take_damage\"):
+		print(\"Наносим урон!\")
+		body.take_damage(1)
+		queue_free()
+		return
+	
+	print(\"Уничтожаем яйцо без урона\")
+	queue_free()
 "
 
-[node name="Egg" type="Node2D" unique_id=638595875]
+[sub_resource type="CircleShape2D" id="CircleShape2D_rpqav"]
+radius = 28.071337
 
-[node name="Egg" type="Area2D" parent="." unique_id=1890707529]
+[node name="Egg" type="Area2D" unique_id=1890707529]
 script = SubResource("GDScript_ke6l1")
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="Egg" unique_id=22679666]
+[node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=22679666]
+shape = SubResource("CircleShape2D_rpqav")
 
-[node name="Sprite2D" type="Sprite2D" parent="Egg/CollisionShape2D" unique_id=587559949]
+[node name="Sprite2D" type="Sprite2D" parent="CollisionShape2D" unique_id=587559949]
+texture = ExtResource("1_eh8xx")
 
-[node name="VisibleOnScreenNotifier2D" type="VisibleOnScreenNotifier2D" parent="Egg" unique_id=35205039]
+[node name="VisibleOnScreenNotifier2D" type="VisibleOnScreenNotifier2D" parent="." unique_id=35205039]
+
+[connection signal="body_entered" from="." to="." method="_on_body_entered"]
+[connection signal="screen_entered" from="VisibleOnScreenNotifier2D" to="." method="_on_visible_on_screen_notifier_2d_screen_entered"]
+[connection signal="screen_exited" from="VisibleOnScreenNotifier2D" to="." method="_on_visible_on_screen_notifier_2d_screen_exited"]
