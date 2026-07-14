@@ -1,0 +1,11 @@
+[gd_scene format=3 uid="uid://iwr2u5j4pgj4"]
+
+[node name="Egg" type="Node2D" unique_id=638595875]
+
+[node name="Egg" type="Area2D" parent="." unique_id=1890707529]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Egg" unique_id=22679666]
+
+[node name="Sprite2D" type="Sprite2D" parent="Egg/CollisionShape2D" unique_id=587559949]
+
+[node name="VisibleOnScreenNotifier2D" type="VisibleOnScreenNotifier2D" parent="Egg" unique_id=35205039]

@@ -1,6 +1,6 @@
-[gd_scene format=3 uid="uid://rti8dkcewb4h"]
+[gd_scene format=3 uid="uid://d0eu2fyd2sbyv"]
 
-[ext_resource type="Texture2D" uid="uid://chahr7gd7xrss" path="res://Export/Player.png" id="1_m8x5s"]
+[ext_resource type="Texture2D" uid="uid://chahr7gd7xrss" path="res://Export/Player.png" id="1_rpqav"]
 
 [sub_resource type="GDScript" id="GDScript_esf5t"]
 script/source = "extends CharacterBody2D
@@ -40,7 +40,7 @@ func _physics_process(delta):
 radius = 72.0
 height = 238.0
 
-[node name="Main" type="Node2D" unique_id=554110043]
+[node name="Player" type="Node2D" unique_id=554110043]
 
 [node name="CharacterBody2D" type="CharacterBody2D" parent="." unique_id=1259915293]
 script = SubResource("GDScript_esf5t")
@@ -50,4 +50,8 @@ shape = SubResource("CapsuleShape2D_spwcu")
 
 [node name="Sprite2D" type="Sprite2D" parent="CharacterBody2D/CollisionShape2D" unique_id=1577028723]
 texture_filter = 1
-texture = ExtResource("1_m8x5s")
+texture = ExtResource("1_rpqav")
+
+[node name="Camera2D" type="Camera2D" parent="CharacterBody2D" unique_id=44238520]
+position_smoothing_enabled = true
+position_smoothing_speed = 8.0
