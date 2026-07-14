@@ -5,10 +5,11 @@
 [sub_resource type="GDScript" id="GDScript_esf5t"]
 script/source = "extends CharacterBody2D
 
-@export var speed: float = 250.0
+var speed: float = 250.0
 
 func _physics_process(delta):
 	var direction = Vector2.ZERO
+	print(\"работает\")
 
 	if Input.is_action_pressed(\"move_left\"):
 		direction.x -= 1
