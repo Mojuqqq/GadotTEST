@@ -1,0 +1,46 @@
+[gd_scene format=3 uid="uid://rti8dkcewb4h"]
+
+[ext_resource type="Texture2D" uid="uid://chahr7gd7xrss" path="res://Export/Player.png" id="1_ig7tw"]
+
+[sub_resource type="GDScript" id="GDScript_esf5t"]
+script/source = "extends CharacterBody2D
+
+@export var speed: float = 250.0
+
+func _physics_process(delta):
+	var direction = Vector2.ZERO
+
+	if Input.is_action_pressed(\"move_left\"):
+		direction.x -= 1
+
+	if Input.is_action_pressed(\"move_right\"):
+		direction.x += 1
+
+	if Input.is_action_pressed(\"move_up\"):
+		direction.y -= 1
+
+	if Input.is_action_pressed(\"move_down\"):
+		direction.y += 1
+
+	direction = direction.normalized()
+
+	velocity = direction * speed
+
+	move_and_slide()
+"
+
+[sub_resource type="CapsuleShape2D" id="CapsuleShape2D_spwcu"]
+radius = 72.0
+height = 238.0
+
+[node name="Main" type="Node2D" unique_id=554110043]
+
+[node name="CharacterBody2D" type="CharacterBody2D" parent="." unique_id=1259915293]
+script = SubResource("GDScript_esf5t")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="CharacterBody2D" unique_id=738740004]
+shape = SubResource("CapsuleShape2D_spwcu")
+
+[node name="Sprite2D" type="Sprite2D" parent="CharacterBody2D/CollisionShape2D" unique_id=1577028723]
+texture_filter = 1
+texture = ExtResource("1_ig7tw")
