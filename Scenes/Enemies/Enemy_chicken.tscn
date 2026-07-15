@@ -1,0 +1,27 @@
+[gd_scene format=3 uid="uid://nqq6as3gyh7a"]
+
+[ext_resource type="Texture2D" uid="uid://dthg43tatnve4" path="res://Export/Enemy_chicken.png" id="1_t35b1"]
+[ext_resource type="Script" uid="uid://b8p4ee2teuoi1" path="res://Scripts/Enemy.gd" id="1_vfuto"]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_7fd37"]
+radius = 24.083189
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_obgpu"]
+radius = 6.707315
+
+[node name="Enemy_chicken" type="CharacterBody2D" unique_id=240231144 groups=["Enemies"]]
+script = ExtResource("1_vfuto")
+
+[node name="Sprite2D" type="Sprite2D" parent="." unique_id=1048545208 groups=["Enemies"]]
+scale = Vector2(0.6506024, 0.65060246)
+texture = ExtResource("1_t35b1")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=731214316 groups=["Enemies"]]
+shape = SubResource("CircleShape2D_7fd37")
+
+[node name="AttackArea" type="Area2D" parent="." unique_id=1036444361]
+collision_layer = 2
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="AttackArea" unique_id=403790771]
+scale = Vector2(4.9200015, 4.9200015)
+shape = SubResource("CircleShape2D_obgpu")

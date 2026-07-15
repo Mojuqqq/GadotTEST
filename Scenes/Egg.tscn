@@ -47,7 +47,7 @@ func _on_body_entered(body):
 "
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_rpqav"]
-radius = 28.071337
+radius = 12.0415945
 
 [node name="Egg" type="Area2D" unique_id=1890707529]
 script = SubResource("GDScript_ke6l1")
@@ -56,6 +56,7 @@ script = SubResource("GDScript_ke6l1")
 shape = SubResource("CircleShape2D_rpqav")
 
 [node name="Sprite2D" type="Sprite2D" parent="CollisionShape2D" unique_id=587559949]
+scale = Vector2(0.43137255, 0.43137264)
 texture = ExtResource("1_eh8xx")
 
 [node name="VisibleOnScreenNotifier2D" type="VisibleOnScreenNotifier2D" parent="." unique_id=35205039]

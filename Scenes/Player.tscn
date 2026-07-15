@@ -1,82 +1,30 @@
 [gd_scene format=3 uid="uid://d0eu2fyd2sbyv"]
 
+[ext_resource type="Script" uid="uid://cuqn58qi4xxyk" path="res://Scripts/Player.gd" id="1_kyqiw"]
 [ext_resource type="Texture2D" uid="uid://chahr7gd7xrss" path="res://Export/Player.png" id="1_rpqav"]
 
-[sub_resource type="GDScript" id="GDScript_esf5t"]
-script/source = "extends CharacterBody2D
-
-var speed: float = 300.0
-@export var egg_scene: PackedScene
-
-@export var max_hp: int = 5
-var current_hp: int
-
-func _ready():
-	current_hp = max_hp
-	print(\"Игрок создан! HP = \", current_hp)
-
-func _physics_process(_delta):
-	var direction = Vector2.ZERO
-
-	if Input.is_action_pressed(\"move_left\"):
-		direction.x -= 1
-	if Input.is_action_pressed(\"move_right\"):
-		direction.x += 1
-	if Input.is_action_pressed(\"move_up\"):
-		direction.y -= 1
-	if Input.is_action_pressed(\"move_down\"):
-		direction.y += 1
-
-	direction = direction.normalized()
-	velocity = direction * speed
-	move_and_slide()
-
-func _unhandled_input(event):
-	if event.is_action_pressed(\"shoot\"):
-		shoot()
-
-func shoot():
-	if egg_scene == null:
-		return
-
-	var egg = egg_scene.instantiate()
-	get_tree().current_scene.add_child(egg)
-	egg.global_position = global_position
-	var dir = (get_global_mouse_position() - global_position).normalized()
-	egg.direction = dir
-
-func take_damage(damage: int):
-	current_hp -= damage
-	print(\"Игрок получил урон! HP = \", current_hp)
-	
-	if current_hp <= 0:
-		die()
-
-func die():
-	print(\"Игрок умер!\")
-	# Используем call_deferred для безопасного удаления
-	call_deferred(\"queue_free\")
-	# Или перезапускаем сцену с задержкой
-	await get_tree().create_timer(0.5).timeout
-	get_tree().reload_current_scene()
-"
-
 [sub_resource type="CapsuleShape2D" id="CapsuleShape2D_spwcu"]
-radius = 72.0
-height = 238.0
+radius = 28.0
+height = 110.0
 
 [node name="Player" type="CharacterBody2D" unique_id=1259915293 groups=["Player"]]
 collision_mask = 2
-script = SubResource("GDScript_esf5t")
+script = ExtResource("1_kyqiw")
+
+[node name="Camera2D" type="Camera2D" parent="." unique_id=1822473006]
+limit_left = 0
+limit_top = 0
+limit_right = 0
+limit_bottom = 0
+position_smoothing_enabled = true
+rotation_smoothing_enabled = true
+editor_draw_screen = false
+editor_draw_drag_margin = true
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=738740004 groups=["Player"]]
 shape = SubResource("CapsuleShape2D_spwcu")
 
 [node name="Sprite2D" type="Sprite2D" parent="CollisionShape2D" unique_id=1577028723]
 texture_filter = 1
+scale = Vector2(0.41618496, 0.41618493)
 texture = ExtResource("1_rpqav")
-
-[node name="Camera2D" type="Camera2D" parent="." unique_id=44238520 groups=["Player"]]
-zoom = Vector2(0.5, 0.5)
-position_smoothing_enabled = true
-position_smoothing_speed = 8.0
