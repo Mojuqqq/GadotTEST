@@ -9,6 +9,7 @@
 [ext_resource type="PackedScene" uid="uid://nqq6as3gyh7a" path="res://Scenes/Enemies/Enemy_chicken.tscn" id="4_rgh2o"]
 [ext_resource type="PackedScene" uid="uid://dvjnhnuta5ci6" path="res://Scenes/Rooms/Room_LeftRight_2.tscn" id="4_vy5pj"]
 [ext_resource type="PackedScene" uid="uid://chdv8hrn3omhf" path="res://Scenes/Rooms/Room_LeftRight_3.tscn" id="5_bmxlf"]
+[ext_resource type="PackedScene" uid="uid://bfltle5inqqhr" path="res://Scenes/Enemies/Enemy_cow.tscn" id="8_bmxlf"]
 
 [node name="Main" type="Node2D" unique_id=248219871]
 script = ExtResource("1_vy5pj")
@@ -21,6 +22,8 @@ room_pool = Array[PackedScene]([ExtResource("3_50glp"), ExtResource("4_vy5pj"), 
 [node name="Enemies" type="Node2D" parent="." unique_id=1835854547]
 
 [node name="Enemy_chicken" parent="Enemies" unique_id=240231144 instance=ExtResource("4_rgh2o")]
+
+[node name="Enemy_cow" parent="Enemies" unique_id=1582234891 instance=ExtResource("8_bmxlf")]
 
 [node name="Player" parent="." unique_id=1259915293 instance=ExtResource("1_idj7w")]
 position = Vector2(5, 12)

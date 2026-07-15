@@ -1,29 +1,41 @@
 extends CharacterBody2D
 
-var speed: float = 300.0
+@export var base_speed: float = 300.0       # базовая скорость без эффектов
+
 @export var egg_scene: PackedScene
 
 @export var max_hp: int = 5
 var current_hp: int
+
+
 
 func _ready():
 	current_hp = max_hp
 	print("Игрок создан! HP = ", current_hp)
 
 func _physics_process(_delta):
+	# Вычисляем итоговую скорость с учётом всех замедлений
+	var total_slow = 0.0
+	for source in slow_sources:
+		if is_instance_valid(source) and not source.is_queued_for_deletion():
+			total_slow += source.slow_factor   # предполагаем, что у источника есть свойство slow_factor
+		else:
+			# если источник удалён, убираем его из списка
+			slow_sources.erase(source)
+	
+	# Ограничиваем замедление максимум 90% (чтобы игрок не остановился полностью)
+	total_slow = min(total_slow, 0.9)
+	var current_speed = base_speed * (1.0 - total_slow)
+	
+	# Движение
 	var direction = Vector2.ZERO
-
-	if Input.is_action_pressed("move_left"):
-		direction.x -= 1
-	if Input.is_action_pressed("move_right"):
-		direction.x += 1
-	if Input.is_action_pressed("move_up"):
-		direction.y -= 1
-	if Input.is_action_pressed("move_down"):
-		direction.y += 1
-
+	if Input.is_action_pressed("move_left"):   direction.x -= 1
+	if Input.is_action_pressed("move_right"):  direction.x += 1
+	if Input.is_action_pressed("move_up"):     direction.y -= 1
+	if Input.is_action_pressed("move_down"):   direction.y += 1
+	
 	direction = direction.normalized()
-	velocity = direction * speed
+	velocity = direction * current_speed
 	move_and_slide()
 
 func _unhandled_input(event):
@@ -65,3 +77,18 @@ func die():
 	# Или перезапускаем сцену с задержкой
 	await get_tree().create_timer(0.5).timeout
 	get_tree().reload_current_scene()
+	
+# Список активных источников замедления (каждый хранит свой коэффициент)
+var slow_sources: Array = []
+
+
+# Методы для управления замедлением
+func add_slow_source(source):
+	if not slow_sources.has(source):
+		slow_sources.append(source)
+		print("Добавлен источник замедления, всего: ", slow_sources.size())
+
+func remove_slow_source(source):
+	if slow_sources.has(source):
+		slow_sources.erase(source)
+		print("Удалён источник замедления, осталось: ", slow_sources.size())
