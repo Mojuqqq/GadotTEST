@@ -33,14 +33,23 @@ func _unhandled_input(event):
 		shoot()
 
 func shoot():
+	print("shoot() вызвана!")
 	if egg_scene == null:
+		print("Ошибка: egg_scene = null!")
 		return
-
+		
+	print("egg_scene не null, инстанцируем...")
 	var egg = egg_scene.instantiate()
-	get_tree().current_scene.add_child(egg)
+	print("Яйцо создано, добавляем на сцену...")
+	get_tree().root.get_node("Main").add_child(egg)
+	print("Яйцо добавлено. Physics process enabled: ", egg.is_physics_processing())
+	if not egg.is_physics_processing():
+		egg.set_physics_process(true)
+		print("Включили physics_process принудительно.")
 	egg.global_position = global_position
 	var dir = (get_global_mouse_position() - global_position).normalized()
 	egg.direction = dir
+	print("Яйцо запущено в направлении: ", dir)
 
 func take_damage(damage: int):
 	current_hp -= damage

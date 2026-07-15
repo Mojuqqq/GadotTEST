@@ -11,20 +11,15 @@ height = 110.0
 collision_mask = 2
 script = ExtResource("1_kyqiw")
 
-[node name="Camera2D" type="Camera2D" parent="." unique_id=1822473006]
-limit_left = 0
-limit_top = 0
-limit_right = 0
-limit_bottom = 0
-position_smoothing_enabled = true
-rotation_smoothing_enabled = true
-editor_draw_screen = false
-editor_draw_drag_margin = true
+[node name="Sprite2D" type="Sprite2D" parent="." unique_id=1577028723]
+texture_filter = 1
+scale = Vector2(0.41618496, 0.41618493)
+texture = ExtResource("1_rpqav")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=738740004 groups=["Player"]]
 shape = SubResource("CapsuleShape2D_spwcu")
 
-[node name="Sprite2D" type="Sprite2D" parent="CollisionShape2D" unique_id=1577028723]
-texture_filter = 1
-scale = Vector2(0.41618496, 0.41618493)
-texture = ExtResource("1_rpqav")
+[node name="Camera2D" type="Camera2D" parent="." unique_id=144656205]
+limit_enabled = false
+position_smoothing_enabled = true
+position_smoothing_speed = 10.0
