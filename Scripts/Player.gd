@@ -6,6 +6,7 @@ extends CharacterBody2D
 
 @export var max_hp: int = 5
 var current_hp: int
+var external_force: Vector2 = Vector2.ZERO
 
 
 
@@ -14,29 +15,22 @@ func _ready():
 	print("Игрок создан! HP = ", current_hp)
 
 func _physics_process(_delta):
-	# Вычисляем итоговую скорость с учётом всех замедлений
-	var total_slow = 0.0
-	for source in slow_sources:
-		if is_instance_valid(source) and not source.is_queued_for_deletion():
-			total_slow += source.slow_factor   # предполагаем, что у источника есть свойство slow_factor
-		else:
-			# если источник удалён, убираем его из списка
-			slow_sources.erase(source)
-	
-	# Ограничиваем замедление максимум 90% (чтобы игрок не остановился полностью)
-	total_slow = min(total_slow, 0.9)
-	var current_speed = base_speed * (1.0 - total_slow)
-	
-	# Движение
 	var direction = Vector2.ZERO
 	if Input.is_action_pressed("move_left"):   direction.x -= 1
 	if Input.is_action_pressed("move_right"):  direction.x += 1
 	if Input.is_action_pressed("move_up"):     direction.y -= 1
 	if Input.is_action_pressed("move_down"):   direction.y += 1
-	
 	direction = direction.normalized()
-	velocity = direction * current_speed
+	
+	var desired_velocity = direction * base_speed
+	velocity = desired_velocity + external_force
+	external_force = external_force.lerp(Vector2.ZERO, 0.1)   # затухание
+	
 	move_and_slide()
+	
+func apply_push(force: Vector2):
+	external_force += force
+		
 
 func _unhandled_input(event):
 	print("Событие получено: ", event)

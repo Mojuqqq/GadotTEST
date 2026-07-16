@@ -1,25 +1,20 @@
 extends CharacterBody2D
 
-@export var hp: int = 5      
-@export var speed: float = 150.0                 # скорость движения к игроку
-@export var slow_factor: float = 0.9             # насколько замедлять (0.5 = на 50%)
-@export var detection_radius: float = 150.0      # радиус действия (опционально)
+@export var hp: int = 5
+@export var speed: float = 80.0
+@export var min_distance: float = 30.0
+@export var push_strength: float = 100.0
+@export var detection_radius: float = 10.0
 
-signal died                 
+signal died
 
 var player: Node2D = null
-var is_slowing: bool = false                     # замедляет ли сейчас игрока
+var is_player_in_range: bool = false
 
 func _ready():
-	add_to_group("Enemies")                  # чтобы Room.gd и другие скрипты находили корову
+	add_to_group("Enemies")
 	find_player()
-
-func find_player():
-	var nodes = get_tree().get_nodes_in_group("Player")
-	if nodes.size() > 0:
-		player = nodes[0]
 	
-	# Создаём зону обнаружения, если её нет в сцене
 	var area = Area2D.new()
 	var shape = CircleShape2D.new()
 	shape.radius = detection_radius
@@ -28,45 +23,46 @@ func find_player():
 	area.add_child(collider)
 	add_child(area)
 	
-	# Подключаем сигналы
 	area.body_entered.connect(_on_area_body_entered)
 	area.body_exited.connect(_on_area_body_exited)
+
+func find_player():
+	var nodes = get_tree().get_nodes_in_group("Player")
+	if nodes.size() > 0:
+		player = nodes[0]
 
 func _physics_process(_delta):
 	if player == null:
 		find_player()
 		return
-	# Движемся к игроку
-	var direction = (player.global_position - global_position).normalized()
-	velocity = direction * speed
-	move_and_slide()
-
-# Когда игрок входит в зону
-func _on_area_body_entered(body):
-	if body.is_in_group("Player") and body.has_method("add_slow_source"):
-		body.add_slow_source(self)   # передаём себя как источник замедления
-		is_slowing = true
-		print("Враг начал замедлять игрока")
-
-# Когда игрок выходит из зоны
-func _on_area_body_exited(body):
-	if body.is_in_group("Player") and body.has_method("remove_slow_source"):
-		body.remove_slow_source(self)
-		is_slowing = false
-		print("Враг перестал замедлять игрока")
-
-# Если враг умирает, нужно убрать замедление
-
 	
+	# Движение к игроку с остановкой на min_distance
+	var distance = global_position.distance_to(player.global_position)
+	if distance > min_distance:
+		var direction = (player.global_position - global_position).normalized()
+		velocity = direction * speed
+	else:
+		velocity = Vector2.ZERO
+	move_and_slide()
+	
+	# Отталкивание игрока
+	if is_player_in_range and player != null and player.has_method("apply_push"):
+		var push_dir = (player.global_position - global_position).normalized()
+		player.apply_push(push_dir * push_strength)
+
+func _on_area_body_entered(body):
+	if body.is_in_group("Player"):
+		is_player_in_range = true
+
+func _on_area_body_exited(body):
+	if body.is_in_group("Player"):
+		is_player_in_range = false
+
 func take_damage(amount: int):
 	hp -= amount
-	print("Корова получила урон! HP = ", hp)
 	if hp <= 0:
 		die()
 
 func die():
-	if is_slowing and player != null and player.has_method("remove_slow_source"):
-		player.remove_slow_source(self)
-	print("Корова умерла!")
-	died.emit()          # оповещаем комнату
-	queue_free()  
+	died.emit()
+	queue_free()
