@@ -30,10 +30,21 @@ func open():
 	if is_opened:
 		return
 	is_opened = true
-	interaction_label.visible = false   # скрываем подсказку
+	interaction_label.visible = false
 	if item:
 		item.apply.call(GameManager.player_stats, GameManager)
 		print("Получен предмет: ", item.name)
 		GameManager.emit_signal("stats_changed", GameManager.player_stats)
-	# Удаляем сундук или делаем неактивным
+		
+		# Показываем награду
+		show_reward()
 	queue_free()
+
+func show_reward():
+	var popup_scene = preload("res://Scenes/Reward_popup.tscn")
+	var popup = popup_scene.instantiate()
+	# Добавляем в корень сцены (можно в UI, но лучше в Main, чтобы не перекрывать UI)
+	get_tree().current_scene.add_child(popup)
+	# Позиционируем над сундуком
+	popup.global_position = global_position + Vector2(0, -40)
+	popup.setup(item)

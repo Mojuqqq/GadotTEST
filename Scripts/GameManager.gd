@@ -266,51 +266,43 @@ func init_items():
 	all_items.clear()
 	
 	var items_data = [
-		{"id": "heart", "name": "❤️ Сердце", "desc": "+2 HP", "apply": func(stats, gm):
-			stats.max_hp += 2
-			gm.player_hp = min(gm.player_hp + 2, stats.max_hp)
-			gm.emit_signal("player_hp_changed", gm.player_hp, stats.max_hp)
-},
-		{"id": "fire_crystal", "name": "🔥 Огненный кристалл", "desc": "+20% урона", "apply": func(stats, gm):
-			stats.damage = int(stats.damage * 1.2)
-			gm.emit_signal("stats_changed", stats)
-},
-		{"id": "energy", "name": "⚡ Энергия", "desc": "+15% скорость", "apply": func(stats, gm):
+
+		{"id": "energy", "name": "⚡ Скоростные сапоги", "desc": "+15% скорость", "icon":"res://Export/Item_icons/New_boots.png", "apply": func(stats, gm):
 			stats.speed *= 1.15
 			if gm.player and gm.player.has_method("update_speed"):
 				gm.player.update_speed(stats.speed)
 			gm.emit_signal("stats_changed", stats)
 },
-		{"id": "eye", "name": "👁 Глаз", "desc": "+ дальность атаки", "apply": func(stats, gm):
+		{"id": "eye", "name": "👁 новые очки", "desc": "+ дальность атаки", "icon":"res://Export/Item_icons/New_glasses.png", "apply": func(stats, gm):
 			stats.attack_range_multiplier = 1.5
 			gm.emit_signal("stats_changed", stats)
 },
-		{"id": "golden_egg", "name": "🥚 Золотое яйцо", "desc": "+50% урон", "apply": func(stats, gm):
+		{"id": "golden_egg", "name": "🥚 Золотое яйцо", "desc": "+50% урон", "icon":"res://Export/Item_icons/Gold_egg.png", "apply": func(stats, gm):
 			stats.damage = int(stats.damage * 1.5)
 			gm.emit_signal("stats_changed", stats)
 },
-		{"id": "battle_rooster", "name": "🐔 Боевой петух", "desc": "Помощник атакует", "apply": func(stats, gm):
+		{"id": "battle_rooster", "name": "🐔 Боевой петух", "desc": "Помощник атакует", "icon":"res://Export/Item_icons/Crazy_chicken.png", "apply": func(stats, gm):
 			stats.has_chick = true
 			gm.emit_signal("stats_changed", stats)
 },
-		{"id": "omelet", "name": "🍳 Омлет", "desc": "+2 сердца", "apply": func(stats, gm):
+		{"id": "omelet", "name": "🍳 Омлет", "desc": "+2 сердца", "icon":"res://Export/Item_icons/Omlet.png", "apply": func(stats, gm):
 			stats.max_hp += 2
 			gm.player_hp = min(gm.player_hp + 2, stats.max_hp)
 			gm.emit_signal("player_hp_changed", gm.player_hp, stats.max_hp)
 },
-		{"id": "hot_sauce", "name": "🌶 Острый соус", "desc": "Яйца летят быстрее", "apply": func(stats, gm):
+		{"id": "hot_sauce", "name": "🌶 Острый соус", "desc": "Яйца летят быстрее", "icon":"res://Export/Item_icons/Hot_sauce.png", "apply": func(stats, gm):
 			stats.egg_speed *= 1.2
 			gm.emit_signal("stats_changed", stats)
 },
-		{"id": "butter", "name": "🧈 Масло", "desc": "Яйца отскакивают от стен", "apply": func(stats, gm):
+		{"id": "butter", "name": "🧈 Масло", "desc": "Яйца отскакивают от стен", "icon":"res://Export/Item_icons/Butter.png", "apply": func(stats, gm):
 			stats.bullet_bounce = true
 			gm.emit_signal("stats_changed", stats)
 },
-		{"id": "rotten_egg", "name": "💣 Тухлое яйцо", "desc": "Оставляет ядовитую лужу", "apply": func(stats, gm):
+		{"id": "rotten_egg", "name": "💣 Тухлое яйцо", "desc": "Оставляет ядовитую лужу", "icon":"res://Export/Item_icons/Rotten_egg.png", "apply": func(stats, gm):
 			stats.poison_cloud = true
 			gm.emit_signal("stats_changed", stats)
 },
-		{"id": "chick", "name": "🐣 Цыплёнок", "desc": "Вылупляется и атакует врагов", "apply": func(stats, gm):
+		{"id": "chick", "name": "🐣 Цыплёнок", "desc": "Вылупляется и атакует врагов", "icon":"res://Export/Item_icons/Item_chicken.png", "apply": func(stats, gm):
 			stats.has_chick = true
 			gm.emit_signal("stats_changed", stats)
 }
@@ -321,5 +313,7 @@ func init_items():
 		item.id = data.id
 		item.name = data.name
 		item.description = data.desc
+		if data.has("icon") and data.icon != "":
+			item.icon = load(data.icon)
 		item.apply = data.apply
 		all_items.append(item)
