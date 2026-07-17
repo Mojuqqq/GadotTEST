@@ -4,10 +4,13 @@ extends CharacterBody2D
 @export var egg_scene: PackedScene
 
 var external_force: Vector2 = Vector2.ZERO
+var current_speed: float = 300.0
+var last_shot_time: float = 0.0
 
 func _ready():
-	# Игрок добавляется в группу при создании (можно сделать вручную)
 	add_to_group("Player")
+	if GameManager.player_stats:
+		current_speed = GameManager.player_stats.speed
 
 func _physics_process(_delta):
 	var direction = Vector2.ZERO
@@ -22,6 +25,9 @@ func _physics_process(_delta):
 	external_force = external_force.lerp(Vector2.ZERO, 0.1)   # затухание
 	
 	move_and_slide()
+
+func update_speed(new_speed: float):
+	current_speed = new_speed
 
 func apply_push(force: Vector2):
 	external_force += force

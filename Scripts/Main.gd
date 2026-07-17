@@ -2,6 +2,7 @@ extends Node2D
 
 @onready var player = $Player
 @onready var camera = $Camera2D
+const PlayerStats = preload("res://Scripts/PlayerStats.gd")
 
 # Экспортируемые сцены комнат (для удобства настройки в редакторе)
 @export var start_room_scene: PackedScene
@@ -21,6 +22,14 @@ extends Node2D
 func _ready():
 	if player and not player.is_in_group("Player"):
 		player.add_to_group("Player")
+	
+	var stats = PlayerStats.new()
+	stats.max_hp = 5
+	stats.damage = 1
+	stats.speed = 300.0
+	stats.fire_rate = 0.3
+	stats.egg_speed = 700.0
+	GameManager.set_player_stats(stats)
 	
 	GameManager.set_player(player)
 	

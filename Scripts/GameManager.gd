@@ -12,6 +12,9 @@ var player: Node2D = null
 var player_hp: int = 5
 var player_max_hp: int = 5
 
+# ===== ХАРАКТЕРИСТИКИ ИГРОКА =====
+var player_stats: PlayerStats = null
+
 # ===== КОМНАТЫ =====
 var room_instances: Array[Node2D] = []
 var current_room_index: int = 0
@@ -39,6 +42,38 @@ func set_player(player_node: Node2D):
 	player = player_node
 	player_hp = player_max_hp
 	emit_signal("player_hp_changed", player_hp, player_max_hp)
+
+func set_player_stats(stats: PlayerStats):
+	player_stats = stats
+	# Обновляем HP и другие параметры
+	player_hp = stats.max_hp
+	player_max_hp = stats.max_hp
+	emit_signal("player_hp_changed", player_hp, player_max_hp)
+	
+	# Обновляем ссылку у игрока (если есть)
+	if player and player.has_method("update_speed"):
+		player.update_speed(stats.speed)
+
+# Увеличить характеристику (для апгрейдов)
+func upgrade_stat(stat_name: String, amount: float):
+	if player_stats == null:
+		return
+	match stat_name:
+		"max_hp":
+			player_stats.max_hp += int(amount)
+			player_max_hp = player_stats.max_hp
+			player_hp = min(player_hp + int(amount), player_max_hp)  # исцеляем
+			emit_signal("player_hp_changed", player_hp, player_max_hp)
+		"damage":
+			player_stats.damage += int(amount)
+		"speed":
+			player_stats.speed += amount
+			if player and player.has_method("update_speed"):
+				player.update_speed(player_stats.speed)
+		"fire_rate":
+			player_stats.fire_rate = max(0.05, player_stats.fire_rate - amount)  # не меньше 0.05
+		"egg_speed":
+			player_stats.egg_speed += amount
 
 func take_damage(amount: int):
 	player_hp -= amount
