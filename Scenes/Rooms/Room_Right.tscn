@@ -1,7 +1,9 @@
-[gd_scene format=3 uid="uid://b7rx7hf5nbu21"]
+[gd_scene format=4 uid="uid://b7rx7hf5nbu21"]
 
 [ext_resource type="Script" uid="uid://crlvbhqbicxgy" path="res://Scripts/Door.gd" id="1_0w1aw"]
 [ext_resource type="Script" uid="uid://eqd8pyeats75" path="res://Scripts/Room.gd" id="1_nh37i"]
+[ext_resource type="TileSet" uid="uid://dno7e7rye4vth" path="res://Assets/earth_tileset.tres" id="2_10w7h"]
+[ext_resource type="TileSet" uid="uid://bfntpbasvpw8j" path="res://Assets/bg_tileset.tres" id="2_je0bj"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_g4v7s"]
 size = Vector2(30.5, 219)
@@ -18,16 +20,29 @@ size = Vector2(29, 158)
 [node name="Start" type="Node2D" unique_id=760714407]
 script = ExtResource("1_nh37i")
 
+[node name="Earth" type="TileMapLayer" parent="." unique_id=2123244909]
+use_parent_material = true
+tile_map_data = PackedByteArray("AAD9//7/AQAFAAAAAAD9////AQACAAAAAAD9/wAAAQAGAAAAAAD9/wEAAQAGAAAAAAD+//7/AQADAAAAAAD+////AQAGAAAAAAD+/wAAAQADAAAAAAD+/wEAAQAGAAAAAAD///7/AQAFAAAAAAD/////AQADAAAAAAD//wAAAQAFAAAAAAD//wEAAQADAAAAAAAAAP7/AQACAAAAAAAAAP//AQAFAAAAAAAAAAAAAQAFAAAAAAAAAAEAAQADAAAAAAABAP7/AQACAAAAAAABAP//AQAFAAAAAAABAAAAAQAGAAAAAAABAAEAAQAFAAAAAAACAP7/AQAFAAAAAAACAP//AQAFAAAAAAACAAAAAQADAAAAAAACAAEAAQAGAAAAAAA=")
+tile_set = ExtResource("2_10w7h")
+rendering_quadrant_size = 128
+
+[node name="Grass" type="TileMapLayer" parent="." unique_id=430716070]
+use_parent_material = true
+tile_set = ExtResource("2_je0bj")
+rendering_quadrant_size = 128
+
+[node name="Plants" type="TileMapLayer" parent="." unique_id=371841652]
+use_parent_material = true
+tile_set = ExtResource("2_je0bj")
+rendering_quadrant_size = 128
+
+[node name="Decor" type="TileMapLayer" parent="." unique_id=164990968]
+use_parent_material = true
+tile_set = ExtResource("2_je0bj")
+rendering_quadrant_size = 128
+
 [node name="bg" type="Sprite2D" parent="." unique_id=2116184678]
 visible = false
-
-[node name="bg_tmp" type="ColorRect" parent="." unique_id=1282694301]
-offset_left = -400.0
-offset_top = -300.0
-offset_right = 400.0
-offset_bottom = 300.0
-mouse_filter = 2
-color = Color(1, 0, 1, 0.19607843)
 
 [node name="wall_right_1" type="StaticBody2D" parent="." unique_id=628628169]
 position = Vector2(400, -191)
