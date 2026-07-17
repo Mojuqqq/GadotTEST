@@ -12,12 +12,19 @@ func _ready():
 
 func _on_body_entered(body):
 	if body.is_in_group("Player") and is_open:
+		print("Дверь открыта, переходим...")
+		print("target_room_node = ", target_room_node)
 		var main = get_tree().current_scene
 		if main and main.has_method("move_player_to_room"):
 			main.move_player_to_room(target_room_node, global_position)
+		else:
+			print("Ошибка: Main не имеет метода move_player_to_room или main = null")
+	else:
+		print("Дверь закрыта или это не игрок")
 
 # Метод для открытия/закрытия двери
 func set_open(open: bool):
 	is_open = open
 	# Можно также визуально менять цвет или спрайт
 	modulate = Color.GREEN if open else Color.RED  # для наглядности
+	print("Дверь установлена в состояние: ", "открыта" if open else "закрыта")

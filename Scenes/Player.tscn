@@ -8,7 +8,6 @@ radius = 28.0
 height = 110.0
 
 [node name="Player" type="CharacterBody2D" unique_id=1259915293 groups=["Player"]]
-collision_layer = 8
 collision_mask = 2
 script = ExtResource("1_kyqiw")
 
@@ -19,8 +18,3 @@ texture = ExtResource("1_rpqav")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=738740004 groups=["Player"]]
 shape = SubResource("CapsuleShape2D_spwcu")
-
-[node name="Camera2D" type="Camera2D" parent="." unique_id=144656205]
-limit_enabled = false
-position_smoothing_enabled = true
-position_smoothing_speed = 10.0

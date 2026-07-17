@@ -4,17 +4,12 @@ extends Area2D
 var direction := Vector2.ZERO
 
 func _physics_process(delta):
-	print("Egg._physics_process: position = ", position, " direction = ", direction, " speed = ", speed)
 	position += direction * speed * delta
 	if direction != Vector2.ZERO:
 		rotation = direction.angle()
 
 func _ready():
 	rotation = direction.angle()
-	print("Яйцо готово! Позиция: ", position)
-	# Сделай спрайт ярким, чтобы точно увидеть
-	if has_node("Sprite2D"):
-		$Sprite2D.modulate = Color.RED
 
 func _on_visible_on_screen_notifier_2d_screen_exited():
 	queue_free()
@@ -28,7 +23,6 @@ func _on_body_entered(body):
 	print("=== ЯЙЦО СТОЛКНУЛОСЬ ===")
 	print("Объект: ", body.name)
 	print("Тип: ", body.get_class())
-	print("Есть метод take_damage? ", body.has_method("take_damage"))
 	
 	# Игнорируем игрока
 	if body.name == "Player":

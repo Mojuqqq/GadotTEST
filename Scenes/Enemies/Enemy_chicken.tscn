@@ -9,14 +9,14 @@ radius = 24.083189
 [sub_resource type="CircleShape2D" id="CircleShape2D_obgpu"]
 radius = 6.707315
 
-[node name="Enemy_chicken" type="CharacterBody2D" unique_id=240231144 groups=["Enemies"]]
+[node name="Enemy_chicken" type="CharacterBody2D" unique_id=240231144]
 script = ExtResource("1_vfuto")
 
-[node name="Sprite2D" type="Sprite2D" parent="." unique_id=1048545208 groups=["Enemies"]]
+[node name="Sprite2D" type="Sprite2D" parent="." unique_id=1048545208]
 scale = Vector2(0.6506024, 0.65060246)
 texture = ExtResource("1_t35b1")
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=731214316 groups=["Enemies"]]
+[node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=731214316]
 shape = SubResource("CircleShape2D_7fd37")
 
 [node name="AttackArea" type="Area2D" parent="." unique_id=1036444361]

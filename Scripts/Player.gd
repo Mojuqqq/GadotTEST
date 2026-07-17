@@ -9,7 +9,6 @@ var current_hp: int
 var external_force: Vector2 = Vector2.ZERO
 
 
-
 func _ready():
 	current_hp = max_hp
 	print("Игрок создан! HP = ", current_hp)
@@ -33,7 +32,6 @@ func apply_push(force: Vector2):
 		
 
 func _unhandled_input(event):
-	print("Событие получено: ", event)
 	if event is InputEventMouseButton and event.pressed and event.button_index == MOUSE_BUTTON_LEFT:
 		print("Клик мышью!")
 		shoot()
