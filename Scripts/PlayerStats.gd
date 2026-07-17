@@ -1,4 +1,5 @@
 extends Resource
+class_name PlayerStats
 
 # === ХАРАКТЕРИСТИКИ ===
 @export var max_hp: int = 5

@@ -39,7 +39,7 @@ func find_player():
 func set_room_limits(limits: Rect2):
 	room_limits = limits
 	
-func _physics_process(delta):
+func _physics_process(_delta):
 	if player == null:
 		find_player()
 		return

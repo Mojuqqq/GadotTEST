@@ -5,6 +5,7 @@ signal player_hp_changed(hp, max_hp)
 signal room_changed(room_name, room_index)
 signal enemies_changed(count)
 signal game_over(victory: bool)
+signal stats_changed(stats)
 var is_transitioning: bool = false
 
 # ===== СОСТОЯНИЕ ИГРОКА =====
@@ -13,7 +14,7 @@ var player_hp: int = 5
 var player_max_hp: int = 5
 
 # ===== ХАРАКТЕРИСТИКИ ИГРОКА =====
-var player_stats: PlayerStats = null
+var player_stats = null
 
 # ===== КОМНАТЫ =====
 var room_instances: Array[Node2D] = []
@@ -43,18 +44,15 @@ func set_player(player_node: Node2D):
 	player_hp = player_max_hp
 	emit_signal("player_hp_changed", player_hp, player_max_hp)
 
-func set_player_stats(stats: PlayerStats):
+func set_player_stats(stats):
 	player_stats = stats
-	# Обновляем HP и другие параметры
 	player_hp = stats.max_hp
 	player_max_hp = stats.max_hp
 	emit_signal("player_hp_changed", player_hp, player_max_hp)
-	
-	# Обновляем ссылку у игрока (если есть)
+	emit_signal("stats_changed", stats)   # <-- добавляем
 	if player and player.has_method("update_speed"):
 		player.update_speed(stats.speed)
 
-# Увеличить характеристику (для апгрейдов)
 func upgrade_stat(stat_name: String, amount: float):
 	if player_stats == null:
 		return
@@ -62,7 +60,7 @@ func upgrade_stat(stat_name: String, amount: float):
 		"max_hp":
 			player_stats.max_hp += int(amount)
 			player_max_hp = player_stats.max_hp
-			player_hp = min(player_hp + int(amount), player_max_hp)  # исцеляем
+			player_hp = min(player_hp + int(amount), player_max_hp)
 			emit_signal("player_hp_changed", player_hp, player_max_hp)
 		"damage":
 			player_stats.damage += int(amount)
@@ -71,9 +69,10 @@ func upgrade_stat(stat_name: String, amount: float):
 			if player and player.has_method("update_speed"):
 				player.update_speed(player_stats.speed)
 		"fire_rate":
-			player_stats.fire_rate = max(0.05, player_stats.fire_rate - amount)  # не меньше 0.05
+			player_stats.fire_rate = max(0.05, player_stats.fire_rate - amount)
 		"egg_speed":
 			player_stats.egg_speed += amount
+	emit_signal("stats_changed", player_stats)   # <-- добавляем
 
 func take_damage(amount: int):
 	player_hp -= amount
@@ -95,7 +94,6 @@ func generate_dungeon(root_node: Node):
 		print("Ошибка: не назначены сцены комнат!")
 		return
 
-	# Очистка старых комнат
 	for room in room_instances:
 		room.queue_free()
 	room_instances.clear()
@@ -112,8 +110,9 @@ func generate_dungeon(root_node: Node):
 	start_room.global_position = Vector2(0, 0)
 	room_instances.append(start_room)
 	prev_room = start_room
-	spawn_enemies_for_room(start_room, 0)   # <-- добавляем
+	spawn_enemies_for_room(start_room, 0)
 
+	# Промежуточные комнаты (только один цикл!)
 	for i in range(intermediate_count):
 		var random_scene = room_pool[randi_range(0, room_pool.size() - 1)]
 		var room = random_scene.instantiate()
@@ -122,17 +121,7 @@ func generate_dungeon(root_node: Node):
 		room.global_position = prev_room.global_position + Vector2(room_width + room_spacing, 0)
 		room_instances.append(room)
 		prev_room = room
-		spawn_enemies_for_room(room, i+1)   # <-- добавляем
-
-	# Промежуточные комнаты
-	for i in range(intermediate_count):
-		var random_scene = room_pool[randi_range(0, room_pool.size() - 1)]
-		var room = random_scene.instantiate()
-		room.name = "Room" + str(i + 1)
-		root_node.add_child(room)
-		room.global_position = prev_room.global_position + Vector2(room_width + room_spacing, 0)
-		room_instances.append(room)
-		prev_room = room
+		spawn_enemies_for_room(room, i + 1)   # добавляем врагов
 
 	# Конечная комната
 	var end_room = end_room_scene.instantiate()
@@ -140,7 +129,7 @@ func generate_dungeon(root_node: Node):
 	root_node.add_child(end_room)
 	end_room.global_position = prev_room.global_position + Vector2(room_width + room_spacing, 0)
 	room_instances.append(end_room)
-	spawn_enemies_for_room(end_room, room_instances.size()-1)  
+	spawn_enemies_for_room(end_room, room_instances.size() - 1)
 
 	connect_rooms()
 	disable_unconnected_doors()
@@ -179,11 +168,11 @@ func disable_unconnected_doors():
 				else:
 					print("Дверь ", door.name, " в комнате ", room.name, " ведёт в ", door.target_room_node.name)
 
-func find_child_recursive(node: Node, name: String) -> Node:
+func find_child_recursive(node: Node, target_name: String) -> Node:
 	for child in node.get_children():
-		if child.name == name:
+		if child.name == target_name:
 			return child
-		var result = find_child_recursive(child, name)
+		var result = find_child_recursive(child, target_name)  # исправлено
 		if result:
 			return result
 	return null
@@ -212,6 +201,7 @@ func enter_room(index: int):
 
 	var room = room_instances[index]
 	room.visible = true
+	print("Комната ", room.name, " visible = ", room.visible)
 
 	current_room_index = index
 	emit_signal("room_changed", room.name, index)
@@ -223,7 +213,7 @@ func enter_room(index: int):
 	print("Вошли в комнату ", index)
 	update_enemy_count()
 
-func move_player_to_room(target_room_node: Node2D, door_position: Vector2) -> int:
+func move_player_to_room(target_room_node: Node2D, _door_position: Vector2) -> int:
 	var target_index = room_instances.find(target_room_node)
 	if target_index == -1:
 		print("Ошибка: целевая комната не найдена!")

@@ -2,7 +2,6 @@ extends Node2D
 
 @onready var player = $Player
 @onready var camera = $Camera2D
-const PlayerStats = preload("res://Scripts/PlayerStats.gd")
 
 # Экспортируемые сцены комнат (для удобства настройки в редакторе)
 @export var start_room_scene: PackedScene
@@ -65,8 +64,9 @@ func move_player_to_room(target_room_node: Node2D, door_position: Vector2):
 		if spawn:
 			player.global_position = spawn.global_position
 		else:
-			player.global_position = room.global_position + Vector2(room_width/2, room_height/2)
-		camera.global_position = room.global_position + Vector2(room_width/2, room_height/2)
+			player.global_position = room.global_position + Vector2(room_width / 2.0, room_height / 2.0)
+		# Всегда обновляем камеру
+		camera.global_position = room.global_position + Vector2(room_width / 2.0, room_height / 2.0)
 	
 	await get_tree().create_timer(0.3).timeout
 	GameManager.is_transitioning = false

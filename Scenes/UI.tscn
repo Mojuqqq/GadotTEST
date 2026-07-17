@@ -22,3 +22,21 @@ offset_left = 1057.0
 offset_top = 13.0
 offset_right = 1244.0
 offset_bottom = 36.0
+
+[node name="StatsContainer" type="VBoxContainer" parent="." unique_id=100306803]
+offset_left = 16.0
+offset_top = 24.0
+offset_right = 200.0
+offset_bottom = 186.0
+
+[node name="DamageLabel" type="Label" parent="StatsContainer" unique_id=1357309642]
+layout_mode = 2
+
+[node name="SpeedLabel" type="Label" parent="StatsContainer" unique_id=1613228435]
+layout_mode = 2
+
+[node name="FireRateLabel" type="Label" parent="StatsContainer" unique_id=1953947570]
+layout_mode = 2
+
+[node name="EggSpeedLabel" type="Label" parent="StatsContainer" unique_id=1128961442]
+layout_mode = 2
