@@ -8,6 +8,7 @@
 [ext_resource type="PackedScene" uid="uid://iwr2u5j4pgj4" path="res://Scenes/Egg.tscn" id="3_kln2b"]
 [ext_resource type="PackedScene" uid="uid://dvjnhnuta5ci6" path="res://Scenes/Rooms/Room_LeftRight_2.tscn" id="4_vy5pj"]
 [ext_resource type="PackedScene" uid="uid://chdv8hrn3omhf" path="res://Scenes/Rooms/Room_LeftRight_3.tscn" id="5_bmxlf"]
+[ext_resource type="PackedScene" uid="uid://dux56347sws2d" path="res://Scenes/UI.tscn" id="9_vy5pj"]
 
 [node name="Main" type="Node2D" unique_id=248219871]
 script = ExtResource("1_vy5pj")
@@ -26,9 +27,9 @@ z_index = 1
 position = Vector2(640, 512)
 egg_scene = ExtResource("3_kln2b")
 
-[node name="UI" type="CanvasLayer" parent="." unique_id=2002939590]
-
 [node name="Camera2D" type="Camera2D" parent="." unique_id=2093762753]
 position = Vector2(640, 512)
 limit_enabled = false
 position_smoothing_speed = 10.0
+
+[node name="UI" parent="." unique_id=1833129806 instance=ExtResource("9_vy5pj")]
