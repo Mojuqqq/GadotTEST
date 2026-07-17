@@ -4,8 +4,6 @@
 [ext_resource type="Script" uid="uid://eqd8pyeats75" path="res://Scripts/Room.gd" id="1_nh37i"]
 [ext_resource type="TileSet" uid="uid://dno7e7rye4vth" path="res://Assets/earth_tileset.tres" id="2_10w7h"]
 [ext_resource type="TileSet" uid="uid://bfntpbasvpw8j" path="res://Assets/bg_tileset.tres" id="2_je0bj"]
-[ext_resource type="PackedScene" uid="uid://nqq6as3gyh7a" path="res://Scenes/Enemies/Enemy_chicken.tscn" id="5_bmf2q"]
-[ext_resource type="PackedScene" uid="uid://bfltle5inqqhr" path="res://Scenes/Enemies/Enemy_cow.tscn" id="6_u3bn8"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_g4v7s"]
 size = Vector2(29.625, 387.75)
@@ -88,9 +86,3 @@ script = ExtResource("1_0w1aw")
 [node name="CollisionShape2D" type="CollisionShape2D" parent="DoorRight" unique_id=793316805]
 shape = SubResource("RectangleShape2D_yf5fn")
 debug_color = Color(0.8996578, 0.00017442585, 0.7667549, 0.41960785)
-
-[node name="Enemy_chicken" parent="." unique_id=240231144 instance=ExtResource("5_bmf2q")]
-position = Vector2(640, 512)
-
-[node name="Enemy_cow" parent="." unique_id=1582234891 instance=ExtResource("6_u3bn8")]
-position = Vector2(640, 512)

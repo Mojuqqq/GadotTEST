@@ -28,6 +28,12 @@ var start_room_scene: PackedScene
 var end_room_scene: PackedScene
 var room_pool: Array[PackedScene] = []
 
+var enemy_pool: Array[PackedScene] = []
+@export var min_enemies_per_room: int = 4
+@export var max_enemies_per_room: int = 10
+@export var enemies_in_start_room: int = 0
+@export var enemies_in_end_room: int = 4
+
 # ===== МЕТОДЫ УПРАВЛЕНИЯ ИГРОКОМ =====
 func set_player(player_node: Node2D):
 	player = player_node
@@ -71,6 +77,17 @@ func generate_dungeon(root_node: Node):
 	start_room.global_position = Vector2(0, 0)
 	room_instances.append(start_room)
 	prev_room = start_room
+	spawn_enemies_for_room(start_room, 0)   # <-- добавляем
+
+	for i in range(intermediate_count):
+		var random_scene = room_pool[randi_range(0, room_pool.size() - 1)]
+		var room = random_scene.instantiate()
+		room.name = "Room" + str(i + 1)
+		root_node.add_child(room)
+		room.global_position = prev_room.global_position + Vector2(room_width + room_spacing, 0)
+		room_instances.append(room)
+		prev_room = room
+		spawn_enemies_for_room(room, i+1)   # <-- добавляем
 
 	# Промежуточные комнаты
 	for i in range(intermediate_count):
@@ -88,6 +105,7 @@ func generate_dungeon(root_node: Node):
 	root_node.add_child(end_room)
 	end_room.global_position = prev_room.global_position + Vector2(room_width + room_spacing, 0)
 	room_instances.append(end_room)
+	spawn_enemies_for_room(end_room, room_instances.size()-1)  
 
 	connect_rooms()
 	disable_unconnected_doors()
@@ -147,6 +165,12 @@ func enter_room(index: int):
 		print("Ошибка: индекс комнаты вне диапазона: ", index)
 		return
 
+	# Отключаем текущую комнату (если есть)
+	if current_room_index >= 0 and current_room_index < room_instances.size():
+		var prev_room = room_instances[current_room_index]
+		if prev_room.has_method("set_active"):
+			prev_room.set_active(false)
+
 	# Скрываем все комнаты
 	for room in room_instances:
 		room.visible = false
@@ -157,6 +181,7 @@ func enter_room(index: int):
 	current_room_index = index
 	emit_signal("room_changed", room.name, index)
 
+	# Включаем новую комнату (вызовет on_room_entered и активирует врагов)
 	if room.has_method("on_room_entered"):
 		room.on_room_entered()
 
@@ -190,3 +215,19 @@ func get_enemy_count_in_room() -> int:
 func update_enemy_count():
 	var count = get_enemy_count_in_room()
 	emit_signal("enemies_changed", count)
+	
+func spawn_enemies_for_room(room: Node2D, index: int):
+	var count = 0
+	if index == 0:
+		count = enemies_in_start_room
+	elif index == room_instances.size() - 1:
+		count = enemies_in_end_room
+	else:
+		count = randi_range(min_enemies_per_room, max_enemies_per_room)
+	
+	if count > 0 and enemy_pool.size() > 0:
+		# Вызываем метод спавна у комнаты
+		if room.has_method("spawn_enemies"):
+			room.spawn_enemies(count, enemy_pool)
+		else:
+			print("Внимание: комната не имеет метода spawn_enemies")

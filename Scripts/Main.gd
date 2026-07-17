@@ -8,6 +8,8 @@ extends Node2D
 @export var end_room_scene: PackedScene
 @export var room_pool: Array[PackedScene] = []
 
+@export var enemy_pool: Array[PackedScene] = []
+
 # Параметры комнат (дублируем для доступа в Main)
 @export var room_width: int = 1280
 @export var room_height: int = 1024
@@ -20,10 +22,8 @@ func _ready():
 	if player and not player.is_in_group("Player"):
 		player.add_to_group("Player")
 	
-	# Передаём игрока в GameManager
 	GameManager.set_player(player)
 	
-	# Передаём настройки комнат в GameManager
 	GameManager.room_width = room_width
 	GameManager.room_height = room_height
 	GameManager.room_spacing = room_spacing
@@ -33,7 +33,9 @@ func _ready():
 	GameManager.end_room_scene = end_room_scene
 	GameManager.room_pool = room_pool
 	
-	# Генерируем подземелье
+	# Передаём пул врагов
+	GameManager.enemy_pool = enemy_pool
+	
 	GameManager.generate_dungeon(self)
 		
 # Вызывается из Door.gd

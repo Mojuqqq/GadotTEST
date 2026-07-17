@@ -3,6 +3,7 @@ extends Node2D
 var doors: Array = []
 var enemies: Array = []
 var is_cleared: bool = false
+var is_active: bool = false   # флаг активности комнаты
 
 func _ready():
 	print("Room._ready: начинаю поиск дверей и врагов")
@@ -10,6 +11,18 @@ func _ready():
 	update_enemies_list()
 	print("Найдено дверей: ", doors.size())
 	print("Найдено врагов: ", enemies.size())
+	# Изначально все комнаты неактивны
+	set_active(false)
+
+func set_active(active: bool):
+	is_active = active
+	# Включаем/выключаем физику у всех врагов в комнате
+	for enemy in enemies:
+		if is_instance_valid(enemy):
+			enemy.set_physics_process(active)
+			# Также можно управлять видимостью (по желанию)
+			# enemy.visible = active
+	print("Комната ", name, " активность: ", active)
 
 func find_doors_recursive(node: Node):
 	for child in node.get_children():
@@ -29,7 +42,6 @@ func update_enemies_list():
 				enemy.died.connect(_on_enemy_died)
 				print("Подключён сигнал died к врагу: ", enemy.name)
 	print("Обновлён список врагов: ", enemies.size())
-	# Обновляем UI
 	GameManager.update_enemy_count()
 
 func on_room_entered():
@@ -41,6 +53,8 @@ func on_room_entered():
 	else:
 		print("Есть живые враги (", enemies.size(), "), закрываем двери")
 		lock_doors()
+	# Включаем врагов при входе
+	set_active(true)
 
 func lock_doors():
 	print("Блокируем двери")
@@ -63,10 +77,36 @@ func _on_enemy_died(victim: Node):
 	else:
 		print("Враг не найден в списке! Текущий список: ", enemies)
 	
-	# Обновляем UI
 	GameManager.update_enemy_count()
 	
 	if enemies.size() == 0 and not is_cleared:
 		is_cleared = true
 		unlock_doors()
 		print("Комната очищена, двери открыты!")
+
+func spawn_enemies(count: int, enemy_pool: Array):
+	if count <= 0 or enemy_pool.size() == 0:
+		return
+	
+	var room_width = GameManager.room_width
+	var room_height = GameManager.room_height
+	var margin = 50
+	var room_pos = global_position
+	var limits = Rect2(room_pos.x, room_pos.y, room_width, room_height)
+
+	for i in range(count):
+		var enemy_scene = enemy_pool[randi_range(0, enemy_pool.size() - 1)]
+		var enemy = enemy_scene.instantiate()
+		add_child(enemy)
+		
+		var x = randf_range(margin, room_width - margin)
+		var y = randf_range(margin, room_height - margin)
+		enemy.position = Vector2(x, y)
+		
+		if enemy.has_method("set_room_limits"):
+			enemy.set_room_limits(limits)
+		
+		# Изначально враги отключены (физика выключена), пока комната не станет активной
+		enemy.set_physics_process(false)
+		
+		print("Создан враг в комнате ", name, " на позиции ", enemy.position)
