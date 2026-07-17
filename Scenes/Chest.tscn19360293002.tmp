@@ -1,0 +1,23 @@
+[gd_scene format=3 uid="uid://80tpwwv1ryq8"]
+
+[ext_resource type="Script" uid="uid://cyfngc3dflail" path="res://Scripts/Chest.gd" id="1_mr3w3"]
+[ext_resource type="Texture2D" uid="uid://drpnllbqvh8iu" path="res://Export/Enemy_onion.png" id="2_fqgxf"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_k8xgd"]
+size = Vector2(123, 96)
+
+[node name="Chest" type="Area2D" unique_id=206162258]
+script = ExtResource("1_mr3w3")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=1622966258]
+position = Vector2(-1.5, 6)
+shape = SubResource("RectangleShape2D_k8xgd")
+
+[node name="Sprite2D" type="Sprite2D" parent="." unique_id=1899178114]
+texture = ExtResource("2_fqgxf")
+
+[node name="InteractionLabel" type="Label" parent="." unique_id=74480569]
+offset_left = -21.0
+offset_top = -91.0
+offset_right = 19.0
+offset_bottom = -68.0

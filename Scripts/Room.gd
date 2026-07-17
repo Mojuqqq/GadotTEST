@@ -83,6 +83,13 @@ func _on_enemy_died(victim: Node):
 		is_cleared = true
 		unlock_doors()
 		print("Комната очищена, двери открыты!")
+		# Создаём сундук
+		spawn_chest()
+	
+	if enemies.size() == 0 and not is_cleared:
+		is_cleared = true
+		unlock_doors()
+		print("Комната очищена, двери открыты!")
 
 func spawn_enemies(count: int, enemy_pool: Array):
 	if count <= 0 or enemy_pool.size() == 0:
@@ -110,3 +117,19 @@ func spawn_enemies(count: int, enemy_pool: Array):
 		enemy.set_physics_process(false)
 		
 		print("Создан враг в комнате ", name, " на позиции ", enemy.position)
+		
+func spawn_chest():
+	if GameManager.all_items.size() == 0:
+		return
+	var item = GameManager.all_items[randi_range(0, GameManager.all_items.size() - 1)]
+	
+	var chest_scene = preload("res://Scenes/Chest.tscn")
+	var chest = chest_scene.instantiate()
+	chest.item = item
+	add_child(chest)
+	
+	var margin = 100
+	var x = randf_range(margin, GameManager.room_width - margin)
+	var y = randf_range(margin, GameManager.room_height - margin)
+	chest.position = Vector2(x, y)
+	print("Сундук создан в комнате ", name)
