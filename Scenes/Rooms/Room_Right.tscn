@@ -5,17 +5,8 @@
 [ext_resource type="TileSet" uid="uid://dno7e7rye4vth" path="res://Assets/earth_tileset.tres" id="2_10w7h"]
 [ext_resource type="TileSet" uid="uid://bfntpbasvpw8j" path="res://Assets/bg_tileset.tres" id="2_je0bj"]
 
-[sub_resource type="RectangleShape2D" id="RectangleShape2D_g4v7s"]
-size = Vector2(29.625, 387.75)
-
-[sub_resource type="RectangleShape2D" id="RectangleShape2D_rgh2o"]
-size = Vector2(1273, 20)
-
-[sub_resource type="RectangleShape2D" id="RectangleShape2D_pbw6q"]
-size = Vector2(24.5, 1015)
-
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_yf5fn"]
-size = Vector2(29, 232)
+size = Vector2(29, 84)
 
 [node name="Start" type="Node2D" unique_id=760714407]
 script = ExtResource("1_nh37i")
@@ -39,41 +30,24 @@ position = Vector2(546, 333)
 tile_set = ExtResource("2_je0bj")
 rendering_quadrant_size = 128
 
+[node name="Walls" type="TileMapLayer" parent="." unique_id=1372087139]
+use_parent_material = true
+position = Vector2(1092, 666)
+tile_map_data = PackedByteArray("AAC+/9n/AAACAAIAAAAIANn/AAAaAAIAAADK/9n/AAAHAAkAAAD8/9n/AAAHAAkAAADp/9n/AAAHAAkAAADY/9n/AAAHAAkAAADz/9n/AAAjAAkAAADg/9n/AAAjAAkAAAAKANn/AAAjAAkAAAAFANn/AAAjAAkAAAC9/97/AAAEABIAAAC9/+X/AAAEABIAAAC9/+z/AAAEABIAAAC9//P/AAAEABIAAAC9//r/AAAEABIAAAC9/wEAAAAEABIAAAC9/wgAAAAEABIAAAC9/w8AAAAEABIAAADG/xMAAAAHAAkAAADY/xMAAAAHAAkAAADq/xMAAAAHAAkAAAD8/xMAAAAHAAkAAAABABMAAAAHAAkAAAAKAA8AAAAEABIAAAAKAAgAAAAEABIAAAAKAAEAAAAEABIAAAAKAN3/AAAEABIAAAAKAOT/AAAEABIAAAAKAOv/AAAEABIAAADP/9n/AAAjAAkAAADB/9n/AAAjAAkAAAC9/9n/AAAjAAkAAAA=")
+tile_set = ExtResource("2_je0bj")
+rendering_quadrant_size = 128
+
+[node name="Doors" type="TileMapLayer" parent="." unique_id=1288779447]
+use_parent_material = true
+tile_map_data = PackedByteArray("AABOACAABQABAAAAAAA=")
+tile_set = ExtResource("2_je0bj")
+rendering_quadrant_size = 128
+
 [node name="Decor" type="TileMapLayer" parent="." unique_id=164990968]
 use_parent_material = true
 position = Vector2(546, 333)
 tile_set = ExtResource("2_je0bj")
 rendering_quadrant_size = 128
-
-[node name="wall_right_1" type="StaticBody2D" parent="." unique_id=628628169]
-position = Vector2(1262, 198)
-
-[node name="CollisionShape2D" type="CollisionShape2D" parent="wall_right_1" unique_id=291504694]
-shape = SubResource("RectangleShape2D_g4v7s")
-
-[node name="wall_right_2" type="StaticBody2D" parent="." unique_id=1569724603]
-position = Vector2(1264, 829)
-
-[node name="CollisionShape2D" type="CollisionShape2D" parent="wall_right_2" unique_id=743096351]
-shape = SubResource("RectangleShape2D_g4v7s")
-
-[node name="wall_up" type="StaticBody2D" parent="." unique_id=1377809756]
-position = Vector2(642, 13)
-
-[node name="CollisionShape2D" type="CollisionShape2D" parent="wall_up" unique_id=1781217589]
-shape = SubResource("RectangleShape2D_rgh2o")
-
-[node name="wall_down" type="StaticBody2D" parent="." unique_id=1659084675]
-position = Vector2(642, 1011)
-
-[node name="CollisionShape2D" type="CollisionShape2D" parent="wall_down" unique_id=325487508]
-shape = SubResource("RectangleShape2D_rgh2o")
-
-[node name="wall_left" type="StaticBody2D" parent="." unique_id=89905917]
-position = Vector2(10, 517)
-
-[node name="CollisionShape2D" type="CollisionShape2D" parent="wall_left" unique_id=1216562771]
-shape = SubResource("RectangleShape2D_pbw6q")
 
 [node name="SpawnPoint" type="Marker2D" parent="." unique_id=1946866693]
 position = Vector2(226, 329)
@@ -84,5 +58,6 @@ collision_layer = 2
 script = ExtResource("1_0w1aw")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="DoorRight" unique_id=793316805]
+position = Vector2(0, -6)
 shape = SubResource("RectangleShape2D_yf5fn")
 debug_color = Color(0.8996578, 0.00017442585, 0.7667549, 0.41960785)

@@ -1,11 +1,36 @@
 [gd_resource type="TileSet" format=3 uid="uid://bfntpbasvpw8j"]
 
 [ext_resource type="Texture2D" uid="uid://b6fkd87eptftl" path="res://Export/Earth 128x128.png" id="1_50aob"]
+[ext_resource type="Texture2D" uid="uid://cvn2uii6bc1c0" path="res://Export/Walls.png" id="1_g3kov"]
 [ext_resource type="Texture2D" uid="uid://bm1dvdbukov0" path="res://Export/Grass.png" id="2_g3kov"]
 [ext_resource type="Texture2D" uid="uid://blftkyg43vafq" path="res://Export/Earth.png" id="3_80pnj"]
 [ext_resource type="Texture2D" uid="uid://bl5c078m7awki" path="res://Export/Plants.png" id="4_7ryw1"]
+[ext_resource type="Texture2D" uid="uid://jrwg861pjkes" path="res://Export/Doors.png" id="6_80pnj"]
 
 [sub_resource type="PhysicsMaterial" id="PhysicsMaterial_k8xgd"]
+
+[sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_80pnj"]
+texture = ExtResource("1_g3kov")
+7:9/size_in_atlas = Vector2i(20, 6)
+7:9/0 = 0
+7:9/0/z_index = 1
+7:9/0/physics_layer_0/polygon_0/points = PackedVector2Array(-146.04529, -35.34224, 146.58485, -35.16238, 145.86543, 36.24153, -146.22514, 36.061676)
+2:2/size_in_atlas = Vector2i(6, 6)
+2:2/0 = 0
+2:2/0/z_index = 1
+2:2/0/physics_layer_0/polygon_0/points = PackedVector2Array(-33.456207, -37.12048, 34.730774, -36.16459, 33.77487, 34.890068, -33.77484, 34.57144)
+26:2/size_in_atlas = Vector2i(6, 6)
+26:2/0 = 0
+26:2/0/z_index = 1
+26:2/0/physics_layer_0/polygon_0/points = PackedVector2Array(-39.928635, -37.140827, 30.216263, -36.78111, 30.9357, 33.903374, -39.568924, 33.72351)
+35:9/size_in_atlas = Vector2i(3, 6)
+35:9/0 = 0
+35:9/0/z_index = 2
+35:9/0/physics_layer_0/polygon_0/points = PackedVector2Array(-16.726868, 40.198425, 4.49646, 40.558144, 4.3166046, -33.90337, -17.62616, -36.42139)
+4:18/size_in_atlas = Vector2i(4, 11)
+4:18/0 = 0
+4:18/0/z_index = 3
+4:18/0/physics_layer_0/polygon_0/points = PackedVector2Array(-11.853943, -79.87305, 9.596069, -79.30858, 10.160522, 86.082275, -9.031555, 87.775696)
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_dylh5"]
 resource_name = "Earth 128x128"
@@ -1687,10 +1712,19 @@ texture = ExtResource("4_7ryw1")
 20:4/size_in_atlas = Vector2i(4, 3)
 20:4/0 = 0
 
+[sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_7ryw1"]
+texture = ExtResource("6_80pnj")
+1:0/size_in_atlas = Vector2i(2, 14)
+1:0/0 = 0
+4:0/size_in_atlas = Vector2i(2, 14)
+4:0/0 = 0
+
 [resource]
-physics_layer_0/collision_layer = 1
+physics_layer_0/collision_layer = 2
 physics_layer_0/physics_material = SubResource("PhysicsMaterial_k8xgd")
 sources/1 = SubResource("TileSetAtlasSource_dylh5")
 sources/2 = SubResource("TileSetAtlasSource_elwhq")
 sources/3 = SubResource("TileSetAtlasSource_e0p05")
 sources/4 = SubResource("TileSetAtlasSource_xmjou")
+sources/0 = SubResource("TileSetAtlasSource_80pnj")
+sources/5 = SubResource("TileSetAtlasSource_7ryw1")
