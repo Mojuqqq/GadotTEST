@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://8rbg6b8psfgi"
-path="res://.godot/imported/Enemy_boss_laying_hen.png-c22445fb0dbd9b3eb7116c3a22655a0d.ctex"
+uid="uid://dhlxibpcdmx14"
+path="res://.godot/imported/Enemy_carrot.png-63f1209439f0ba7b93e191d6832793cd.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://Export/Enemy_boss_laying_hen.png"
-dest_files=["res://.godot/imported/Enemy_boss_laying_hen.png-c22445fb0dbd9b3eb7116c3a22655a0d.ctex"]
+source_file="res://Export/Enemies/Enemy_carrot.png"
+dest_files=["res://.godot/imported/Enemy_carrot.png-63f1209439f0ba7b93e191d6832793cd.ctex"]
 
 [params]
 

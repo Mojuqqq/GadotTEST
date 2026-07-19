@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://cou84u2ualrh6"
-path="res://.godot/imported/Enemy_corn.png-e80822c6b4041bd0076e6f51b661e200.ctex"
+uid="uid://cwv01umdfpgbn"
+path="res://.godot/imported/corn_bullet.png-a3c053ef6795342d3a3e93ded9b06b71.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://Export/Enemy_corn.png"
-dest_files=["res://.godot/imported/Enemy_corn.png-e80822c6b4041bd0076e6f51b661e200.ctex"]
+source_file="res://Export/Enemies/corn_bullet.png"
+dest_files=["res://.godot/imported/corn_bullet.png-a3c053ef6795342d3a3e93ded9b06b71.ctex"]
 
 [params]
 

@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://cwv01umdfpgbn"
-path="res://.godot/imported/corn_bullet.png-36d594dd771c747fbdaf8d319b0e30c6.ctex"
+uid="uid://cvn2uii6bc1c0"
+path="res://.godot/imported/Walls.png-d2d4f85becc8f857f2fbe7808365af9e.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://Export/corn_bullet.png"
-dest_files=["res://.godot/imported/corn_bullet.png-36d594dd771c747fbdaf8d319b0e30c6.ctex"]
+source_file="res://Export/Walls.png"
+dest_files=["res://.godot/imported/Walls.png-d2d4f85becc8f857f2fbe7808365af9e.ctex"]
 
 [params]
 

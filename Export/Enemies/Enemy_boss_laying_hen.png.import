@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://cgytoepovx87j"
-path="res://.godot/imported/Enemy_boss_cock.png-9b529bb4fd4bf622049454f90bca9a59.ctex"
+uid="uid://8rbg6b8psfgi"
+path="res://.godot/imported/Enemy_boss_laying_hen.png-260997d18a6bd572f86c157f320b180d.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://Export/Enemy_boss_cock.png"
-dest_files=["res://.godot/imported/Enemy_boss_cock.png-9b529bb4fd4bf622049454f90bca9a59.ctex"]
+source_file="res://Export/Enemies/Enemy_boss_laying_hen.png"
+dest_files=["res://.godot/imported/Enemy_boss_laying_hen.png-260997d18a6bd572f86c157f320b180d.ctex"]
 
 [params]
 

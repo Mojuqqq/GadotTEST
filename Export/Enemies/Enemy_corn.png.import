@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://conk3cfsvgw8p"
-path="res://.godot/imported/Enemy_egg.png-6d629686024cfcc10fe18d861eb70a00.ctex"
+uid="uid://cou84u2ualrh6"
+path="res://.godot/imported/Enemy_corn.png-927d490c675ed9058e7a96c0b576f3d0.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://Export/Enemy_egg.png"
-dest_files=["res://.godot/imported/Enemy_egg.png-6d629686024cfcc10fe18d861eb70a00.ctex"]
+source_file="res://Export/Enemies/Enemy_corn.png"
+dest_files=["res://.godot/imported/Enemy_corn.png-927d490c675ed9058e7a96c0b576f3d0.ctex"]
 
 [params]
 

@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://drpnllbqvh8iu"
-path="res://.godot/imported/Enemy_onion.png-9ab3216e0464fab58f2d8db5e18aea4c.ctex"
+uid="uid://8pog2fqey6oq"
+path="res://.godot/imported/Enemy_cow.png-093c231da7626231043a7eebd3c434d3.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://Export/Enemy_onion.png"
-dest_files=["res://.godot/imported/Enemy_onion.png-9ab3216e0464fab58f2d8db5e18aea4c.ctex"]
+source_file="res://Export/Enemies/Enemy_cow.png"
+dest_files=["res://.godot/imported/Enemy_cow.png-093c231da7626231043a7eebd3c434d3.ctex"]
 
 [params]
 

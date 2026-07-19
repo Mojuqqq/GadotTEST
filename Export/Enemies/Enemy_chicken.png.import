@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://dhlxibpcdmx14"
-path="res://.godot/imported/Enemy_carrot.png-8d662efd9c19c1398e7680ba90079afc.ctex"
+uid="uid://dthg43tatnve4"
+path="res://.godot/imported/Enemy_chicken.png-8926f08ad6a3797d461fe5fb3e537d35.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://Export/Enemy_carrot.png"
-dest_files=["res://.godot/imported/Enemy_carrot.png-8d662efd9c19c1398e7680ba90079afc.ctex"]
+source_file="res://Export/Enemies/Enemy_chicken.png"
+dest_files=["res://.godot/imported/Enemy_chicken.png-8926f08ad6a3797d461fe5fb3e537d35.ctex"]
 
 [params]
 
