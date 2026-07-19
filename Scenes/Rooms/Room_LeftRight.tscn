@@ -39,7 +39,7 @@ rendering_quadrant_size = 128
 
 [node name="Doors" type="TileMapLayer" parent="." unique_id=1992355879]
 use_parent_material = true
-tile_map_data = PackedByteArray("AABOACEABQABAAAAAAA=")
+tile_map_data = PackedByteArray("AABOACEABQABAAAAAAABACEABgAAAAAAAAA=")
 tile_set = ExtResource("3_bixi5")
 rendering_quadrant_size = 128
 

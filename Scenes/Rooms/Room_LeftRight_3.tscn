@@ -37,9 +37,9 @@ tile_map_data = PackedByteArray("AAC+/9n/AAACAAIAAAAIANn/AAAaAAIAAADK/9n/AAAHAAk
 tile_set = ExtResource("3_5o6tv")
 rendering_quadrant_size = 128
 
-[node name="Doors" type="TileMapLayer" parent="." unique_id=1358118023]
+[node name="Doors" type="TileMapLayer" parent="." unique_id=449693224]
 use_parent_material = true
-tile_map_data = PackedByteArray("AABOACEABQABAAAAAAA=")
+tile_map_data = PackedByteArray("AABOACEABQABAAAAAAABACEABgAAAAAAAAA=")
 tile_set = ExtResource("3_5o6tv")
 rendering_quadrant_size = 128
 

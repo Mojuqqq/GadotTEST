@@ -8,6 +8,9 @@ extends Node2D
 @onready var name_label = $NameLabel
 @onready var desc_label = $DescLabel
 
+func _ready():
+	z_index = 10  
+
 func setup(item: ItemData):
 	# Устанавливаем данные
 	if item.icon:
