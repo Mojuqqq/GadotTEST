@@ -1,0 +1,26 @@
+[gd_scene format=3 uid="uid://cr02venwsiebc"]
+
+[ext_resource type="Script" uid="uid://bp3fv3qu01h07" path="res://Scripts/big-Egg.gd" id="1_feo6q"]
+[ext_resource type="Texture2D" uid="uid://k4buhqdu1e1g" path="res://Export/Egg.png" id="2_4nuq1"]
+
+[sub_resource type="CapsuleShape2D" id="CapsuleShape2D_qn0nd"]
+radius = 18.0
+height = 42.0
+
+[node name="big-Egg" type="Area2D" unique_id=1890707529]
+script = ExtResource("1_feo6q")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=22679666]
+shape = SubResource("CapsuleShape2D_qn0nd")
+
+[node name="Sprite2D" type="Sprite2D" parent="CollisionShape2D" unique_id=587559949]
+scale = Vector2(0.7647059, 0.7692578)
+texture = ExtResource("2_4nuq1")
+
+[node name="VisibleOnScreenNotifier2D" type="VisibleOnScreenNotifier2D" parent="." unique_id=35205039]
+position = Vector2(-8, -9)
+rect = Rect2(-10, -11, 35, 39)
+
+[connection signal="body_entered" from="." to="." method="_on_body_entered"]
+[connection signal="screen_entered" from="VisibleOnScreenNotifier2D" to="." method="_on_visible_on_screen_notifier_2d_screen_entered"]
+[connection signal="screen_exited" from="VisibleOnScreenNotifier2D" to="." method="_on_visible_on_screen_notifier_2d_screen_exited"]

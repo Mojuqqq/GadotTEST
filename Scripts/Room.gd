@@ -19,11 +19,11 @@ func set_active(active: bool):
 	# Включаем/выключаем физику у всех врагов в комнате
 	for enemy in enemies:
 		if is_instance_valid(enemy):
-			enemy.set_physics_process(active)
+			enemy.set_active(active) 
 			# Также можно управлять видимостью (по желанию)
 			# enemy.visible = active
 	print("Комната ", name, " активность: ", active)
-
+	
 func find_doors_recursive(node: Node):
 	for child in node.get_children():
 		if child is Area2D and (child.name == "DoorLeft" or child.name == "DoorRight"):
