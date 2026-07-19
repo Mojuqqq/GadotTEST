@@ -10,14 +10,17 @@
 [ext_resource type="PackedScene" uid="uid://dvjnhnuta5ci6" path="res://Scenes/Rooms/Room_LeftRight_2.tscn" id="4_vy5pj"]
 [ext_resource type="PackedScene" uid="uid://chdv8hrn3omhf" path="res://Scenes/Rooms/Room_LeftRight_3.tscn" id="5_bmxlf"]
 [ext_resource type="PackedScene" uid="uid://bfltle5inqqhr" path="res://Scenes/Enemies/Enemy_cow.tscn" id="8_bmxlf"]
+[ext_resource type="PackedScene" uid="uid://dfh1vkyscefxw" path="res://Scenes/Enemies/Enemy_egg.tscn" id="9_grg3l"]
 [ext_resource type="PackedScene" uid="uid://dux56347sws2d" path="res://Scenes/UI.tscn" id="9_vy5pj"]
+[ext_resource type="PackedScene" uid="uid://cqtvq0voq4fph" path="res://Scenes/Enemies/Enemy_carrot.tscn" id="10_frkhe"]
+[ext_resource type="PackedScene" uid="uid://c2n4eww25erye" path="res://Scenes/Enemies/Enemy_corn.tscn" id="11_1p5hy"]
 
 [node name="Main" type="Node2D" unique_id=248219871]
 script = ExtResource("1_vy5pj")
 start_room_scene = ExtResource("1_pbw6q")
 end_room_scene = ExtResource("2_v1gob")
 room_pool = Array[PackedScene]([ExtResource("3_50glp"), ExtResource("4_vy5pj"), ExtResource("5_bmxlf")])
-enemy_pool = Array[PackedScene]([ExtResource("4_rgh2o"), ExtResource("8_bmxlf")])
+enemy_pool = Array[PackedScene]([ExtResource("10_frkhe"), ExtResource("4_rgh2o"), ExtResource("8_bmxlf"), ExtResource("9_grg3l"), ExtResource("11_1p5hy")])
 
 [node name="Rooms" type="Node2D" parent="." unique_id=742137853]
 z_index = -1

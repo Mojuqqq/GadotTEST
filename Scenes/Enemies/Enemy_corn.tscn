@@ -1,0 +1,33 @@
+[gd_scene format=3 uid="uid://c2n4eww25erye"]
+
+[ext_resource type="Script" uid="uid://bs4n5iwjmukh6" path="res://Scripts/Enemy_corn.gd" id="1_7qd05"]
+[ext_resource type="Texture2D" uid="uid://cou84u2ualrh6" path="res://Export/Enemies/Enemy_corn.png" id="2_7qd05"]
+[ext_resource type="PackedScene" uid="uid://dr5xr1cs22qy2" path="res://Scenes/corn_bullet.tscn" id="3_ihed5"]
+
+[sub_resource type="CapsuleShape2D" id="CapsuleShape2D_q8716"]
+radius = 23.0
+height = 76.0
+
+[sub_resource type="CapsuleShape2D" id="CapsuleShape2D_8p53q"]
+radius = 4.674795
+height = 15.44715
+
+[node name="Enemy_corn" type="CharacterBody2D" unique_id=240231144]
+script = ExtResource("1_7qd05")
+hp = 3
+speed = 100.0
+bullet_scene = ExtResource("3_ihed5")
+
+[node name="Sprite2D" type="Sprite2D" parent="." unique_id=1048545208]
+scale = Vector2(0.6506024, 0.65060246)
+texture = ExtResource("2_7qd05")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=731214316]
+shape = SubResource("CapsuleShape2D_q8716")
+
+[node name="AttackArea" type="Area2D" parent="." unique_id=1036444361]
+collision_layer = 2
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="AttackArea" unique_id=403790771]
+scale = Vector2(4.9200015, 4.9200015)
+shape = SubResource("CapsuleShape2D_8p53q")

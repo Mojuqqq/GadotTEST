@@ -1,7 +1,7 @@
 extends CharacterBody2D
 
-@export var hp: int = 5
-@export var speed: float = 80.0
+@export var hp: int = 1
+@export var speed: float = 20.0
 @export var min_distance: float = 0.0
 @export var push_strength: float = 150.0   # сила толчка
 @export var detection_radius: float = 60.0

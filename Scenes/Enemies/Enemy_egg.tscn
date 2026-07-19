@@ -1,7 +1,7 @@
 [gd_scene format=3 uid="uid://dfh1vkyscefxw"]
 
-[ext_resource type="Script" uid="uid://b8p4ee2teuoi1" path="res://Scripts/Enemy_chicken.gd" id="1_mylxb"]
-[ext_resource type="Texture2D" uid="uid://conk3cfsvgw8p" path="res://Export/Enemy_egg.png" id="2_mylxb"]
+[ext_resource type="Script" uid="uid://bsylrmwfvf15o" path="res://Scripts/Enemy_egg.gd" id="1_mylxb"]
+[ext_resource type="Texture2D" uid="uid://conk3cfsvgw8p" path="res://Export/Enemies/Enemy_egg.png" id="2_mylxb"]
 
 [sub_resource type="CapsuleShape2D" id="CapsuleShape2D_benfh"]
 radius = 19.0
@@ -9,6 +9,8 @@ height = 58.0
 
 [node name="Enemy_egg" type="CharacterBody2D" unique_id=240231144]
 script = ExtResource("1_mylxb")
+speed = 100.0
+damage = 1
 
 [node name="Sprite2D" type="Sprite2D" parent="." unique_id=1048545208]
 scale = Vector2(0.6506024, 0.65060246)

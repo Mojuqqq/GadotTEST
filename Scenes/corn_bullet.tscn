@@ -1,0 +1,28 @@
+[gd_scene format=3 uid="uid://dr5xr1cs22qy2"]
+
+[ext_resource type="Script" uid="uid://dweid5wnv1a07" path="res://Scripts/corn_bullet.gd" id="1_4erc5"]
+[ext_resource type="Texture2D" uid="uid://cwv01umdfpgbn" path="res://Export/Enemies/corn_bullet.png" id="2_qrqia"]
+
+[sub_resource type="CapsuleShape2D" id="CapsuleShape2D_8p53q"]
+radius = 5.0
+height = 18.0
+
+[node name="corn_bullet" type="Area2D" unique_id=1890707529]
+script = ExtResource("1_4erc5")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=22679666]
+rotation = 1.5707964
+shape = SubResource("CapsuleShape2D_8p53q")
+
+[node name="Sprite2D" type="Sprite2D" parent="CollisionShape2D" unique_id=587559949]
+rotation = -1.5707964
+scale = Vector2(0.43137255, 0.43137264)
+texture = ExtResource("2_qrqia")
+
+[node name="VisibleOnScreenNotifier2D" type="VisibleOnScreenNotifier2D" parent="." unique_id=35205039]
+position = Vector2(2, 4)
+rect = Rect2(-10, -8, 16, 8)
+
+[connection signal="body_entered" from="." to="." method="_on_body_entered"]
+[connection signal="screen_entered" from="VisibleOnScreenNotifier2D" to="." method="_on_visible_on_screen_notifier_2d_screen_entered"]
+[connection signal="screen_exited" from="VisibleOnScreenNotifier2D" to="." method="_on_visible_on_screen_notifier_2d_screen_exited"]

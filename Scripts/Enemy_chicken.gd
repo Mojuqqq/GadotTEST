@@ -1,7 +1,7 @@
 extends CharacterBody2D
 
-@export var hp: int = 3
-@export var speed: float = 100.0
+@export var hp: int = 1
+@export var speed: float = 20
 @export var damage: int = 1
 @export var attack_cooldown: float = 1.0
 @export var min_distance: float = 30.0   # дистанция, на которой останавливается
