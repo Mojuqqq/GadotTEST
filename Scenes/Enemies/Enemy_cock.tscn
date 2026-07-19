@@ -1,0 +1,33 @@
+[gd_scene format=3 uid="uid://cai6g7bruh7sj"]
+
+[ext_resource type="Script" uid="uid://d3bl6alqmmis" path="res://Scripts/Enemy_cock.gd" id="1_8kp35"]
+[ext_resource type="PackedScene" uid="uid://cr02venwsiebc" path="res://Scenes/big-Egg.tscn" id="2_lxk11"]
+
+[sub_resource type="CompressedTexture2D" id="CompressedTexture2D_8kp35"]
+load_path = "res://.godot/imported/Enemy_boss_cock.png-caf897af9b1b736dcec550ad5044fd11.ctex"
+
+[sub_resource type="CapsuleShape2D" id="CapsuleShape2D_q8716"]
+radius = 74.0
+height = 194.0
+
+[sub_resource type="CapsuleShape2D" id="CapsuleShape2D_8p53q"]
+radius = 15.040646
+height = 39.43088
+
+[node name="Enemy_cock" type="CharacterBody2D" unique_id=240231144]
+script = ExtResource("1_8kp35")
+bullet_scene = ExtResource("2_lxk11")
+
+[node name="Sprite2D" type="Sprite2D" parent="." unique_id=1048545208]
+scale = Vector2(1.0718765, 0.9509423)
+texture = SubResource("CompressedTexture2D_8kp35")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=731214316]
+shape = SubResource("CapsuleShape2D_q8716")
+
+[node name="AttackArea" type="Area2D" parent="." unique_id=1036444361]
+collision_layer = 2
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="AttackArea" unique_id=403790771]
+scale = Vector2(4.9200015, 4.9200015)
+shape = SubResource("CapsuleShape2D_8p53q")
