@@ -3,10 +3,17 @@ extends Area2D
 @export var item: ItemData
 var is_opened: bool = false
 var player_near: bool = false
+@export var textures: Array[Texture2D]
 
-@onready var interaction_label = $InteractionLabel   # дочерний Label
+@onready var sprite = $Sprite2D   
+@onready var interaction_label = $InteractionLabel 
 
 func _ready():
+# Выбираем случайную текстуру
+	if textures.size() > 0:
+		var random_texture = textures[randi_range(0, textures.size() - 1)]
+		sprite.texture = random_texture
+	
 	body_entered.connect(_on_body_entered)
 	body_exited.connect(_on_body_exited)
 	interaction_label.visible = false

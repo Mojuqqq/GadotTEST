@@ -1,23 +1,30 @@
 [gd_scene format=3 uid="uid://80tpwwv1ryq8"]
 
 [ext_resource type="Script" uid="uid://cyfngc3dflail" path="res://Scripts/Chest.gd" id="1_mr3w3"]
-[ext_resource type="Texture2D" uid="uid://drpnllbqvh8iu" path="res://Export/Enemy_onion.png" id="2_fqgxf"]
+[ext_resource type="Texture2D" uid="uid://iqbaxoxv0v6d" path="res://Export/Chests/Wooden_chest.png" id="2_l4t8t"]
+[ext_resource type="Texture2D" uid="uid://1f4r2pt6qtvp" path="res://Export/Chests/Silver_chest.png" id="3_p4icn"]
+[ext_resource type="Texture2D" uid="uid://dxbxmu2ymjgwx" path="res://Export/Chests/Golden_chest.png" id="4_gpr52"]
+[ext_resource type="Texture2D" uid="uid://cnl3nkcuhsrif" path="res://Export/Chests/Magic_chest.png" id="5_msh36"]
+[ext_resource type="Texture2D" uid="uid://bkx66a4cadh4j" path="res://Export/Chests/Devil_chest.png" id="6_64rpu"]
+[ext_resource type="Texture2D" uid="uid://drmnwodaqppem" path="res://Export/Chests/Egg_chest.png" id="7_s3f44"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_k8xgd"]
-size = Vector2(123, 96)
+size = Vector2(77, 52)
 
 [node name="Chest" type="Area2D" unique_id=206162258]
 script = ExtResource("1_mr3w3")
+textures = Array[Texture2D]([ExtResource("2_l4t8t"), ExtResource("3_p4icn"), ExtResource("4_gpr52"), ExtResource("5_msh36"), ExtResource("6_64rpu"), ExtResource("7_s3f44")])
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=1622966258]
 position = Vector2(-1.5, 6)
 shape = SubResource("RectangleShape2D_k8xgd")
 
 [node name="Sprite2D" type="Sprite2D" parent="." unique_id=1899178114]
-texture = ExtResource("2_fqgxf")
+scale = Vector2(0.5, 0.5)
 
 [node name="InteractionLabel" type="Label" parent="." unique_id=74480569]
-offset_left = -21.0
-offset_top = -91.0
-offset_right = 19.0
-offset_bottom = -68.0
+visibility_layer = 2
+offset_left = -20.0
+offset_top = -53.0
+offset_right = 20.0
+offset_bottom = -30.0
