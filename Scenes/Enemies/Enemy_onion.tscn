@@ -1,0 +1,29 @@
+[gd_scene format=3 uid="uid://m4leu411eb0"]
+
+[ext_resource type="Script" uid="uid://c84gdvfir6ss" path="res://Scripts/Enemy_onion.gd" id="1_x02td"]
+[ext_resource type="Texture2D" uid="uid://drpnllbqvh8iu" path="res://Export/Enemies/Enemy_onion.png" id="2_x02td"]
+
+[sub_resource type="CapsuleShape2D" id="CapsuleShape2D_q8716"]
+radius = 38.0
+height = 76.0
+
+[sub_resource type="CapsuleShape2D" id="CapsuleShape2D_8p53q"]
+radius = 7.723575
+height = 15.44715
+
+[node name="Enemy_onion" type="CharacterBody2D" unique_id=240231144]
+script = ExtResource("1_x02td")
+
+[node name="Sprite2D" type="Sprite2D" parent="." unique_id=1048545208]
+scale = Vector2(0.6506024, 0.65060246)
+texture = ExtResource("2_x02td")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=731214316]
+shape = SubResource("CapsuleShape2D_q8716")
+
+[node name="AttackArea" type="Area2D" parent="." unique_id=1036444361]
+collision_layer = 2
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="AttackArea" unique_id=403790771]
+scale = Vector2(4.9200015, 4.9200015)
+shape = SubResource("CapsuleShape2D_8p53q")

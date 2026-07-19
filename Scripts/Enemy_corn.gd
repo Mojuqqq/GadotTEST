@@ -4,12 +4,12 @@ extends CharacterBody2D
 @export var hp: int = 4
 @export var speed: float = 60.0
 @export var damage: int = 1
-@export var fire_range: float = 600.0
+@export var fire_range: float = 300.0
 @export var burst_count: int = 3
 @export var burst_interval: float = 0.2
 @export var burst_cooldown: float = 2.0
 @export var bullet_scene: PackedScene
-@export var bullet_speed: float = 300.0
+@export var bullet_speed: float = 400.0
 
 signal died(victim: Node)
 
@@ -77,7 +77,6 @@ func _physics_process(_delta):
 		move_and_slide()
 		return
 	
-	# Движение в текущем направлении (спрайт не вращается)
 	velocity = direction * speed
 	move_and_slide()
 	
@@ -98,7 +97,7 @@ func _on_vision_area_body_entered(body):
 	if body.is_in_group("Player"):
 		player_in_range = true
 		if can_fire and not is_firing and not is_dead:
-			start_firing()
+			call_deferred("start_firing")   # ОТЛОЖЕННЫЙ ВЫЗОВ
 
 func _on_vision_area_body_exited(body):
 	if body.is_in_group("Player"):
@@ -135,7 +134,7 @@ func shoot():
 	bullet.global_position = global_position
 	var dir = (player.global_position - global_position).normalized()
 	bullet.setup(dir, bullet_speed, damage)
-	# Спрайт НЕ поворачиваем – он остаётся статичным
+	# Спрайт не вращаем
 
 func _on_fire_cooldown_end():
 	can_fire = true

@@ -7,10 +7,20 @@ var external_force: Vector2 = Vector2.ZERO
 var current_speed: float = 300.0
 var last_shot_time: float = 0.0
 
+# Эффект слёз
+var is_crying: bool = false
+var tear_timer: Timer = null
+
 func _ready():
 	add_to_group("Player")
 	if GameManager.player_stats:
 		current_speed = GameManager.player_stats.speed
+	
+	# Создаём таймер для снятия эффекта
+	tear_timer = Timer.new()
+	tear_timer.one_shot = true
+	tear_timer.timeout.connect(_on_tear_effect_end)
+	add_child(tear_timer)
 
 func _physics_process(_delta):
 	var direction = Vector2.ZERO
@@ -22,7 +32,7 @@ func _physics_process(_delta):
 	
 	var desired_velocity = direction * base_speed
 	velocity = desired_velocity + external_force
-	external_force = external_force.lerp(Vector2.ZERO, 0.1)   # затухание
+	external_force = external_force.lerp(Vector2.ZERO, 0.1)
 	
 	move_and_slide()
 
@@ -34,20 +44,35 @@ func apply_push(force: Vector2):
 
 func _unhandled_input(event):
 	if event is InputEventMouseButton and event.pressed and event.button_index == MOUSE_BUTTON_LEFT:
-		print("Клик мышью!")
 		shoot()
 
 func shoot():
 	if egg_scene == null:
-		print("Ошибка: egg_scene = null!")
 		return
 	var egg = egg_scene.instantiate()
 	get_tree().root.get_node("Main").add_child(egg)
 	egg.global_position = global_position
 	var dir = (get_global_mouse_position() - global_position).normalized()
+	# Если эффект слёз активен – инвертируем направление
+	if is_crying:
+		dir = -dir
 	egg.direction = dir
 
-# Вызывается из врагов
+# Эффект слёз
+func apply_tear_effect(duration: float):
+	print("Игрок плачет! Стрельба в обратную сторону на ", duration, " сек.")
+	is_crying = true
+	# Визуальный индикатор: меняем цвет игрока (например, синий)
+	modulate = Color(0.5, 0.5, 1.0, 1.0)  # голубоватый
+	tear_timer.stop()
+	tear_timer.wait_time = duration
+	tear_timer.start()
+
+func _on_tear_effect_end():
+	is_crying = false
+	modulate = Color.WHITE
+	print("Эффект слёз закончился")
+
 func take_damage(damage: int):
 	GameManager.take_damage(damage)
 
