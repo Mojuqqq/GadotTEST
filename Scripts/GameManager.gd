@@ -284,6 +284,9 @@ func init_items():
 		{"id": "battle_rooster", "name": "🐔 Боевой петух", "desc": "Помощник атакует", "icon":"res://Export/Item_icons/Crazy_chicken.png", "apply": func(stats, gm):
 			stats.has_chick = true
 			gm.emit_signal("stats_changed", stats)
+			# Создаём компаньона у игрока
+			if gm.player and gm.player.has_method("spawn_companion"):
+				gm.player.spawn_companion("rooster")
 },
 		{"id": "omelet", "name": "🍳 Омлет", "desc": "+2 сердца", "icon":"res://Export/Item_icons/Omlet.png", "apply": func(stats, gm):
 			stats.max_hp += 2
@@ -305,6 +308,8 @@ func init_items():
 		{"id": "chick", "name": "🐣 Цыплёнок", "desc": "Вылупляется и атакует врагов", "icon":"res://Export/Item_icons/Item_chicken.png", "apply": func(stats, gm):
 			stats.has_chick = true
 			gm.emit_signal("stats_changed", stats)
+			if gm.player and gm.player.has_method("spawn_companion"):
+				gm.player.spawn_companion("chick")
 }
 	]
 	

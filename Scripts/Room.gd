@@ -86,11 +86,6 @@ func _on_enemy_died(victim: Node):
 		print("Комната очищена, двери открыты!")
 		# Отложенный вызов, чтобы избежать ошибки с flushing queries
 		call_deferred("spawn_chest")
-	
-	if enemies.size() == 0 and not is_cleared:
-		is_cleared = true
-		unlock_doors()
-		print("Комната очищена, двери открыты!")
 
 func spawn_enemies(count: int, enemy_pool: Array):
 	if count <= 0 or enemy_pool.size() == 0:

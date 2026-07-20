@@ -26,7 +26,7 @@ func _ready():
 	stats.max_hp = 5
 	stats.damage = 1
 	stats.speed = 300.0
-	stats.fire_rate = 1.5
+	stats.fire_rate = 0.8
 	stats.egg_speed = 700.0
 	GameManager.set_player_stats(stats)
 	

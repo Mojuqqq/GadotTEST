@@ -1,0 +1,27 @@
+[gd_scene format=3 uid="uid://bkhvll271t1a"]
+
+[ext_resource type="Script" uid="uid://db7l3rcyevt37" path="res://Scripts/Chick_companion.gd" id="1_p7yfh"]
+[ext_resource type="Texture2D" uid="uid://dthg43tatnve4" path="res://Export/Enemies/Enemy_chicken.png" id="2_1g0th"]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_7fd37"]
+radius = 24.083189
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_obgpu"]
+radius = 6.707315
+
+[node name="Chick_companion" type="CharacterBody2D" unique_id=240231144]
+script = ExtResource("1_p7yfh")
+
+[node name="Sprite2D" type="Sprite2D" parent="." unique_id=1048545208]
+scale = Vector2(0.6506024, 0.65060246)
+texture = ExtResource("2_1g0th")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=731214316]
+shape = SubResource("CircleShape2D_7fd37")
+
+[node name="AttackArea" type="Area2D" parent="." unique_id=1036444361]
+collision_layer = 2
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="AttackArea" unique_id=403790771]
+scale = Vector2(4.9200015, 4.9200015)
+shape = SubResource("CircleShape2D_obgpu")

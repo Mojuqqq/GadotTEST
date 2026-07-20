@@ -11,6 +11,8 @@ var time_since_last_shot: float = 0.0
 var is_crying: bool = false
 var tear_timer: Timer = null
 
+var companion: Node2D = null
+
 func _ready():
 	add_to_group("Player")
 	if GameManager.player_stats:
@@ -61,6 +63,11 @@ func shoot():
 	if is_crying:
 		dir = -dir
 	egg.direction = dir
+	
+	# Передаём характеристики от игрока
+	if GameManager.player_stats:
+		egg.damage = GameManager.player_stats.damage
+		egg.speed = GameManager.player_stats.egg_speed
 
 func apply_tear_effect(duration: float):
 	is_crying = true
@@ -78,6 +85,41 @@ func take_damage(damage: int):
 
 func die():
 	print("Игрок умер!")
+	if companion != null:
+		companion.queue_free()
+		companion = null
 	call_deferred("queue_free")
 	await get_tree().create_timer(0.5).timeout
 	get_tree().reload_current_scene()
+	
+func spawn_companion(type: String = "default"):
+	# Если компаньон уже есть, не создаём нового (можно заменить, но пока оставим)
+	if companion != null and is_instance_valid(companion):
+		return
+	
+	var companion_scene = preload("res://Scenes/Chick_companion.tscn")
+	companion = companion_scene.instantiate()
+	get_tree().current_scene.add_child(companion)
+	companion.global_position = global_position + Vector2(50, 0)
+	companion.set_player(self)
+	
+	# Настройка параметров в зависимости от типа
+	if type == "rooster":
+		companion.damage = 2
+		companion.speed = 180
+		companion.attack_cooldown = 0.8
+		companion.follow_distance = 60
+		# Можно изменить спрайт или цвет
+	elif type == "chick":
+		companion.damage = 1
+		companion.speed = 120
+		companion.attack_cooldown = 1.2
+		companion.follow_distance = 50
+		# Можно изменить спрайт
+	
+	print("Создан компаньон типа: ", type)
+
+func remove_companion():
+	if companion != null and is_instance_valid(companion):
+		companion.queue_free()
+		companion = null

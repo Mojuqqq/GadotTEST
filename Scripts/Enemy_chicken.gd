@@ -4,7 +4,7 @@ extends CharacterBody2D
 @export var speed: float = 20
 @export var damage: int = 1
 @export var attack_cooldown: float = 1.0
-@export var min_distance: float = 30.0   # дистанция, на которой останавливается
+@export var min_distance: float = 60.0   # дистанция, на которой останавливается
 
 signal died(victim: Node)
 
