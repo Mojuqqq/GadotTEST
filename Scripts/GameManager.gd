@@ -310,10 +310,10 @@ func init_items():
 		{"id": "hot_sauce", "name": "🌶 Острый соус", "desc": "Яйца летят быстрее", "icon":"res://Export/Item_icons/Hot_sauce.png", "apply": func(stats, gm):
 			stats.egg_speed *= 1.2
 			gm.emit_signal("stats_changed", stats)
-},
-		{"id": "butter", "name": "🧈 Масло", "desc": "Яйца отскакивают от стен", "icon":"res://Export/Item_icons/Butter.png", "apply": func(stats, gm):
-			stats.bullet_bounce = true
-			gm.emit_signal("stats_changed", stats)
+#},
+		#{"id": "butter", "name": "🧈 Масло", "desc": "Яйца отскакивают от стен", "icon":"res://Export/Item_icons/Butter.png", "apply": func(stats, gm):
+			#stats.bullet_bounce = true
+			#gm.emit_signal("stats_changed", stats)
 },
 		{"id": "rotten_egg", "name": "💣 Тухлое яйцо", "desc": "Оставляет ядовитую лужу", "icon":"res://Export/Item_icons/Rotten_egg.png", "apply": func(stats, gm):
 			stats.poison_cloud = true

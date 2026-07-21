@@ -4,113 +4,39 @@ extends Area2D
 @export var speed := 700.0
 var direction := Vector2.ZERO
 var damage := 1 
-var bounce_count: int = 0
-var max_bounces: int = 3
-var max_range: float = 800.0
+var max_range: float = 20000.0
 var start_position: Vector2 = Vector2.ZERO
+var total_distance_traveled: float = 0.0
 
-# === Ссылки на узлы ===
 @onready var sprite = $Sprite2D
-@onready var raycast = $RayCast2D   # добавьте RayCast2D как дочерний узел в сцене
 
-# === Инициализация ===
 func _ready():
 	rotation = direction.angle()
-	raycast.target_position = Vector2.ZERO
-	raycast.enabled = true
-	raycast.collide_with_areas = false
-	raycast.collide_with_bodies = true
-	raycast.hit_from_inside = true
+	# Подключаем сигнал, если ещё не подключён
+	if not body_entered.is_connected(_on_body_entered):
+		body_entered.connect(_on_body_entered)
 
-# === Физика ===
 func _physics_process(delta):
 	var step = speed * delta
 	if step <= 0:
 		return
 	
-	raycast.target_position = direction * step
-	raycast.force_raycast_update()
-	
-	if raycast.is_colliding():
-		var collider = raycast.get_collider()
-		
-		# 1) Игрок – игнорируем (НЕ наносим урон)
-		if collider.is_in_group("Player"):
-			pass  # яйцо продолжает лететь
-		
-		# 2) Стена – отскок или удаление
-		elif collider is StaticBody2D or collider is TileMapLayer or collider is TileMap or collider.is_in_group("Walls"):
-			var stats = GameManager.player_stats
-			if stats and stats.bullet_bounce and bounce_count < max_bounces:
-				var normal = raycast.get_collision_normal()
-				if normal.length() < 0.1:
-					normal = -direction.normalized()
-				direction = direction.bounce(normal)
-				global_position += normal * 10
-				bounce_count += 1
-				modulate = Color.YELLOW
-				await get_tree().create_timer(0.1).timeout
-				modulate = Color.WHITE
-				print("Отскок (RayCast)! bounce_count = ", bounce_count)
-				return
-			else:
-				queue_free()
-				return
-		
-		# 3) Враг (имеет метод take_damage)
-		elif collider.has_method("take_damage"):
-			collider.take_damage(damage)
-			if GameManager.player_stats and GameManager.player_stats.poison_cloud:
-				create_poison_cloud(global_position, damage)
-			queue_free()
-			return
-		
-		# 4) Любой другой объект – уничтожаем
-		else:
-			queue_free()
-			return
-	
-	# --- Если столкновения нет, двигаемся ---
-	position += direction * step
+	global_position += direction * step
+	total_distance_traveled += step
 	if direction != Vector2.ZERO:
 		rotation = direction.angle()
 	
 	# Проверка дальности
-	if start_position != Vector2.ZERO:
-		var traveled = global_position.distance_to(start_position)
-		if traveled >= max_range:
-			queue_free()
-	print("direction: ", direction, " step: ", step)
+	if total_distance_traveled >= max_range:
+		queue_free()
 
-# === Сигнал body_entered (запасной) ===
+# === Обработка столкновений ===
 func _on_body_entered(body):
-	if not is_inside_tree():
-		return
-	
-	# 1) Игрок – игнорируем
+	# Игрок — игнорируем
 	if body.is_in_group("Player"):
 		return
 	
-	# 2) Стена
-	if body is StaticBody2D or body is TileMapLayer or body is TileMap or body.is_in_group("Walls"):
-		var stats = GameManager.player_stats
-		if stats and stats.bullet_bounce and bounce_count < max_bounces:
-			var closest = body.get_closest_point(global_position) if body.has_method("get_closest_point") else body.global_position
-			var normal = (global_position - closest).normalized()
-			if normal.length() < 0.1:
-				normal = -direction.normalized()
-			direction = direction.bounce(normal)
-			global_position += normal * 10
-			bounce_count += 1
-			modulate = Color.YELLOW
-			await get_tree().create_timer(0.1).timeout
-			modulate = Color.WHITE
-			return
-		else:
-			queue_free()
-			return
-	
-	# 3) Враг
+	# Враг — наносим урон
 	if body.has_method("take_damage"):
 		body.take_damage(damage)
 		if GameManager.player_stats and GameManager.player_stats.poison_cloud:
@@ -118,11 +44,17 @@ func _on_body_entered(body):
 		queue_free()
 		return
 	
-	# 4) Всё остальное
+	# Стена (любая) — уничтожаем
+	if body is StaticBody2D or body is TileMapLayer or body is TileMap or body.is_in_group("Walls"):
+		queue_free()
+		return
+	
+	# Любой другой объект — уничтожаем
 	queue_free()
 
 # === Ядовитая лужа ===
 func create_poison_cloud(pos: Vector2, damage_amount: int):
+	print("Создаём ядовитую лужу")
 	var cloud = Area2D.new()
 	var shape = CircleShape2D.new()
 	shape.radius = 100.0
@@ -130,7 +62,6 @@ func create_poison_cloud(pos: Vector2, damage_amount: int):
 	collider.shape = shape
 	cloud.add_child(collider)
 	
-	# Визуальный спрайт (если есть текстура)
 	var cloud_sprite = Sprite2D.new()
 	var texture = preload("res://Export/Item_icons/Rotten_egg.png")
 	if texture:
@@ -147,7 +78,6 @@ func create_poison_cloud(pos: Vector2, damage_amount: int):
 	cloud.global_position = pos
 	get_tree().current_scene.add_child(cloud)
 	
-	# Периодический урон (каждые 0.5 секунды)
 	var damage_timer = Timer.new()
 	damage_timer.wait_time = 0.5
 	damage_timer.one_shot = false
@@ -160,7 +90,6 @@ func create_poison_cloud(pos: Vector2, damage_amount: int):
 	cloud.add_child(damage_timer)
 	damage_timer.start()
 	
-	# Таймер удаления (через 4 секунды)
 	var life_timer = Timer.new()
 	life_timer.wait_time = 4.0
 	life_timer.one_shot = true
@@ -168,20 +97,17 @@ func create_poison_cloud(pos: Vector2, damage_amount: int):
 	cloud.add_child(life_timer)
 	life_timer.start()
 	
-	print("Создана ядовитая лужа! Урон: ", damage_amount)
+	print("Ядовитая лужа создана! Урон: ", damage_amount)
 
 # === Золотое яйцо ===
 func set_golden():
-	if sprite == null:
-		print("Ошибка: у яйца нет спрайта (Sprite2D)!")
-		return
 	var golden_texture = preload("res://Export/Item_icons/Gold_egg.png")
-	if golden_texture:
+	if sprite and golden_texture:
 		sprite.texture = golden_texture
 		print("Золотое яйцо активировано!")
-	else:
-		print("Не удалось загрузить текстуру золотого яйца")
 
 # === Удаление при выходе за экран ===
 func _on_visible_on_screen_notifier_2d_screen_exited():
+	print("УНИЧТОЖАЕМ (за экраном)")
 	queue_free()
+	

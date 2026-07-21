@@ -8,7 +8,7 @@ radius = 24.020824
 
 [node name="Egg" type="Area2D" unique_id=1890707529]
 collision_layer = 4
-collision_mask = 7
+collision_mask = 3
 script = ExtResource("1_dyx0d")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=22679666]
@@ -19,9 +19,6 @@ scale = Vector2(0.43137255, 0.43137264)
 texture = ExtResource("1_eh8xx")
 
 [node name="VisibleOnScreenNotifier2D" type="VisibleOnScreenNotifier2D" parent="." unique_id=35205039]
-
-[node name="RayCast2D" type="RayCast2D" parent="." unique_id=1282177200]
-hit_from_inside = true
 
 [connection signal="body_entered" from="." to="." method="_on_body_entered"]
 [connection signal="screen_entered" from="VisibleOnScreenNotifier2D" to="." method="_on_visible_on_screen_notifier_2d_screen_entered"]

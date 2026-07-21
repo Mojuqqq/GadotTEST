@@ -3,27 +3,24 @@ extends Node2D
 var doors: Array = []
 var enemies: Array = []
 var is_cleared: bool = false
-var is_active: bool = false   # флаг активности комнаты
+var is_active: bool = false
 
 func _ready():
 	print("Room._ready: начинаю поиск дверей и врагов")
 	find_doors_recursive(self)
-	update_enemies_list()
+	update_enemies_list()   # <-- теперь функция существует
 	print("Найдено дверей: ", doors.size())
 	print("Найдено врагов: ", enemies.size())
-	# Изначально все комнаты неактивны
+	# create_bounce_walls()  # удалено (масло убрано)
 	set_active(false)
 
 func set_active(active: bool):
 	is_active = active
-	# Включаем/выключаем физику у всех врагов в комнате
 	for enemy in enemies:
 		if is_instance_valid(enemy):
-			enemy.set_active(active) 
-			# Также можно управлять видимостью (по желанию)
-			# enemy.visible = active
+			enemy.set_active(active)
 	print("Комната ", name, " активность: ", active)
-	
+
 func find_doors_recursive(node: Node):
 	for child in node.get_children():
 		if child is Area2D and (child.name == "DoorLeft" or child.name == "DoorRight"):
@@ -53,7 +50,6 @@ func on_room_entered():
 	else:
 		print("Есть живые враги (", enemies.size(), "), закрываем двери")
 		lock_doors()
-	# Включаем врагов при входе
 	set_active(true)
 
 func lock_doors():
@@ -79,12 +75,10 @@ func _on_enemy_died(victim: Node):
 	
 	GameManager.update_enemy_count()
 	
-	# Если врагов не осталось и комната ещё не очищена – открываем двери и создаём сундук
 	if enemies.size() == 0 and not is_cleared:
 		is_cleared = true
 		unlock_doors()
 		print("Комната очищена, двери открыты!")
-		# Отложенный вызов, чтобы избежать ошибки с flushing queries
 		call_deferred("spawn_chest")
 
 func spawn_enemies(count: int, enemy_pool: Array):
@@ -109,11 +103,10 @@ func spawn_enemies(count: int, enemy_pool: Array):
 		if enemy.has_method("set_room_limits"):
 			enemy.set_room_limits(limits)
 		
-		# Изначально враги отключены (физика выключена), пока комната не станет активной
 		enemy.set_physics_process(false)
 		
 		print("Создан враг в комнате ", name, " на позиции ", enemy.position)
-		
+
 func spawn_chest():
 	if GameManager.all_items.size() == 0:
 		return
@@ -121,7 +114,6 @@ func spawn_chest():
 	
 	var chest_scene = preload("res://Scenes/Chest.tscn")
 	var chest = chest_scene.instantiate()
-	
 	
 	var margin = 100
 	var x = randf_range(margin, GameManager.room_width - margin)
