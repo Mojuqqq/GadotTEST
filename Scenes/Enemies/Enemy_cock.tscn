@@ -15,6 +15,7 @@ radius = 15.040646
 height = 39.43088
 
 [node name="Enemy_cock" type="CharacterBody2D" unique_id=240231144]
+collision_mask = 3
 script = ExtResource("1_8kp35")
 bullet_scene = ExtResource("2_lxk11")
 

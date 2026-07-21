@@ -18,6 +18,7 @@ func set_active(active: bool):
 	is_active = active
 	for enemy in enemies:
 		if is_instance_valid(enemy):
+			print("Вызываем set_active для ", enemy.name)
 			enemy.set_active(active)
 	print("Комната ", name, " активность: ", active)
 
@@ -75,11 +76,18 @@ func _on_enemy_died(victim: Node):
 	
 	GameManager.update_enemy_count()
 	
+	# Только если врагов не осталось и комната ещё не очищена
 	if enemies.size() == 0 and not is_cleared:
 		is_cleared = true
 		unlock_doors()
 		print("Комната очищена, двери открыты!")
 		call_deferred("spawn_chest")
+		
+		# Проверяем, последняя ли комната
+		var room_index = GameManager.current_room_index
+		if room_index == GameManager.room_instances.size() - 1:
+			print("Победа! Последняя комната очищена.")
+			GameManager.trigger_game_over(true)
 
 func spawn_enemies(count: int, enemy_pool: Array):
 	if count <= 0 or enemy_pool.size() == 0:

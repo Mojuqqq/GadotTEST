@@ -12,7 +12,8 @@ var attack_timer: Timer = null
 func _ready():
 	hp = 1
 	max_hp = 1
-	super()
+	super()  # создаёт HP bar
+	
 	add_to_group("Enemies")
 	print("Курица создана! HP = ", hp, ", позиция: ", global_position)
 	find_player()

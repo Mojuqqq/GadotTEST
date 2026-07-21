@@ -11,15 +11,12 @@ var is_exploding: bool = false
 var explosion_timer: Timer = null
 
 func _ready():
-	# Устанавливаем HP
 	hp = 2
 	max_hp = 2
-	super()  # создаёт HP bar
-	
+	super()
 	add_to_group("Enemies")
 	find_player()
 	
-	# Зона обнаружения игрока
 	var area = Area2D.new()
 	area.name = "DetectionArea"
 	var shape = CircleShape2D.new()
@@ -57,8 +54,7 @@ func _physics_process(_delta):
 		global_position.y = clamp(global_position.y, room_limits.position.y + 10, room_limits.position.y + room_limits.size.y - 10)
 
 func set_active(active: bool):
-	super(active)  # управляет HP bar и физикой
-	# Дополнительная логика: если комната стала неактивной, останавливаем таймер взрыва
+	super(active)
 	if not active and explosion_timer:
 		explosion_timer.stop()
 
@@ -79,16 +75,14 @@ func _on_explosion_timer_timeout():
 		call_deferred("explode")
 
 func die():
-	# Переопределяем смерть: сначала взрыв, потом удаление через базовый класс
 	if is_dead:
 		return
-	# Останавливаем таймер, если он был запущен
+	is_dead = true
 	if explosion_timer and not explosion_timer.is_stopped():
 		explosion_timer.stop()
-	# Взрываемся
+	died.emit(self)
 	explode()
-	# Вызываем базовый die() для эмиссии сигнала и удаления
-	super.die()
+	# queue_free() уже внутри explode
 
 func explode():
 	if is_exploding:
@@ -96,32 +90,23 @@ func explode():
 	is_exploding = true
 	print("ВЗРЫВ! Урон: ", damage, " радиус: ", explosion_radius)
 	
-	# Создаём временную область для поиска целей
-	var explosion_area = Area2D.new()
+	# Используем PhysicsDirectSpaceState2D для поиска целей
+	var space_state = get_world_2d().direct_space_state
+	var query = PhysicsShapeQueryParameters2D.new()
 	var shape = CircleShape2D.new()
 	shape.radius = explosion_radius
-	var collider = CollisionShape2D.new()
-	collider.shape = shape
-	explosion_area.add_child(collider)
-	get_tree().current_scene.add_child(explosion_area)
-	explosion_area.global_position = global_position
-	explosion_area.monitorable = true
-	explosion_area.monitoring = true
+	query.shape = shape
+	query.transform = Transform2D(0, global_position)
+	query.collide_with_areas = true
+	query.collide_with_bodies = true
+	query.exclude = [self]
 	
-	# Ожидаем два физических кадра, чтобы коллизии точно обновились
-	await get_tree().physics_frame
-	await get_tree().physics_frame
-	
-	var bodies = explosion_area.get_overlapping_bodies()
-	for body in bodies:
+	var results = space_state.intersect_shape(query)
+	for result in results:
+		var body = result.collider
 		if body != self and body.has_method("take_damage"):
 			print("Взрыв нанёс урон: ", body.name)
 			body.take_damage(damage)
-	explosion_area.queue_free()
 	
-	# Визуальный эффект взрыва (опционально)
-	# var effect = load("res://Scenes/ExplosionEffect.tscn")
-	# if effect:
-	#     var instance = effect.instantiate()
-	#     get_tree().current_scene.add_child(instance)
-	#     instance.global_position = global_position
+	set_physics_process(false)
+	queue_free()

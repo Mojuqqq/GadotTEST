@@ -20,6 +20,9 @@ extends Node2D
 
 	
 func _ready():
+	# Снимаем паузу и захватываем курсор
+	get_tree().paused = false
+	
 	if player and not player.is_in_group("Player"):
 		player.add_to_group("Player")
 	

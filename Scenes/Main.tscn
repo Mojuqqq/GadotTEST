@@ -16,6 +16,7 @@
 [ext_resource type="PackedScene" uid="uid://c2n4eww25erye" path="res://Scenes/Enemies/Enemy_corn.tscn" id="11_1p5hy"]
 [ext_resource type="PackedScene" uid="uid://m4leu411eb0" path="res://Scenes/Enemies/Enemy_onion.tscn" id="12_h1m7h"]
 [ext_resource type="PackedScene" uid="uid://cai6g7bruh7sj" path="res://Scenes/Enemies/Enemy_cock.tscn" id="13_erwvk"]
+[ext_resource type="PackedScene" uid="uid://cy8mddadcgpo6" path="res://Scenes/PauseMenu.tscn" id="17_2w5on"]
 
 [node name="Main" type="Node2D" unique_id=248219871]
 script = ExtResource("1_vy5pj")
@@ -43,3 +44,6 @@ limit_enabled = false
 position_smoothing_speed = 10.0
 
 [node name="UI" parent="." unique_id=1833129806 instance=ExtResource("9_vy5pj")]
+
+[node name="PauseMenu" parent="." unique_id=1377435284 instance=ExtResource("17_2w5on")]
+layer = 2

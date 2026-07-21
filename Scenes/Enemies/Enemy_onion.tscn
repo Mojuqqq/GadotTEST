@@ -12,6 +12,7 @@ radius = 7.723575
 height = 15.44715
 
 [node name="Enemy_onion" type="CharacterBody2D" unique_id=240231144]
+collision_mask = 3
 script = ExtResource("1_x02td")
 
 [node name="Sprite2D" type="Sprite2D" parent="." unique_id=1048545208]

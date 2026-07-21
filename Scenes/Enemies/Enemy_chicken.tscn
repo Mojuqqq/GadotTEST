@@ -1,7 +1,7 @@
 [gd_scene format=3 uid="uid://nqq6as3gyh7a"]
 
 [ext_resource type="Texture2D" uid="uid://dthg43tatnve4" path="res://Export/Enemies/Enemy_chicken.png" id="1_t35b1"]
-[ext_resource type="Script" uid="uid://b8p4ee2teuoi1" path="res://Scripts/Enemies/Enemy_chicken.gd" id="1_vfuto"]
+[ext_resource type="Script" uid="uid://cf4mg8gxkxkhd" path="res://Scripts/Enemy_chicken.gd" id="1_vfuto"]
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_7fd37"]
 radius = 24.083189
@@ -10,9 +10,11 @@ radius = 24.083189
 radius = 6.707315
 
 [node name="Enemy_chicken" type="CharacterBody2D" unique_id=240231144]
+collision_mask = 3
 script = ExtResource("1_vfuto")
 speed = 150.0
 damage = 2
+hp = 1
 
 [node name="Sprite2D" type="Sprite2D" parent="." unique_id=1048545208]
 scale = Vector2(0.6506024, 0.65060246)

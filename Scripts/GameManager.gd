@@ -122,13 +122,15 @@ func heal(amount: int):
 
 # ===== ГЕНЕРАЦИЯ ПОДЗЕМЕЛЬЯ =====
 func generate_dungeon(root_node: Node):
+	# Безопасно очищаем старые комнаты
+	for room in room_instances:
+		if is_instance_valid(room):
+			room.queue_free()
+	room_instances.clear()
+	
 	if start_room_scene == null or end_room_scene == null or room_pool.size() == 0:
 		print("Ошибка: не назначены сцены комнат!")
 		return
-
-	for room in room_instances:
-		room.queue_free()
-	room_instances.clear()
 
 	var intermediate_count = randi_range(min_rooms, max_rooms)
 	print("Генерация: ", intermediate_count, " промежуточных комнат")
@@ -351,3 +353,8 @@ func init_items():
 			item.icon = load(data.icon)
 		item.apply = data.apply
 		all_items.append(item)
+		
+func reset_game_state():
+	state = GameState.MENU
+	get_tree().paused = false
+	room_instances.clear()

@@ -41,6 +41,9 @@ func set_active(active: bool):
 	set_physics_process(active)
 	if hp_bar:
 		hp_bar.visible = active
+		print("HP bar для ", name, " видимость: ", active)
+	else:
+		print("HP bar для ", name, " отсутствует!")
 
 func take_damage(amount: int):
 	if is_dead:
