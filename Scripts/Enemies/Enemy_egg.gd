@@ -1,21 +1,21 @@
-extends CharacterBody2D
+extends BaseEnemy
 
-@export var hp: int = 2
 @export var speed: float = 30.0
 @export var damage: int = 3
 @export var explosion_radius: float = 120.0
 @export var detection_radius: float = 30.0
 @export var explosion_delay: float = 0.4
 
-signal died(victim: Node)
-
 var player: Node2D = null
-var is_dead: bool = false
 var is_exploding: bool = false
-var room_limits: Rect2
 var explosion_timer: Timer = null
 
 func _ready():
+	# Устанавливаем HP
+	hp = 2
+	max_hp = 2
+	super()  # создаёт HP bar
+	
 	add_to_group("Enemies")
 	find_player()
 	
@@ -29,9 +29,6 @@ func _ready():
 	area.add_child(collider)
 	add_child(area)
 	area.body_entered.connect(_on_detection_area_body_entered)
-
-func set_room_limits(limits: Rect2):
-	room_limits = limits
 
 func find_player():
 	var nodes = get_tree().get_nodes_in_group("Player")
@@ -60,7 +57,10 @@ func _physics_process(_delta):
 		global_position.y = clamp(global_position.y, room_limits.position.y + 10, room_limits.position.y + room_limits.size.y - 10)
 
 func set_active(active: bool):
-	set_physics_process(active)
+	super(active)  # управляет HP bar и физикой
+	# Дополнительная логика: если комната стала неактивной, останавливаем таймер взрыва
+	if not active and explosion_timer:
+		explosion_timer.stop()
 
 func _on_detection_area_body_entered(body):
 	if body.is_in_group("Player") and not is_dead and not is_exploding:
@@ -76,23 +76,19 @@ func _on_detection_area_body_entered(body):
 
 func _on_explosion_timer_timeout():
 	if not is_dead and not is_exploding:
-		call_deferred("explode")   # отложенный вызов для безопасности
-
-func take_damage(amount: int):
-	if is_dead:
-		return
-	hp -= amount
-	if hp <= 0:
-		die()
+		call_deferred("explode")
 
 func die():
+	# Переопределяем смерть: сначала взрыв, потом удаление через базовый класс
 	if is_dead:
 		return
-	is_dead = true
+	# Останавливаем таймер, если он был запущен
 	if explosion_timer and not explosion_timer.is_stopped():
 		explosion_timer.stop()
-	died.emit(self)
-	call_deferred("explode")      # отложенный взрыв
+	# Взрываемся
+	explode()
+	# Вызываем базовый die() для эмиссии сигнала и удаления
+	super.die()
 
 func explode():
 	if is_exploding:
@@ -124,11 +120,8 @@ func explode():
 	explosion_area.queue_free()
 	
 	# Визуальный эффект взрыва (опционально)
-	#var effect = load("res://Scenes/ExplosionEffect.tscn")
-	#if effect:
-		#var instance = effect.instantiate()
-		#get_tree().current_scene.add_child(instance)
-		#instance.global_position = global_position
-	
-	set_physics_process(false)
-	queue_free()
+	# var effect = load("res://Scenes/ExplosionEffect.tscn")
+	# if effect:
+	#     var instance = effect.instantiate()
+	#     get_tree().current_scene.add_child(instance)
+	#     instance.global_position = global_position

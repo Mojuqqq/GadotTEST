@@ -1,6 +1,6 @@
 [gd_scene format=3 uid="uid://cqtvq0voq4fph"]
 
-[ext_resource type="Script" uid="uid://kwjb6af7lpx3" path="res://Scripts/Enemy_carrot.gd" id="1_imdvy"]
+[ext_resource type="Script" uid="uid://kwjb6af7lpx3" path="res://Scripts/Enemies/Enemy_carrot.gd" id="1_imdvy"]
 [ext_resource type="Texture2D" uid="uid://dhlxibpcdmx14" path="res://Export/Enemies/Enemy_carrot.png" id="2_bdna0"]
 
 [sub_resource type="CapsuleShape2D" id="CapsuleShape2D_q8716"]

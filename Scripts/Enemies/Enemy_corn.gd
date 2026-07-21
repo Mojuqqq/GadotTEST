@@ -1,7 +1,6 @@
-extends CharacterBody2D
+extends BaseEnemy
 
 # === Параметры ===
-@export var hp: int = 4
 @export var speed: float = 60.0
 @export var damage: int = 1
 @export var fire_range: float = 300.0
@@ -11,11 +10,7 @@ extends CharacterBody2D
 @export var bullet_scene: PackedScene
 @export var bullet_speed: float = 400.0
 
-signal died(victim: Node)
-
 var player: Node2D = null
-var is_dead: bool = false
-var room_limits: Rect2
 var direction: Vector2 = Vector2.RIGHT
 var player_in_range: bool = false
 var is_firing: bool = false
@@ -27,6 +22,11 @@ var fire_cooldown_timer: Timer = null
 var burst_timer: Timer = null
 
 func _ready():
+	# Устанавливаем HP (можно изменить в инспекторе)
+	hp = 4
+	max_hp = 4
+	super()  # создаёт HP bar и инициализирует базовый класс
+	
 	add_to_group("Enemies")
 	find_player()
 	
@@ -60,9 +60,6 @@ func _ready():
 	vision_area.body_entered.connect(_on_vision_area_body_entered)
 	vision_area.body_exited.connect(_on_vision_area_body_exited)
 
-func set_room_limits(limits: Rect2):
-	room_limits = limits
-
 func find_player():
 	var nodes = get_tree().get_nodes_in_group("Player")
 	if nodes.size() > 0:
@@ -85,7 +82,14 @@ func _physics_process(_delta):
 		global_position.y = clamp(global_position.y, room_limits.position.y + 10, room_limits.position.y + room_limits.size.y - 10)
 
 func set_active(active: bool):
-	set_physics_process(active)
+	super(active)  # управляет HP bar и физикой
+	# Дополнительная логика (если нужно)
+	if not active:
+		# Если комната стала неактивной, останавливаем стрельбу
+		if is_firing:
+			burst_timer.stop()
+			is_firing = false
+			remaining_bursts = 0
 
 func _on_walk_timer_timeout():
 	var angle = randf_range(0, 2 * PI)
@@ -97,7 +101,7 @@ func _on_vision_area_body_entered(body):
 	if body.is_in_group("Player"):
 		player_in_range = true
 		if can_fire and not is_firing and not is_dead:
-			call_deferred("start_firing")   # ОТЛОЖЕННЫЙ ВЫЗОВ
+			call_deferred("start_firing")
 
 func _on_vision_area_body_exited(body):
 	if body.is_in_group("Player"):
@@ -134,26 +138,8 @@ func shoot():
 	bullet.global_position = global_position
 	var dir = (player.global_position - global_position).normalized()
 	bullet.setup(dir, bullet_speed, damage)
-	# Спрайт не вращаем
 
 func _on_fire_cooldown_end():
 	can_fire = true
 	if player_in_range and not is_dead:
 		start_firing()
-
-func take_damage(amount: int):
-	if is_dead:
-		return
-	hp -= amount
-	if hp <= 0:
-		die()
-
-func die():
-	if is_dead:
-		return
-	is_dead = true
-	walk_timer.stop()
-	fire_cooldown_timer.stop()
-	burst_timer.stop()
-	died.emit(self)
-	queue_free()

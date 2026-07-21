@@ -1,0 +1,18 @@
+[gd_scene format=3 uid="uid://bbs7ct5geraa4"]
+
+[ext_resource type="Texture2D" uid="uid://b13d2y2tcwhxl" path="res://Export/Item_icons/Rotten_egg.png" id="1_rn7wg"]
+[ext_resource type="Script" uid="uid://3kx5kuidso4k" path="res://Scripts/PoisonCloud.gd" id="1_u5wov"]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_g4v7s"]
+radius = 61.03278
+
+[node name="PoisonCloud" type="Area2D" unique_id=1080377778]
+script = ExtResource("1_u5wov")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=869146167]
+shape = SubResource("CircleShape2D_g4v7s")
+
+[node name="Sprite2D" type="Sprite2D" parent="." unique_id=972678339]
+texture = ExtResource("1_rn7wg")
+
+[node name="Timer" type="Timer" parent="." unique_id=289552696]

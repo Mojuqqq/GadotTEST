@@ -1,7 +1,6 @@
-extends CharacterBody2D
+extends BaseEnemy
 
 # === Параметры здоровья и атаки ===
-@export var hp: int = 3
 @export var damage: int = 1
 @export var attack_cooldown: float = 1.0
 
@@ -10,17 +9,13 @@ extends CharacterBody2D
 @export var min_distance: float = 30.0
 
 # === Параметры рывка ===
-@export var dash_cooldown: float = 3.0          # интервал между рывками
-@export var dash_duration: float = 0.3          # длительность рывка
-@export var dash_speed_multiplier: float = 4.0  # во сколько раз увеличивается скорость во время рывка
-
-signal died(victim: Node)
+@export var dash_cooldown: float = 3.0
+@export var dash_duration: float = 0.3
+@export var dash_speed_multiplier: float = 4.0
 
 var player: Node2D = null
 var is_player_in_range: bool = false
 var attack_timer: Timer = null
-var is_dead: bool = false
-var room_limits: Rect2
 
 # Состояние рывка
 var is_dashing: bool = false
@@ -28,10 +23,15 @@ var dash_timer: Timer = null
 var dash_cooldown_timer: Timer = null
 
 func _ready():
+	# Устанавливаем HP (можно переопределить в инспекторе)
+	hp = 3
+	max_hp = 3
+	super()  # создаём HP bar и инициализируем базовый класс
+	
 	add_to_group("Enemies")
 	find_player()
 	
-	# Таймер атаки (как у курицы)
+	# Таймер атаки
 	attack_timer = Timer.new()
 	attack_timer.wait_time = attack_cooldown
 	attack_timer.one_shot = false
@@ -65,9 +65,6 @@ func find_player():
 	if nodes.size() > 0:
 		player = nodes[0]
 
-func set_room_limits(limits: Rect2):
-	room_limits = limits
-
 func _physics_process(_delta):
 	if player == null:
 		find_player()
@@ -97,9 +94,6 @@ func _physics_process(_delta):
 		global_position.x = clamp(global_position.x, room_limits.position.x + 10, room_limits.position.x + room_limits.size.x - 10)
 		global_position.y = clamp(global_position.y, room_limits.position.y + 10, room_limits.position.y + room_limits.size.y - 10)
 
-func set_active(active: bool):
-	set_physics_process(active)
-
 # === Обработка зоны атаки ===
 func _on_attack_area_body_entered(body):
 	if body.is_in_group("Player"):
@@ -121,35 +115,13 @@ func start_dash():
 	if not is_dashing and not is_dead:
 		is_dashing = true
 		dash_timer.start()
-		# Небольшое визуальное ускорение (опционально)
 		modulate = Color.ORANGE
 
 func _on_dash_end():
 	is_dashing = false
-	modulate = Color.WHITE  # сброс цвета
-	# Запускаем таймер перезарядки рывка
+	modulate = Color.WHITE
 	dash_cooldown_timer.start()
 
 func _on_dash_cooldown_end():
-	# Таймер перезарядки закончился – начинаем новый рывок
 	if not is_dead:
 		start_dash()
-
-# === Получение урона и смерть ===
-func take_damage(amount: int):
-	if is_dead:
-		return
-	hp -= amount
-	if hp <= 0:
-		die()
-
-func die():
-	if is_dead:
-		return
-	is_dead = true
-	# Останавливаем все таймеры
-	attack_timer.stop()
-	dash_timer.stop()
-	dash_cooldown_timer.stop()
-	died.emit(self)
-	queue_free()

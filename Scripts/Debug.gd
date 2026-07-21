@@ -123,11 +123,12 @@ func spawn_enemy(scene: PackedScene):
 	if enemy.has_method("set_room_limits"):
 		var limits = Rect2(room.global_position.x, room.global_position.y, GameManager.room_width, GameManager.room_height)
 		enemy.set_room_limits(limits)
+	# Явно активируем врага, если комната активна
 	if room.is_active:
-		enemy.set_physics_process(true)
+		enemy.set_active(true)   # <--- ВАЖНО!
 		if room.has_method("update_enemies_list"):
 			room.update_enemies_list()
-	print("Дебаг: спавнен враг ", enemy.name)
+	print("Дебаг: заспавнен враг ", enemy.name)
 
 func close_all_menus():
 	# Найти все CanvasLayer с layer=100 и удалить

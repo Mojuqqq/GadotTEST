@@ -1,6 +1,6 @@
 [gd_scene format=3 uid="uid://m4leu411eb0"]
 
-[ext_resource type="Script" uid="uid://c84gdvfir6ss" path="res://Scripts/Enemy_onion.gd" id="1_x02td"]
+[ext_resource type="Script" uid="uid://c84gdvfir6ss" path="res://Scripts/Enemies/Enemy_onion.gd" id="1_x02td"]
 [ext_resource type="Texture2D" uid="uid://drpnllbqvh8iu" path="res://Export/Enemies/Enemy_onion.png" id="2_x02td"]
 
 [sub_resource type="CapsuleShape2D" id="CapsuleShape2D_q8716"]
