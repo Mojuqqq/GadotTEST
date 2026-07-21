@@ -12,7 +12,9 @@ class_name PlayerStats
 @export var bullet_bounce: bool = false
 @export var poison_cloud: bool = false
 @export var has_chick: bool = false
-@export var attack_range_multiplier: float = 1.0  # для увеличения дальности
+@export var attack_range_multiplier: float = 1.0
+@export var attack_range: float = 800.0 
+@export var has_golden_egg: bool = false
 
 # Метод для клонирования (если нужно)
 func duplicate_stats() -> PlayerStats:

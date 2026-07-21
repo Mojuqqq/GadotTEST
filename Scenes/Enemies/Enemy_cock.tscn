@@ -1,7 +1,7 @@
 [gd_scene format=3 uid="uid://cai6g7bruh7sj"]
 
-[ext_resource type="Script" uid="uid://d3bl6alqmmis" path="res://Scripts/Enemy_cock.gd" id="1_8kp35"]
-[ext_resource type="PackedScene" uid="uid://cr02venwsiebc" path="res://Scenes/big-Egg.tscn" id="2_lxk11"]
+[ext_resource type="Script" uid="uid://d3bl6alqmmis" path="res://Scripts/Enemies/Enemy_cock.gd" id="1_8kp35"]
+[ext_resource type="PackedScene" uid="uid://b4hjmxhbxyu7a" path="res://Scenes/Enemies/Big-Egg.tscn" id="2_lxk11"]
 
 [sub_resource type="CompressedTexture2D" id="CompressedTexture2D_8kp35"]
 load_path = "res://.godot/imported/Enemy_boss_cock.png-caf897af9b1b736dcec550ad5044fd11.ctex"

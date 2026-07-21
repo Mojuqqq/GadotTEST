@@ -54,7 +54,7 @@ rendering_quadrant_size = 128
 position = Vector2(226, 329)
 
 [node name="DoorRight" type="Area2D" parent="." unique_id=865334450]
-position = Vector2(1263, 516)
+position = Vector2(1252, 516)
 collision_layer = 2
 script = ExtResource("1_0w1aw")
 

@@ -1,0 +1,7 @@
+[gd_scene format=3 uid="uid://bhi3150ri1sqt"]
+
+[node name="BossHealthBar" type="Control" unique_id=240239048]
+layout_mode = 3
+anchors_preset = 0
+offset_right = 40.0
+offset_bottom = 40.0

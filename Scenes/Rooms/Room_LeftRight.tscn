@@ -50,7 +50,7 @@ tile_set = ExtResource("3_bixi5")
 rendering_quadrant_size = 128
 
 [node name="DoorRight" type="Area2D" parent="." unique_id=826565904]
-position = Vector2(1255, 509)
+position = Vector2(1251, 512)
 script = ExtResource("1_iufrr")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="DoorRight" unique_id=1229729241]
@@ -59,7 +59,7 @@ shape = SubResource("RectangleShape2D_yf5fn")
 debug_color = Color(0.8996578, 0.00017442585, 0.7667549, 0.41960785)
 
 [node name="DoorLeft" type="Area2D" parent="." unique_id=663522657]
-position = Vector2(19, 516)
+position = Vector2(20, 520)
 script = ExtResource("1_iufrr")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="DoorLeft" unique_id=215375770]

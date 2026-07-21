@@ -64,10 +64,16 @@ func shoot():
 		dir = -dir
 	egg.direction = dir
 	
-	# Передаём характеристики от игрока
 	if GameManager.player_stats:
 		egg.damage = GameManager.player_stats.damage
 		egg.speed = GameManager.player_stats.egg_speed
+		var max_range = GameManager.player_stats.attack_range * GameManager.player_stats.attack_range_multiplier
+		egg.max_range = max_range
+		egg.start_position = global_position
+		
+		# Если есть золотое яйцо — меняем спрайт
+		if GameManager.player_stats.has_golden_egg and egg.has_method("set_golden"):
+			egg.set_golden()
 
 func apply_tear_effect(duration: float):
 	is_crying = true

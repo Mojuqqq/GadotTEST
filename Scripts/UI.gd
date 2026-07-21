@@ -7,6 +7,7 @@ extends CanvasLayer
 @onready var speed_label = $StatsContainer/SpeedLabel
 @onready var fire_rate_label = $StatsContainer/FireRateLabel
 @onready var egg_speed_label = $StatsContainer/EggSpeedLabel
+@onready var range_label = $StatsContainer/RangeLabel
 
 func _ready():
 	# Подключаемся к сигналам GameManager
@@ -23,6 +24,8 @@ func _ready():
 	# Обновляем статы при старте
 	if GameManager.player_stats:
 		_on_stats_changed(GameManager.player_stats)
+		
+	pass
 
 func _on_player_hp_changed(hp, max_hp):
 	hp_bar.max_value = max_hp
@@ -52,3 +55,5 @@ func _on_stats_changed(stats):
 	speed_label.text = "Скорость: " + str(stats.speed)
 	fire_rate_label.text = "Скорострельность: " + str(stats.fire_rate)
 	egg_speed_label.text = "Скорость яйца: " + str(stats.egg_speed)
+	# НОВОЕ: отображаем множитель дальности
+	range_label.text = "Дальность: x" + str(stats.attack_range_multiplier)

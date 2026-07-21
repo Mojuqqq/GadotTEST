@@ -3182,6 +3182,8 @@ texture = ExtResource("6_7ryw1")
 1:0/animation_frame_0/duration = 1.0
 1:0/animation_frame_1/duration = 1.0
 1:0/0 = 0
+1:0/0/physics_layer_0/polygon_0/points = PackedVector2Array(-13.547363, -52.778305, 9.596069, -55.0362, 6.2092285, -112.61253, -11.28949, -113.741486)
+1:0/0/physics_layer_0/polygon_1/points = PackedVector2Array(-14.676331, 29.070404, 9.031616, 28.505936, 7.338135, 108.096756, -11.853943, 113.17702)
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_vdspv"]
 texture = ExtResource("7_dylh5")
@@ -3190,6 +3192,8 @@ texture = ExtResource("7_dylh5")
 0:0/animation_frame_0/duration = 1.0
 0:0/animation_frame_1/duration = 1.0
 0:0/0 = 0
+0:0/0/physics_layer_0/polygon_0/points = PackedVector2Array(-18.627625, -56.72962, 5.080261, -56.165146, 4.515808, -112.61253, -15.805237, -113.17701)
+0:0/0/physics_layer_0/polygon_1/points = PackedVector2Array(-16.934204, 29.634872, 6.7736816, 27.376984, 3.951294, 110.91911, -14.676331, 111.4836)
 
 [resource]
 physics_layer_0/collision_layer = 2

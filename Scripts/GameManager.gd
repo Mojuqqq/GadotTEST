@@ -7,6 +7,7 @@ signal enemies_changed(count)
 signal game_over(victory: bool)
 signal stats_changed(stats)
 var is_transitioning: bool = false
+var boss_scene: PackedScene
 
 # ===== СОСТОЯНИЕ ИГРОКА =====
 var player: Node2D = null
@@ -132,8 +133,21 @@ func generate_dungeon(root_node: Node):
 	root_node.add_child(end_room)
 	end_room.global_position = prev_room.global_position + Vector2(room_width + room_spacing, 0)
 	room_instances.append(end_room)
-	spawn_enemies_for_room(end_room, room_instances.size() - 1)
 
+# Спавн босса (если сцена задана)
+	if boss_scene != null:
+		var boss = boss_scene.instantiate()
+		end_room.add_child(boss)
+		boss.position = Vector2(room_width / 2.0, room_height / 2.0)
+		if boss.has_method("set_room_limits"):
+			var limits = Rect2(end_room.global_position.x, end_room.global_position.y, room_width, room_height)
+			boss.set_room_limits(limits)
+		boss.set_physics_process(false)
+		print("Босс создан в конечной комнате")
+	else:
+		# Если босса нет, спавним обычных врагов
+		spawn_enemies_for_room(end_room, room_instances.size() - 1)
+		
 	connect_rooms()
 	disable_unconnected_doors()
 	enter_room(0)
@@ -199,9 +213,6 @@ func enter_room(index: int):
 			prev_room.set_active(false)
 
 	# Скрываем все комнаты
-	for room in room_instances:
-		room.visible = false
-
 	var room = room_instances[index]
 	room.visible = true
 	print("Комната ", room.name, " visible = ", room.visible)
@@ -209,9 +220,11 @@ func enter_room(index: int):
 	current_room_index = index
 	emit_signal("room_changed", room.name, index)
 
-	# Включаем новую комнату (вызовет on_room_entered и активирует врагов)
+	# ВСЕГДА вызываем on_room_entered, если метод есть
 	if room.has_method("on_room_entered"):
 		room.on_room_entered()
+	else:
+		print("У комнаты нет метода on_room_entered")
 
 	print("Вошли в комнату ", index)
 	update_enemy_count()
@@ -279,6 +292,7 @@ func init_items():
 },
 		{"id": "golden_egg", "name": "🥚 Золотое яйцо", "desc": "+50% урон", "icon":"res://Export/Item_icons/Gold_egg.png", "apply": func(stats, gm):
 			stats.damage = int(stats.damage * 1.5)
+			stats.has_golden_egg = true
 			gm.emit_signal("stats_changed", stats)
 },
 		{"id": "battle_rooster", "name": "🐔 Боевой петух", "desc": "Помощник атакует", "icon":"res://Export/Item_icons/Crazy_chicken.png", "apply": func(stats, gm):

@@ -9,6 +9,7 @@ extends Node2D
 @export var room_pool: Array[PackedScene] = []
 
 @export var enemy_pool: Array[PackedScene] = []
+@export var boss_scene: PackedScene
 
 # Параметры комнат (дублируем для доступа в Main)
 @export var room_width: int = 1280
@@ -28,6 +29,7 @@ func _ready():
 	stats.speed = 300.0
 	stats.fire_rate = 0.8
 	stats.egg_speed = 700.0
+	stats.attack_range = 300.0
 	GameManager.set_player_stats(stats)
 	
 	GameManager.set_player(player)

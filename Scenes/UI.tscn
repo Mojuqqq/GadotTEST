@@ -40,3 +40,6 @@ layout_mode = 2
 
 [node name="EggSpeedLabel" type="Label" parent="StatsContainer" unique_id=1128961442]
 layout_mode = 2
+
+[node name="RangeLabel" type="Label" parent="StatsContainer" unique_id=1560097112]
+layout_mode = 2

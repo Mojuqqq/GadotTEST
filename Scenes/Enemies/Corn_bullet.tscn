@@ -1,4 +1,4 @@
-[gd_scene format=3 uid="uid://dr5xr1cs22qy2"]
+[gd_scene format=3 uid="uid://dt26bxacn6qmh"]
 
 [ext_resource type="Script" uid="uid://dweid5wnv1a07" path="res://Scripts/corn_bullet.gd" id="1_4erc5"]
 [ext_resource type="Texture2D" uid="uid://cwv01umdfpgbn" path="res://Export/Enemies/corn_bullet.png" id="2_qrqia"]

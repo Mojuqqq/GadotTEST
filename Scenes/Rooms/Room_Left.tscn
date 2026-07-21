@@ -50,7 +50,7 @@ tile_set = ExtResource("3_1nb1h")
 rendering_quadrant_size = 128
 
 [node name="DoorLeft" type="Area2D" parent="." unique_id=414261961]
-position = Vector2(18, 513)
+position = Vector2(20, 519)
 script = ExtResource("1_ffkx7")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="DoorLeft" unique_id=188577301]

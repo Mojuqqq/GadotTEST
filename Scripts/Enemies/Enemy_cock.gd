@@ -19,6 +19,7 @@ var is_active: bool = false
 var room_limits: Rect2
 var is_melee_mode: bool = false
 var attack_timer: Timer = null
+var hp_bar: ProgressBar = null
 
 func _ready():
 	add_to_group("Enemies")
@@ -31,6 +32,16 @@ func _ready():
 	attack_timer.timeout.connect(_on_attack_timer_timeout)
 	add_child(attack_timer)
 	# Таймер не запускаем до активации комнаты
+	# Создаём HP bar
+	hp_bar = ProgressBar.new()
+	hp_bar.min_value = 0
+	hp_bar.max_value = hp
+	hp_bar.value = hp
+	hp_bar.size = Vector2(100, 15)
+	hp_bar.position = Vector2(-50, -80)  # смещение над боссом
+	hp_bar.show_percentage = false
+	add_child(hp_bar)
+	hp_bar.visible = false  # изначально скрыт, пока комната не активируется
 
 func set_room_limits(limits: Rect2):
 	room_limits = limits
@@ -81,6 +92,9 @@ func set_active(active: bool):
 	else:
 		attack_timer.stop()
 		print("Босс: таймер атаки остановлен")
+		# Показываем HP bar, если активен
+	if hp_bar:
+		hp_bar.visible = active
 
 # === Атака ===
 func _on_attack_timer_timeout():
@@ -119,6 +133,8 @@ func take_damage(amount: int):
 	if is_dead:
 		return
 	hp -= amount
+	if hp_bar:
+		hp_bar.value = hp
 	if hp <= 0:
 		die()
 
