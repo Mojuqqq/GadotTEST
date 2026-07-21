@@ -56,7 +56,7 @@ func start_game():
 func trigger_game_over(victory: bool = false):
 	state = GameState.GAME_OVER if not victory else GameState.VICTORY
 	get_tree().paused = true
-	var scene_path = "res://Scenes/Game_over.tscn" if not victory else "res://Victory.tscn"
+	var scene_path = "res://Scenes/Game_over.tscn" if not victory else "res://Scenes/Victory.tscn"
 	var instance = load(scene_path).instantiate()
 	get_tree().current_scene.add_child(instance)
 	# Можно также испустить сигнал, если кто-то подписан

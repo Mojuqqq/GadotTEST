@@ -40,7 +40,7 @@ func _on_body_entered(body):
 	if body.has_method("take_damage"):
 		body.take_damage(damage)
 		if GameManager.player_stats and GameManager.player_stats.poison_cloud:
-			create_poison_cloud(global_position, damage)
+			call_deferred("create_poison_cloud", global_position, damage)
 		queue_free()
 		return
 	
@@ -54,50 +54,17 @@ func _on_body_entered(body):
 
 # === Ядовитая лужа ===
 func create_poison_cloud(pos: Vector2, damage_amount: int):
-	print("Создаём ядовитую лужу")
-	var cloud = Area2D.new()
-	var shape = CircleShape2D.new()
-	shape.radius = 100.0
-	var collider = CollisionShape2D.new()
-	collider.shape = shape
-	cloud.add_child(collider)
-	
-	var cloud_sprite = Sprite2D.new()
-	var texture = preload("res://Export/Item_icons/Rotten_egg.png")
-	if texture:
-		cloud_sprite.texture = texture
-		cloud_sprite.modulate = Color(0.0, 0.8, 0.0, 0.5)
-	else:
-		var image = Image.create(100, 100, false, Image.FORMAT_RGBA8)
-		image.fill(Color.GREEN)
-		var image_texture = ImageTexture.create_from_image(image)
-		cloud_sprite.texture = image_texture
-		cloud_sprite.modulate = Color(0.0, 0.8, 0.0, 0.5)
-	cloud.add_child(cloud_sprite)
-	
+	print("Создаём ядовитую лужу через сцену")
+	var cloud_scene = load("res://Scenes/PoisonCloud.tscn")
+	if not cloud_scene:
+		print("Ошибка: PoisonCloud.tscn не найден!")
+		return
+	var cloud = cloud_scene.instantiate()
 	cloud.global_position = pos
+	# Передаём урон
+	if cloud.has_method("setup"):
+		cloud.setup(damage_amount)
 	get_tree().current_scene.add_child(cloud)
-	
-	var damage_timer = Timer.new()
-	damage_timer.wait_time = 0.5
-	damage_timer.one_shot = false
-	damage_timer.timeout.connect(func():
-		var bodies = cloud.get_overlapping_bodies()
-		for b in bodies:
-			if b.has_method("take_damage") and b.is_in_group("Enemies"):
-				b.take_damage(damage_amount)
-	)
-	cloud.add_child(damage_timer)
-	damage_timer.start()
-	
-	var life_timer = Timer.new()
-	life_timer.wait_time = 4.0
-	life_timer.one_shot = true
-	life_timer.timeout.connect(cloud.queue_free)
-	cloud.add_child(life_timer)
-	life_timer.start()
-	
-	print("Ядовитая лужа создана! Урон: ", damage_amount)
 
 # === Золотое яйцо ===
 func set_golden():

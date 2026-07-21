@@ -15,4 +15,6 @@ shape = SubResource("CircleShape2D_g4v7s")
 [node name="Sprite2D" type="Sprite2D" parent="." unique_id=972678339]
 texture = ExtResource("1_rn7wg")
 
-[node name="Timer" type="Timer" parent="." unique_id=289552696]
+[node name="DamageTimer" type="Timer" parent="." unique_id=289552696]
+
+[node name="LifeTimer" type="Timer" parent="." unique_id=460887576]
