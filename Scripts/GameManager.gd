@@ -6,6 +6,10 @@ signal room_changed(room_name, room_index)
 signal enemies_changed(count)
 signal game_over(victory: bool)
 signal stats_changed(stats)
+
+enum GameState { MENU, PLAYING, GAME_OVER, VICTORY }
+var state: GameState = GameState.MENU
+
 var is_transitioning: bool = false
 var boss_scene: PackedScene
 
@@ -28,12 +32,12 @@ var room_spacing: int = 50
 var min_rooms: int = 2
 var max_rooms: int = 4
 
-# Сцены комнат (загружаются из Main)
 var start_room_scene: PackedScene
 var end_room_scene: PackedScene
 var room_pool: Array[PackedScene] = []
-
 var enemy_pool: Array[PackedScene] = []
+var all_items: Array[ItemData] = []
+
 @export var min_enemies_per_room: int = 4
 @export var max_enemies_per_room: int = 10
 @export var enemies_in_start_room: int = 0
@@ -41,6 +45,30 @@ var enemy_pool: Array[PackedScene] = []
 
 func _ready():
 	init_items()
+
+# ===== УПРАВЛЕНИЕ СОСТОЯНИЕМ =====
+func start_game():
+	state = GameState.PLAYING
+	get_tree().paused = false
+	get_tree().change_scene_to_file("res://Main.tscn")
+
+# Переименовано, чтобы не конфликтовать с сигналом
+func trigger_game_over(victory: bool = false):
+	state = GameState.GAME_OVER if not victory else GameState.VICTORY
+	get_tree().paused = true
+	var scene_path = "res://Scenes/Game_over.tscn" if not victory else "res://Victory.tscn"
+	var instance = load(scene_path).instantiate()
+	get_tree().current_scene.add_child(instance)
+	# Можно также испустить сигнал, если кто-то подписан
+	emit_signal("game_over", victory)
+
+func restart_game():
+	get_tree().paused = false
+	get_tree().reload_current_scene()
+
+func return_to_menu():
+	get_tree().paused = false
+	get_tree().change_scene_to_file("res://Scenes/Main_menu.tscn")
 
 # ===== МЕТОДЫ УПРАВЛЕНИЯ ИГРОКОМ =====
 func set_player(player_node: Node2D):
@@ -53,7 +81,7 @@ func set_player_stats(stats):
 	player_hp = stats.max_hp
 	player_max_hp = stats.max_hp
 	emit_signal("player_hp_changed", player_hp, player_max_hp)
-	emit_signal("stats_changed", stats)   # <-- добавляем
+	emit_signal("stats_changed", stats)
 	if player and player.has_method("update_speed"):
 		player.update_speed(stats.speed)
 
@@ -76,7 +104,7 @@ func upgrade_stat(stat_name: String, amount: float):
 			player_stats.fire_rate = max(0.05, player_stats.fire_rate - amount)
 		"egg_speed":
 			player_stats.egg_speed += amount
-	emit_signal("stats_changed", player_stats)   # <-- добавляем
+	emit_signal("stats_changed", player_stats)
 
 func take_damage(amount: int):
 	player_hp -= amount
@@ -107,7 +135,6 @@ func generate_dungeon(root_node: Node):
 
 	var prev_room: Node2D
 
-	# Стартовая комната
 	var start_room = start_room_scene.instantiate()
 	start_room.name = "StartRoom"
 	root_node.add_child(start_room)
@@ -116,7 +143,6 @@ func generate_dungeon(root_node: Node):
 	prev_room = start_room
 	spawn_enemies_for_room(start_room, 0)
 
-	# Промежуточные комнаты (только один цикл!)
 	for i in range(intermediate_count):
 		var random_scene = room_pool[randi_range(0, room_pool.size() - 1)]
 		var room = random_scene.instantiate()
@@ -125,16 +151,14 @@ func generate_dungeon(root_node: Node):
 		room.global_position = prev_room.global_position + Vector2(room_width + room_spacing, 0)
 		room_instances.append(room)
 		prev_room = room
-		spawn_enemies_for_room(room, i + 1)   # добавляем врагов
+		spawn_enemies_for_room(room, i + 1)
 
-	# Конечная комната
 	var end_room = end_room_scene.instantiate()
 	end_room.name = "EndRoom"
 	root_node.add_child(end_room)
 	end_room.global_position = prev_room.global_position + Vector2(room_width + room_spacing, 0)
 	room_instances.append(end_room)
 
-# Спавн босса (если сцена задана)
 	if boss_scene != null:
 		var boss = boss_scene.instantiate()
 		end_room.add_child(boss)
@@ -145,7 +169,6 @@ func generate_dungeon(root_node: Node):
 		boss.set_physics_process(false)
 		print("Босс создан в конечной комнате")
 	else:
-		# Если босса нет, спавним обычных врагов
 		spawn_enemies_for_room(end_room, room_instances.size() - 1)
 		
 	connect_rooms()
@@ -189,7 +212,7 @@ func find_child_recursive(node: Node, target_name: String) -> Node:
 	for child in node.get_children():
 		if child.name == target_name:
 			return child
-		var result = find_child_recursive(child, target_name)  # исправлено
+		var result = find_child_recursive(child, target_name)
 		if result:
 			return result
 	return null
@@ -206,13 +229,11 @@ func enter_room(index: int):
 		print("Ошибка: индекс комнаты вне диапазона: ", index)
 		return
 
-	# Отключаем текущую комнату (если есть)
 	if current_room_index >= 0 and current_room_index < room_instances.size():
 		var prev_room = room_instances[current_room_index]
 		if prev_room.has_method("set_active"):
 			prev_room.set_active(false)
 
-	# Скрываем все комнаты
 	var room = room_instances[index]
 	room.visible = true
 	print("Комната ", room.name, " visible = ", room.visible)
@@ -220,7 +241,6 @@ func enter_room(index: int):
 	current_room_index = index
 	emit_signal("room_changed", room.name, index)
 
-	# ВСЕГДА вызываем on_room_entered, если метод есть
 	if room.has_method("on_room_entered"):
 		room.on_room_entered()
 	else:
@@ -267,64 +287,59 @@ func spawn_enemies_for_room(room: Node2D, index: int):
 		count = randi_range(min_enemies_per_room, max_enemies_per_room)
 	
 	if count > 0 and enemy_pool.size() > 0:
-		# Вызываем метод спавна у комнаты
 		if room.has_method("spawn_enemies"):
 			room.spawn_enemies(count, enemy_pool)
 		else:
 			print("Внимание: комната не имеет метода spawn_enemies")
-			
-var all_items: Array[ItemData] = []
 
 func init_items():
 	all_items.clear()
 	
 	var items_data = [
-
 		{"id": "energy", "name": "⚡ Скоростные сапоги", "desc": "+15% скорость", "icon":"res://Export/Item_icons/New_boots.png", "apply": func(stats, gm):
 			stats.speed *= 1.15
 			if gm.player and gm.player.has_method("update_speed"):
 				gm.player.update_speed(stats.speed)
 			gm.emit_signal("stats_changed", stats)
-},
+	},
 		{"id": "eye", "name": "👁 новые очки", "desc": "+ дальность атаки", "icon":"res://Export/Item_icons/New_glasses.png", "apply": func(stats, gm):
 			stats.attack_range_multiplier = 1.5
 			gm.emit_signal("stats_changed", stats)
-},
+	},
 		{"id": "golden_egg", "name": "🥚 Золотое яйцо", "desc": "+50% урон", "icon":"res://Export/Item_icons/Gold_egg.png", "apply": func(stats, gm):
 			stats.damage = int(stats.damage * 1.5)
 			stats.has_golden_egg = true
 			gm.emit_signal("stats_changed", stats)
-},
+	},
 		{"id": "battle_rooster", "name": "🐔 Боевой петух", "desc": "Помощник атакует", "icon":"res://Export/Item_icons/Crazy_chicken.png", "apply": func(stats, gm):
 			stats.has_chick = true
 			gm.emit_signal("stats_changed", stats)
-			# Создаём компаньона у игрока
 			if gm.player and gm.player.has_method("spawn_companion"):
 				gm.player.spawn_companion("rooster")
-},
+	},
 		{"id": "omelet", "name": "🍳 Омлет", "desc": "+2 сердца", "icon":"res://Export/Item_icons/Omlet.png", "apply": func(stats, gm):
 			stats.max_hp += 2
 			gm.player_hp = min(gm.player_hp + 2, stats.max_hp)
 			gm.emit_signal("player_hp_changed", gm.player_hp, stats.max_hp)
-},
+	},
 		{"id": "hot_sauce", "name": "🌶 Острый соус", "desc": "Яйца летят быстрее", "icon":"res://Export/Item_icons/Hot_sauce.png", "apply": func(stats, gm):
 			stats.egg_speed *= 1.2
 			gm.emit_signal("stats_changed", stats)
-#},
-		#{"id": "butter", "name": "🧈 Масло", "desc": "Яйца отскакивают от стен", "icon":"res://Export/Item_icons/Butter.png", "apply": func(stats, gm):
-			#stats.bullet_bounce = true
-			#gm.emit_signal("stats_changed", stats)
-},
+	},
+		# {"id": "butter", "name": "🧈 Масло", "desc": "Яйца отскакивают от стен", "icon":"res://Export/Item_icons/Butter.png", "apply": func(stats, gm):
+		# 	stats.bullet_bounce = true
+		# 	gm.emit_signal("stats_changed", stats)
+		# },
 		{"id": "rotten_egg", "name": "💣 Тухлое яйцо", "desc": "Оставляет ядовитую лужу", "icon":"res://Export/Item_icons/Rotten_egg.png", "apply": func(stats, gm):
 			stats.poison_cloud = true
 			gm.emit_signal("stats_changed", stats)
-},
+	},
 		{"id": "chick", "name": "🐣 Цыплёнок", "desc": "Вылупляется и атакует врагов", "icon":"res://Export/Item_icons/Item_chicken.png", "apply": func(stats, gm):
 			stats.has_chick = true
 			gm.emit_signal("stats_changed", stats)
 			if gm.player and gm.player.has_method("spawn_companion"):
 				gm.player.spawn_companion("chick")
-}
+	}
 	]
 	
 	for data in items_data:

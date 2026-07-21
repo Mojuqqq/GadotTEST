@@ -1,0 +1,30 @@
+[gd_scene format=3 uid="uid://ce5oy856hrltd"]
+
+[ext_resource type="Script" uid="uid://cvdb8d1wxvtfw" path="res://Scripts/Main_menu.gd" id="1_7sp8y"]
+
+[node name="MainMenu" type="CanvasLayer" unique_id=1377435284]
+offset = Vector2(640, 512)
+transform = Transform2D(1, 0, 0, 1, 640, 512)
+script = ExtResource("1_7sp8y")
+
+[node name="Panel" type="Panel" parent="." unique_id=1558507445]
+offset_left = -304.0
+offset_top = -134.0
+offset_right = 310.0
+offset_bottom = 192.0
+
+[node name="Label" type="Label" parent="." unique_id=1457287629]
+offset_left = -60.0
+offset_top = -85.0
+offset_right = 59.0
+offset_bottom = -62.0
+text = "Binding of Dina"
+
+[node name="Button" type="Button" parent="." unique_id=1134063829]
+offset_left = -65.0
+offset_top = 43.0
+offset_right = 65.0
+offset_bottom = 66.0
+text = "Play"
+
+[connection signal="pressed" from="Button" to="." method="_on_button_pressed"]

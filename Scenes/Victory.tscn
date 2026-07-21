@@ -1,0 +1,40 @@
+[gd_scene format=3 uid="uid://ccnxwf2kq3e5g"]
+
+[ext_resource type="Script" uid="uid://c2ec0iyfka1mf" path="res://Scripts/Victory.gd" id="1_w158h"]
+
+[node name="Victory" type="CanvasLayer" unique_id=1377435284]
+offset = Vector2(640, 512)
+transform = Transform2D(1, 0, 0, 1, 640, 512)
+script = ExtResource("1_w158h")
+
+[node name="Panel" type="Panel" parent="." unique_id=1558507445]
+offset_left = -304.0
+offset_top = -134.0
+offset_right = 310.0
+offset_bottom = 192.0
+
+[node name="Label" type="Label" parent="." unique_id=1457287629]
+offset_left = -60.0
+offset_top = -85.0
+offset_right = 59.0
+offset_bottom = -62.0
+text = "Победа!"
+horizontal_alignment = 1
+
+[node name="Button" type="Button" parent="." unique_id=1134063829]
+offset_left = -65.0
+offset_top = 43.0
+offset_right = 65.0
+offset_bottom = 66.0
+text = "Переиграть"
+
+[node name="MenuButton" type="MenuButton" parent="." unique_id=2052951492]
+offset_left = -65.0
+offset_top = 84.0
+offset_right = 62.0
+offset_bottom = 114.0
+text = "Главное меню
+"
+
+[connection signal="pressed" from="Button" to="." method="_on_button_pressed"]
+[connection signal="pressed" from="MenuButton" to="." method="_on_menu_button_pressed"]

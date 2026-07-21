@@ -91,15 +91,16 @@ func take_damage(damage: int):
 
 func die():
 	print("Игрок умер!")
+	# Удаляем компаньона
 	if companion != null:
 		companion.queue_free()
 		companion = null
+	# Уведомляем GameManager о смерти (покажет экран Game Over)
+	GameManager.trigger_game_over(false)
+	# Удаляем игрока из сцены
 	call_deferred("queue_free")
-	await get_tree().create_timer(0.5).timeout
-	get_tree().reload_current_scene()
 	
 func spawn_companion(type: String = "default"):
-	# Если компаньон уже есть, не создаём нового (можно заменить, но пока оставим)
 	if companion != null and is_instance_valid(companion):
 		return
 	
@@ -109,19 +110,16 @@ func spawn_companion(type: String = "default"):
 	companion.global_position = global_position + Vector2(50, 0)
 	companion.set_player(self)
 	
-	# Настройка параметров в зависимости от типа
 	if type == "rooster":
 		companion.damage = 2
 		companion.speed = 180
 		companion.attack_cooldown = 0.8
 		companion.follow_distance = 60
-		# Можно изменить спрайт или цвет
 	elif type == "chick":
 		companion.damage = 1
 		companion.speed = 120
 		companion.attack_cooldown = 1.2
 		companion.follow_distance = 50
-		# Можно изменить спрайт
 	
 	print("Создан компаньон типа: ", type)
 
