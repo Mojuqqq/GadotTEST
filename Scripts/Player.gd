@@ -2,6 +2,8 @@ extends CharacterBody2D
 
 @export var base_speed: float = 300.0
 @export var egg_scene: PackedScene
+var egg_pool: Array[Node] = []
+const INITIAL_POOL_SIZE := 20
 
 var external_force: Vector2 = Vector2.ZERO
 var current_speed: float = 300.0
@@ -12,16 +14,37 @@ var is_crying: bool = false
 var tear_timer: Timer = null
 
 var companion: Node2D = null
+const COMPANION_SCENE = preload("res://Scenes/Chick_companion.tscn")
 
 func _ready():
 	add_to_group("Player")
 	if GameManager.player_stats:
 		current_speed = GameManager.player_stats.speed
+	else:
+		current_speed = base_speed
 	
 	tear_timer = Timer.new()
 	tear_timer.one_shot = true
 	tear_timer.timeout.connect(_on_tear_effect_end)
 	add_child(tear_timer)
+
+	call_deferred("_create_egg_pool")
+	
+func _create_egg_pool():
+	for i in INITIAL_POOL_SIZE:
+		var egg = egg_scene.instantiate()
+		get_tree().current_scene.add_child(egg)
+
+		egg.returned_to_pool.connect(_on_egg_returned_to_pool)
+		egg.deactivate()
+
+		# deactivate() отправляет сигнал, поэтому убираем возможный дубль
+		if not egg_pool.has(egg):
+			egg_pool.append(egg)
+
+func _on_egg_returned_to_pool(egg):
+	if not egg_pool.has(egg):
+		egg_pool.append(egg)
 
 func _physics_process(delta):
 	# === Движение ===
@@ -32,7 +55,7 @@ func _physics_process(delta):
 	if Input.is_action_pressed("move_down"):   direction.y += 1
 	direction = direction.normalized()
 	
-	var desired_velocity = direction * base_speed
+	var desired_velocity = direction * current_speed
 	velocity = desired_velocity + external_force
 	external_force = external_force.lerp(Vector2.ZERO, 0.1)
 	move_and_slide()
@@ -54,26 +77,36 @@ func apply_push(force: Vector2):
 	external_force += force
 
 func shoot():
+	
 	if egg_scene == null:
 		return
-	var egg = egg_scene.instantiate()
-	get_tree().root.get_node("Main").add_child(egg)
-	egg.global_position = global_position
+
+	var egg
+
+	if egg_pool.is_empty():
+		egg = egg_scene.instantiate()
+		get_tree().current_scene.add_child(egg)
+		egg.returned_to_pool.connect(_on_egg_returned_to_pool)
+	else:
+		egg = egg_pool.pop_back()
+
 	var dir = (get_global_mouse_position() - global_position).normalized()
+
 	if is_crying:
 		dir = -dir
-	egg.direction = dir
-	
+
 	if GameManager.player_stats:
 		egg.damage = GameManager.player_stats.damage
 		egg.speed = GameManager.player_stats.egg_speed
-		egg.max_range = GameManager.player_stats.attack_range * GameManager.player_stats.attack_range_multiplier
-		egg.start_position = global_position
-		print("Выстрел: damage=", egg.damage, " speed=", egg.speed, " max_range=", egg.max_range)
-		
-		# Если есть золотое яйцо — меняем спрайт
+		egg.max_range = (
+			GameManager.player_stats.attack_range
+			* GameManager.player_stats.attack_range_multiplier
+		)
+
 		if GameManager.player_stats.has_golden_egg and egg.has_method("set_golden"):
 			egg.set_golden()
+
+	egg.activate(global_position, dir, egg.damage)
 
 func apply_tear_effect(duration: float):
 	is_crying = true
@@ -91,21 +124,18 @@ func take_damage(damage: int):
 
 func die():
 	print("Игрок умер!")
-	# Удаляем компаньона
-	if companion != null:
+
+	if companion != null and is_instance_valid(companion):
 		companion.queue_free()
 		companion = null
-	# Уведомляем GameManager о смерти (покажет экран Game Over)
-	GameManager.trigger_game_over(false)
-	# Удаляем игрока из сцены
+
 	call_deferred("queue_free")
 	
 func spawn_companion(type: String = "default"):
 	if companion != null and is_instance_valid(companion):
 		return
 	
-	var companion_scene = preload("res://Scenes/Chick_companion.tscn")
-	companion = companion_scene.instantiate()
+	companion = COMPANION_SCENE.instantiate()
 	get_tree().current_scene.add_child(companion)
 	companion.global_position = global_position + Vector2(50, 0)
 	companion.set_player(self)

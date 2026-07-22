@@ -31,16 +31,20 @@ func find_doors_recursive(node: Node):
 			find_doors_recursive(child)
 
 func update_enemies_list():
-	enemies = []
-	var all_enemies = get_tree().get_nodes_in_group("Enemies")
-	for enemy in all_enemies:
-		if is_instance_valid(enemy) and not enemy.is_queued_for_deletion() and self.is_ancestor_of(enemy):
-			enemies.append(enemy)
-			if enemy.has_signal("died") and not enemy.died.is_connected(_on_enemy_died):
-				enemy.died.connect(_on_enemy_died)
-				print("Подключён сигнал died к врагу: ", enemy.name)
+	enemies.clear()
+
+	for enemy in get_tree().get_nodes_in_group("Enemies"):
+		if not is_instance_valid(enemy):
+			continue
+		if not is_ancestor_of(enemy):
+			continue
+		enemies.append(enemy)
+		if enemy.has_signal("died") and not enemy.died.is_connected(_on_enemy_died):
+			enemy.died.connect(_on_enemy_died)
+			print("Подключён сигнал died к врагу: ", enemy.name)
+
+	GameManager.enemies_changed.emit(enemies.size())
 	print("Обновлён список врагов: ", enemies.size())
-	GameManager.update_enemy_count()
 
 func on_room_entered():
 	print("Room.on_room_entered вызван")
@@ -74,7 +78,7 @@ func _on_enemy_died(victim: Node):
 	else:
 		print("Враг не найден в списке! Текущий список: ", enemies)
 	
-	GameManager.update_enemy_count()
+	GameManager.enemies_changed.emit(enemies.size())
 	
 	# Только если врагов не осталось и комната ещё не очищена
 	if enemies.size() == 0 and not is_cleared:
@@ -82,11 +86,10 @@ func _on_enemy_died(victim: Node):
 		unlock_doors()
 		print("Комната очищена, двери открыты!")
 		call_deferred("spawn_chest")
-		
-		# Проверяем, последняя ли комната
-		var room_index = GameManager.current_room_index
-		if room_index == GameManager.room_instances.size() - 1:
-			print("Победа! Последняя комната очищена.")
+
+	# Победа только после очистки конечной комнаты
+		if name == "EndRoom":
+			print("Победа! Конечная комната очищена.")
 			GameManager.trigger_game_over(true)
 
 func spawn_enemies(count: int, enemy_pool: Array):

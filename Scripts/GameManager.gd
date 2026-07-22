@@ -9,6 +9,7 @@ signal stats_changed(stats)
 
 enum GameState { MENU, PLAYING, GAME_OVER, VICTORY }
 var state: GameState = GameState.MENU
+var game_over_started: bool = false
 
 var is_transitioning: bool = false
 var boss_scene: PackedScene
@@ -38,8 +39,8 @@ var room_pool: Array[PackedScene] = []
 var enemy_pool: Array[PackedScene] = []
 var all_items: Array[ItemData] = []
 
-@export var min_enemies_per_room: int = 4
-@export var max_enemies_per_room: int = 10
+@export var min_enemies_per_room: int = 2
+@export var max_enemies_per_room: int = 4
 @export var enemies_in_start_room: int = 0
 @export var enemies_in_end_room: int = 4
 
@@ -48,21 +49,52 @@ func _ready():
 
 # ===== УПРАВЛЕНИЕ СОСТОЯНИЕМ =====
 func start_game():
+	game_over_started = false
 	state = GameState.PLAYING
 	get_tree().paused = false
 	get_tree().change_scene_to_file("res://Main.tscn")
 
-# Переименовано, чтобы не конфликтовать с сигналом
-func trigger_game_over(victory: bool = false):
-	state = GameState.GAME_OVER if not victory else GameState.VICTORY
-	get_tree().paused = true
-	var scene_path = "res://Scenes/Game_over.tscn" if not victory else "res://Scenes/Victory.tscn"
-	var instance = load(scene_path).instantiate()
+func trigger_game_over(victory: bool = false) -> void:
+	if game_over_started:
+		return
+
+	game_over_started = true
+	state = GameState.VICTORY if victory else GameState.GAME_OVER
+
+	if victory:
+		state = GameState.VICTORY
+	else:
+		state = GameState.GAME_OVER
+
+		if player != null and is_instance_valid(player):
+			if player.has_method("die"):
+				player.die()
+
+	var scene_path: String
+
+	if victory:
+		scene_path = "res://Scenes/Victory.tscn"
+	else:
+		scene_path = "res://Scenes/Game_over.tscn"
+
+	var packed_scene := load(scene_path) as PackedScene
+
+	if packed_scene == null:
+		push_error("Не удалось загрузить сцену: " + scene_path)
+		return
+
+	var instance := packed_scene.instantiate()
 	get_tree().current_scene.add_child(instance)
-	# Можно также испустить сигнал, если кто-то подписан
-	emit_signal("game_over", victory)
+
+	get_tree().paused = true
+	game_over.emit(victory)
 
 func restart_game():
+	game_over_started = false
+	state = GameState.PLAYING
+	player = null
+	current_room_index = 0
+
 	get_tree().paused = false
 	get_tree().reload_current_scene()
 
@@ -106,15 +138,15 @@ func upgrade_stat(stat_name: String, amount: float):
 			player_stats.egg_speed += amount
 	emit_signal("stats_changed", player_stats)
 
-func take_damage(amount: int):
-	player_hp -= amount
-	if player_hp < 0:
-		player_hp = 0
-	emit_signal("player_hp_changed", player_hp, player_max_hp)
+func take_damage(amount: int) -> void:
+	if game_over_started:
+		return
+
+	player_hp = maxi(player_hp - amount, 0)
+	player_hp_changed.emit(player_hp, player_max_hp)
+
 	if player_hp <= 0:
-		emit_signal("game_over", false)
-		if player and player.has_method("die"):
-			player.die()
+		trigger_game_over(false)
 
 func heal(amount: int):
 	player_hp = min(player_hp + amount, player_max_hp)
@@ -279,15 +311,16 @@ func update_enemy_count():
 	var count = get_enemy_count_in_room()
 	emit_signal("enemies_changed", count)
 	
-func spawn_enemies_for_room(room: Node2D, index: int):
-	var count = 0
-	if index == 0:
+func spawn_enemies_for_room(room: Node2D, _index: int):
+	var count: int = 0
+
+	if room.name == "StartRoom":
 		count = enemies_in_start_room
-	elif index == room_instances.size() - 1:
+	elif room.name == "EndRoom":
 		count = enemies_in_end_room
 	else:
 		count = randi_range(min_enemies_per_room, max_enemies_per_room)
-	
+
 	if count > 0 and enemy_pool.size() > 0:
 		if room.has_method("spawn_enemies"):
 			room.spawn_enemies(count, enemy_pool)
@@ -309,7 +342,7 @@ func init_items():
 			gm.emit_signal("stats_changed", stats)
 	},
 		{"id": "golden_egg", "name": "🥚 Золотое яйцо", "desc": "+50% урон", "icon":"res://Export/Item_icons/Gold_egg.png", "apply": func(stats, gm):
-			stats.damage = int(stats.damage * 1.5)
+			stats.damage = ceili(GameManager.player_stats.damage * 1.5)
 			stats.has_golden_egg = true
 			gm.emit_signal("stats_changed", stats)
 	},
@@ -321,8 +354,13 @@ func init_items():
 	},
 		{"id": "omelet", "name": "🍳 Омлет", "desc": "+2 сердца", "icon":"res://Export/Item_icons/Omlet.png", "apply": func(stats, gm):
 			stats.max_hp += 2
-			gm.player_hp = min(gm.player_hp + 2, stats.max_hp)
-			gm.emit_signal("player_hp_changed", gm.player_hp, stats.max_hp)
+			gm.player_max_hp = stats.max_hp
+			gm.player_hp = mini(gm.player_hp + 2, gm.player_max_hp)
+			gm.player_hp_changed.emit(
+			gm.player_hp,
+			gm.player_max_hp
+	)
+			gm.stats_changed.emit(stats)
 	},
 		{"id": "hot_sauce", "name": "🌶 Острый соус", "desc": "Яйца летят быстрее", "icon":"res://Export/Item_icons/Hot_sauce.png", "apply": func(stats, gm):
 			stats.egg_speed *= 1.2
@@ -355,6 +393,6 @@ func init_items():
 		all_items.append(item)
 		
 func reset_game_state():
-	state = GameState.MENU
-	get_tree().paused = false
+	game_over_started = false
+	player_hp = player_max_hp
 	room_instances.clear()

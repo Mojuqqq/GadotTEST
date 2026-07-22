@@ -2,6 +2,7 @@
 
 [ext_resource type="Script" uid="uid://cuqn58qi4xxyk" path="res://Scripts/Player.gd" id="1_kyqiw"]
 [ext_resource type="Texture2D" uid="uid://chahr7gd7xrss" path="res://Export/Player.png" id="1_rpqav"]
+[ext_resource type="PackedScene" uid="uid://iwr2u5j4pgj4" path="res://Scenes/Egg.tscn" id="2_gntrk"]
 
 [sub_resource type="CapsuleShape2D" id="CapsuleShape2D_spwcu"]
 radius = 28.0
@@ -10,6 +11,7 @@ height = 110.0
 [node name="Player" type="CharacterBody2D" unique_id=1259915293 groups=["Player"]]
 collision_mask = 2
 script = ExtResource("1_kyqiw")
+egg_scene = ExtResource("2_gntrk")
 
 [node name="Sprite2D" type="Sprite2D" parent="." unique_id=1577028723]
 texture_filter = 1

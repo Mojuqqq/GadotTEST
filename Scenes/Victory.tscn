@@ -28,11 +28,11 @@ offset_right = 65.0
 offset_bottom = 66.0
 text = "Переиграть"
 
-[node name="MenuButton" type="MenuButton" parent="." unique_id=2052951492]
+[node name="MenuButton" type="Button" parent="." unique_id=1165666248]
 offset_left = -65.0
 offset_top = 84.0
 offset_right = 62.0
-offset_bottom = 114.0
+offset_bottom = 115.0
 text = "Главное меню
 "
 

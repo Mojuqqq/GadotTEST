@@ -35,7 +35,6 @@ light_mask = 4
 visibility_layer = 4
 z_index = 1
 position = Vector2(640, 512)
-base_speed = null
 egg_scene = ExtResource("3_kln2b")
 
 [node name="Camera2D" type="Camera2D" parent="." unique_id=2093762753]
