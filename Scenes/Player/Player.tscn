@@ -1,8 +1,8 @@
 [gd_scene format=3 uid="uid://d0eu2fyd2sbyv"]
 
-[ext_resource type="Script" uid="uid://cuqn58qi4xxyk" path="res://Scripts/Player.gd" id="1_kyqiw"]
-[ext_resource type="Texture2D" uid="uid://chahr7gd7xrss" path="res://Export/Player.png" id="1_rpqav"]
-[ext_resource type="PackedScene" uid="uid://iwr2u5j4pgj4" path="res://Scenes/Egg.tscn" id="2_gntrk"]
+[ext_resource type="Script" uid="uid://cuqn58qi4xxyk" path="res://Scripts/Player/Player.gd" id="1_kyqiw"]
+[ext_resource type="Texture2D" uid="uid://chahr7gd7xrss" path="res://Assets/Art/Characters/Player/Player.png" id="1_rpqav"]
+[ext_resource type="PackedScene" uid="uid://iwr2u5j4pgj4" path="res://Scenes/Projectiles/Egg.tscn" id="2_gntrk"]
 
 [sub_resource type="CapsuleShape2D" id="CapsuleShape2D_spwcu"]
 radius = 28.0

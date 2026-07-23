@@ -1,7 +1,7 @@
 [gd_scene format=3 uid="uid://iwr2u5j4pgj4"]
 
-[ext_resource type="Script" uid="uid://bbjj3a52bvyf6" path="res://Scripts/Egg.gd" id="1_dyx0d"]
-[ext_resource type="Texture2D" uid="uid://k4buhqdu1e1g" path="res://Export/Egg.png" id="1_eh8xx"]
+[ext_resource type="Script" uid="uid://bbjj3a52bvyf6" path="res://Scripts/Projectiles/Egg.gd" id="1_dyx0d"]
+[ext_resource type="Texture2D" uid="uid://k4buhqdu1e1g" path="res://Assets/Art/Projectiles/Egg.png" id="1_eh8xx"]
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_rpqav"]
 radius = 24.020824

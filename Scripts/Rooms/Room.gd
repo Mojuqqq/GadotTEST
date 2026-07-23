@@ -123,7 +123,7 @@ func spawn_chest():
 		return
 	var item = GameManager.all_items[randi_range(0, GameManager.all_items.size() - 1)]
 	
-	var chest_scene = preload("res://Scenes/Chest.tscn")
+	var chest_scene = preload("res://Scenes/Interactables/Chest.tscn")
 	var chest = chest_scene.instantiate()
 	
 	var margin = 100

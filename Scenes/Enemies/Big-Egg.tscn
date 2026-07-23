@@ -1,7 +1,7 @@
 [gd_scene format=3 uid="uid://b4hjmxhbxyu7a"]
 
 [ext_resource type="Script" uid="uid://bp3fv3qu01h07" path="res://Scripts/Enemies/Big-Egg.gd" id="1_feo6q"]
-[ext_resource type="Texture2D" uid="uid://k4buhqdu1e1g" path="res://Export/Egg.png" id="2_4nuq1"]
+[ext_resource type="Texture2D" uid="uid://k4buhqdu1e1g" path="res://Assets/Art/Projectiles/Egg.png" id="2_4nuq1"]
 
 [sub_resource type="CapsuleShape2D" id="CapsuleShape2D_qn0nd"]
 radius = 18.0

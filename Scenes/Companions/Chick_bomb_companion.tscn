@@ -1,8 +1,8 @@
 [gd_scene format=3 uid="uid://dc2wpgf2p0250"]
 
-[ext_resource type="Script" uid="uid://bf1ddn1kqxhxn" path="res://Scripts/Chick_bomb_companion.gd" id="1_mbicx"]
-[ext_resource type="Texture2D" uid="uid://bu5f0ko43l2xy" path="res://Export/Item_icons/Item_chicken.png" id="2_mbicx"]
-[ext_resource type="Texture2D" uid="uid://conk3cfsvgw8p" path="res://Export/Enemies/Enemy_egg.png" id="2_u57qk"]
+[ext_resource type="Script" uid="uid://bf1ddn1kqxhxn" path="res://Scripts/Companions/Chick_bomb_companion.gd" id="1_mbicx"]
+[ext_resource type="Texture2D" uid="uid://mch3po41dsa1" path="res://Assets/Art/Characters/Companions/Enemy_egg.png" id="2_7dgmd"]
+[ext_resource type="Texture2D" uid="uid://5ljgjrr1uyct" path="res://Assets/Art/Characters/Companions/Item_chicken.png" id="3_lynix"]
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_7fd37"]
 radius = 37.01351
@@ -15,14 +15,14 @@ script = ExtResource("1_mbicx")
 self_modulate = Color(0.32941177, 1, 0.2509804, 1)
 position = Vector2(6, 0)
 scale = Vector2(0.6506024, 0.65060246)
-texture = ExtResource("2_u57qk")
+texture = ExtResource("2_7dgmd")
 
 [node name="ChickSprite" type="Sprite2D" parent="." unique_id=1345985532]
 visible = false
 self_modulate = Color(0.32941177, 1, 0.2509804, 1)
 position = Vector2(9.903614, 0)
 scale = Vector2(0.4232835, 0.42328355)
-texture = ExtResource("2_mbicx")
+texture = ExtResource("3_lynix")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=731214316]
 shape = SubResource("CircleShape2D_7fd37")

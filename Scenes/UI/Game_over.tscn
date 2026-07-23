@@ -1,6 +1,6 @@
 [gd_scene format=3 uid="uid://cxxog07qovcsr"]
 
-[ext_resource type="Script" uid="uid://c1eebk4mjxpfw" path="res://Scripts/Game_over.gd" id="1_xj6ph"]
+[ext_resource type="Script" uid="uid://c1eebk4mjxpfw" path="res://Scripts/UI/Game_over.gd" id="1_xj6ph"]
 
 [node name="GameOver" type="CanvasLayer" unique_id=1377435284]
 offset = Vector2(640, 512)

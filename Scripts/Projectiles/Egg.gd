@@ -77,7 +77,7 @@ func create_poison_cloud(pos: Vector2, damage_amount: int):
 
 # === Золотое яйцо ===
 func set_golden():
-	var golden_texture = preload("res://Export/Projectiles/Golden_Egg.png")
+	var golden_texture = preload("res://Assets/Art/Projectiles/Golden_Egg.png")
 	if sprite and golden_texture:
 		sprite.texture = golden_texture
 		print("Золотое яйцо активировано!")

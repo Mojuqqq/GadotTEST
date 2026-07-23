@@ -1,7 +1,7 @@
 [gd_scene format=3 uid="uid://bkhvll271t1a"]
 
-[ext_resource type="Script" uid="uid://db7l3rcyevt37" path="res://Scripts/Rooster_companion.gd" id="1_p7yfh"]
-[ext_resource type="Texture2D" uid="uid://ou4ap8ftxn07" path="res://Export/Item_icons/Crazy_chicken.png" id="2_p7yfh"]
+[ext_resource type="Script" uid="uid://db7l3rcyevt37" path="res://Scripts/Companions/Rooster_companion.gd" id="1_p7yfh"]
+[ext_resource type="Texture2D" uid="uid://vyvp7xi4lfx2" path="res://Assets/Art/Characters/Companions/Crazy_chicken.png" id="2_l0uwd"]
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_7fd37"]
 radius = 24.083189
@@ -13,7 +13,7 @@ script = ExtResource("1_p7yfh")
 [node name="Sprite2D" type="Sprite2D" parent="." unique_id=1048545208]
 self_modulate = Color(0.32941177, 1, 0.2509804, 1)
 scale = Vector2(0.6506024, 0.65060246)
-texture = ExtResource("2_p7yfh")
+texture = ExtResource("2_l0uwd")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=731214316]
 shape = SubResource("CircleShape2D_7fd37")

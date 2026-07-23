@@ -16,7 +16,7 @@ func init_items(_game_manager: Node):
 			"id": "energy",
 			"name": "⚡ Скоростные сапоги",
 			"desc": "+15% скорость",
-			"icon": "res://Export//Items/New_boots.png",
+			"icon": "res://Assets/Art/Items/New_boots.png",
 			"apply": func(stats, gm):
 				stats.speed *= 1.15
 
@@ -36,7 +36,7 @@ func init_items(_game_manager: Node):
 			"id": "eye",
 			"name": "👁 Новые очки",
 			"desc": "Увеличивает дальность атаки",
-			"icon": "res://Export/Items/New_glasses.png",
+			"icon": "res://Assets/Art/Items/New_glasses.png",
 			"apply": func(stats, gm):
 				stats.attack_range_multiplier = 1.5
 				gm.notify_stats_changed()
@@ -46,7 +46,7 @@ func init_items(_game_manager: Node):
 			"id": "golden_egg",
 			"name": "🥚 Золотое яйцо",
 			"desc": "+50% урон",
-			"icon": "res://Export/Items/Gold_egg.png",
+			"icon": "res://Assets/Art/Items/Gold_egg.png",
 			"apply": func(stats, gm):
 				stats.damage = ceili(
 					stats.damage * 1.5
@@ -61,7 +61,7 @@ func init_items(_game_manager: Node):
 			"id": "battle_rooster",
 			"name": "🐔 Боевой петух",
 			"desc": "Помощник атакует врагов",
-			"icon": "res://Export/Items/Crazy_chicken.png",
+			"icon": "res://Assets/Art/Items/Crazy_chicken.png",
 			"apply": func(stats, gm):
 				stats.has_rooster = true
 				gm.notify_stats_changed()
@@ -82,7 +82,7 @@ func init_items(_game_manager: Node):
 			"id": "omelet",
 			"name": "🍳 Омлет",
 			"desc": "+2 сердца",
-			"icon": "res://Export/Items/Omlet.png",
+			"icon": "res://Assets/Art/Items/Omlet.png",
 			"apply": func(_stats, gm):
 				gm.increase_max_hp(2)
 	},
@@ -91,7 +91,7 @@ func init_items(_game_manager: Node):
 			"id": "hot_sauce",
 			"name": "🌶 Острый соус",
 			"desc": "Яйца летят быстрее",
-			"icon": "res://Export/Items/Hot_sauce.png",
+			"icon": "res://Assets/Art/Items/Hot_sauce.png",
 			"apply": func(stats, gm):
 				stats.egg_speed *= 1.2
 				gm.notify_stats_changed()
@@ -101,7 +101,7 @@ func init_items(_game_manager: Node):
 			"id": "rotten_egg",
 			"name": "💣 Тухлое яйцо",
 			"desc": "Оставляет ядовитую лужу",
-			"icon": "res://Export/Items/Rotten_egg.png",
+			"icon": "res://Assets/Art/Items/Rotten_egg.png",
 			"apply": func(stats, gm):
 				stats.poison_cloud = true
 				gm.notify_stats_changed()
@@ -111,7 +111,7 @@ func init_items(_game_manager: Node):
 			"id": "chick",
 			"name": "🐣 Цыплёнок",
 			"desc": "Вылупляется, бежит к врагу и взрывается",
-			"icon": "res://Export/Items/Item_chicken.png",
+			"icon": "res://Assets/Art/Items/Item_chicken.png",
 			"apply": func(stats, gm):
 				stats.has_chick_bomb = true
 				gm.notify_stats_changed()

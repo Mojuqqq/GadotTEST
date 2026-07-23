@@ -1,7 +1,7 @@
 [gd_scene format=3 uid="uid://c2n4eww25erye"]
 
 [ext_resource type="Script" uid="uid://bs4n5iwjmukh6" path="res://Scripts/Enemies/Enemy_corn.gd" id="1_7qd05"]
-[ext_resource type="Texture2D" uid="uid://cou84u2ualrh6" path="res://Export/Enemies/Enemy_corn.png" id="2_7qd05"]
+[ext_resource type="Texture2D" uid="uid://cou84u2ualrh6" path="res://Assets/Art/Characters/Enemies/Enemy_corn.png" id="2_7qd05"]
 [ext_resource type="PackedScene" uid="uid://dt26bxacn6qmh" path="res://Scenes/Enemies/Corn_bullet.tscn" id="2_ihed5"]
 
 [sub_resource type="CapsuleShape2D" id="CapsuleShape2D_q8716"]

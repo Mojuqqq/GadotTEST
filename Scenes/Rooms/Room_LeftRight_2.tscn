@@ -1,9 +1,9 @@
 [gd_scene format=4 uid="uid://dvjnhnuta5ci6"]
 
-[ext_resource type="Script" uid="uid://crlvbhqbicxgy" path="res://Scripts/Door.gd" id="1_enqgy"]
-[ext_resource type="Script" uid="uid://eqd8pyeats75" path="res://Scripts/Room.gd" id="1_vlemy"]
-[ext_resource type="TileSet" uid="uid://dno7e7rye4vth" path="res://Assets/earth_tileset.tres" id="2_2xu4j"]
-[ext_resource type="TileSet" uid="uid://bfntpbasvpw8j" path="res://Assets/bg_tileset.tres" id="3_6qqln"]
+[ext_resource type="Script" uid="uid://crlvbhqbicxgy" path="res://Scripts/Rooms/Door.gd" id="1_enqgy"]
+[ext_resource type="Script" uid="uid://eqd8pyeats75" path="res://Scripts/Rooms/Room.gd" id="1_vlemy"]
+[ext_resource type="TileSet" uid="uid://dno7e7rye4vth" path="res://Assets/Tilesets/earth_tileset.tres" id="2_2xu4j"]
+[ext_resource type="TileSet" uid="uid://bfntpbasvpw8j" path="res://Assets/Tilesets/bg_tileset.tres" id="3_6qqln"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_2xu4j"]
 size = Vector2(30.5, 80)
