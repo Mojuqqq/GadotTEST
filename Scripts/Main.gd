@@ -19,36 +19,41 @@ extends Node2D
 @export var max_rooms: int = 4
 
 	
-func _ready():
-	# Снимаем паузу и захватываем курсор
+func _ready() -> void:
 	get_tree().paused = false
-	
+
 	if player and not player.is_in_group("Player"):
 		player.add_to_group("Player")
-	
-	var stats = PlayerStats.new()
+
+	var stats := PlayerStats.new()
+
 	stats.max_hp = 5
 	stats.damage = 1
 	stats.speed = 300.0
 	stats.fire_rate = 0.8
 	stats.egg_speed = 700.0
 	stats.attack_range = 300.0
-	GameManager.set_player_stats(stats)
-	
+
+	# Сначала новый игрок.
 	GameManager.set_player(player)
-	
+
+	# Затем его характеристики.
+	GameManager.set_player_stats(stats)
+
+	# Настройки комнат.
 	GameManager.room_width = room_width
 	GameManager.room_height = room_height
 	GameManager.room_spacing = room_spacing
 	GameManager.min_rooms = min_rooms
 	GameManager.max_rooms = max_rooms
+
+	# Сцены комнат и врагов.
 	GameManager.start_room_scene = start_room_scene
 	GameManager.end_room_scene = end_room_scene
 	GameManager.room_pool = room_pool
-	
-	# Передаём пул врагов
 	GameManager.enemy_pool = enemy_pool
-	
+	GameManager.boss_scene = boss_scene
+
 	GameManager.generate_dungeon(self)
 		
 # Вызывается из Door.gd
@@ -76,6 +81,10 @@ func move_player_to_room(target_room_node: Node2D, door_position: Vector2):
 	await get_tree().create_timer(0.3).timeout
 	GameManager.is_transitioning = false
 
-func _process(_delta):
-	if Input.is_key_pressed(KEY_R):
-		get_tree().reload_current_scene()
+func _unhandled_input(event: InputEvent) -> void:
+	if OS.is_debug_build() and event.is_action_pressed("debug_restart"):
+		GameManager.restart_game()
+		
+func _exit_tree() -> void:
+	if is_instance_valid(player):
+		GameManager.unregister_player(player)

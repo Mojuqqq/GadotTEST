@@ -5,7 +5,6 @@
 [ext_resource type="Script" uid="uid://30tiqpvilvbe" path="res://Scripts/Main.gd" id="1_vy5pj"]
 [ext_resource type="PackedScene" uid="uid://h665heaerces" path="res://Scenes/Rooms/Room_Left.tscn" id="2_v1gob"]
 [ext_resource type="PackedScene" uid="uid://bix4l3qrfihc1" path="res://Scenes/Rooms/Room_LeftRight.tscn" id="3_50glp"]
-[ext_resource type="PackedScene" uid="uid://iwr2u5j4pgj4" path="res://Scenes/Egg.tscn" id="3_kln2b"]
 [ext_resource type="PackedScene" uid="uid://nqq6as3gyh7a" path="res://Scenes/Enemies/Enemy_chicken.tscn" id="4_rgh2o"]
 [ext_resource type="PackedScene" uid="uid://dvjnhnuta5ci6" path="res://Scenes/Rooms/Room_LeftRight_2.tscn" id="4_vy5pj"]
 [ext_resource type="PackedScene" uid="uid://chdv8hrn3omhf" path="res://Scenes/Rooms/Room_LeftRight_3.tscn" id="5_bmxlf"]
@@ -17,6 +16,7 @@
 [ext_resource type="PackedScene" uid="uid://m4leu411eb0" path="res://Scenes/Enemies/Enemy_onion.tscn" id="12_h1m7h"]
 [ext_resource type="PackedScene" uid="uid://cai6g7bruh7sj" path="res://Scenes/Enemies/Enemy_cock.tscn" id="13_erwvk"]
 [ext_resource type="PackedScene" uid="uid://cy8mddadcgpo6" path="res://Scenes/PauseMenu.tscn" id="17_2w5on"]
+[ext_resource type="Script" uid="uid://b4wp3f70s1114" path="res://Scripts/Debug.gd" id="17_346fj"]
 
 [node name="Main" type="Node2D" unique_id=248219871]
 script = ExtResource("1_vy5pj")
@@ -35,7 +35,6 @@ light_mask = 4
 visibility_layer = 4
 z_index = 1
 position = Vector2(640, 512)
-egg_scene = ExtResource("3_kln2b")
 
 [node name="Camera2D" type="Camera2D" parent="." unique_id=2093762753]
 position = Vector2(640, 512)
@@ -46,3 +45,6 @@ position_smoothing_speed = 10.0
 
 [node name="PauseMenu" parent="." unique_id=1377435284 instance=ExtResource("17_2w5on")]
 layer = 2
+
+[node name="Debug" type="Node" parent="." unique_id=164917208]
+script = ExtResource("17_346fj")

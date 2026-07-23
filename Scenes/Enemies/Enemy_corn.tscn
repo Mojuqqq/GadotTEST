@@ -13,7 +13,7 @@ radius = 4.674795
 height = 15.44715
 
 [node name="Enemy_corn" type="CharacterBody2D" unique_id=240231144]
-collision_mask = 3
+collision_layer = 4
 script = ExtResource("1_7qd05")
 speed = 100.0
 bullet_scene = ExtResource("2_ihed5")
@@ -26,7 +26,8 @@ texture = ExtResource("2_7qd05")
 shape = SubResource("CapsuleShape2D_q8716")
 
 [node name="AttackArea" type="Area2D" parent="." unique_id=1036444361]
-collision_layer = 2
+collision_layer = 0
+collision_mask = 2
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="AttackArea" unique_id=403790771]
 scale = Vector2(4.9200015, 4.9200015)

@@ -3200,7 +3200,8 @@ texture = ExtResource("10_qrut5")
 0:0/0/physics_layer_0/polygon_1/points = PackedVector2Array(-16.934204, 29.634872, 6.7736816, 27.376984, 3.951294, 110.91911, -14.676331, 111.4836)
 
 [sub_resource type="TileSet" id="TileSet_nep48"]
-physics_layer_0/collision_layer = 2
+physics_layer_0/collision_layer = 1
+physics_layer_0/collision_mask = 0
 physics_layer_0/physics_material = SubResource("PhysicsMaterial_k8xgd")
 terrain_set_0/mode = 0
 terrain_set_0/terrain_0/name = "Grass"
@@ -3259,6 +3260,8 @@ rendering_quadrant_size = 128
 
 [node name="DoorLeft" type="Area2D" parent="." unique_id=414261961]
 position = Vector2(20, 519)
+collision_layer = 128
+collision_mask = 2
 script = ExtResource("1_ffkx7")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="DoorLeft" unique_id=188577301]

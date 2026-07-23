@@ -12,6 +12,8 @@
 size = Vector2(77, 52)
 
 [node name="Chest" type="Area2D" unique_id=206162258]
+collision_layer = 64
+collision_mask = 2
 script = ExtResource("1_mr3w3")
 textures = Array[Texture2D]([ExtResource("2_l4t8t"), ExtResource("3_p4icn"), ExtResource("4_gpr52"), ExtResource("5_msh36"), ExtResource("6_64rpu"), ExtResource("7_s3f44")])
 

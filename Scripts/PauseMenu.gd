@@ -5,9 +5,10 @@ func _ready():
 	# Попробуем найти кнопки по имени и подключить сигналы
 	process_mode = PROCESS_MODE_ALWAYS
 
-func _input(event):
+func _unhandled_input(event: InputEvent) -> void:
 	if event.is_action_pressed("pause"):
 		toggle_pause()
+		get_viewport().set_input_as_handled()
 
 func toggle_pause():
 	visible = !visible
@@ -18,11 +19,7 @@ func _on_continue_button_pressed():
 	toggle_pause()
 
 func _on_replay_button_pressed():
-	get_tree().paused = false
-	GameManager.reset_game_state()
-	get_tree().reload_current_scene()
+	GameManager.restart_game()
 
 func _on_menu_button_pressed():
-	get_tree().paused = false
-	GameManager.reset_game_state()
-	get_tree().change_scene_to_file("res://Scenes/Main_menu.tscn")
+	GameManager.return_to_menu()

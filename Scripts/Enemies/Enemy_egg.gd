@@ -19,6 +19,8 @@ func _ready():
 	
 	var area = Area2D.new()
 	area.name = "DetectionArea"
+	area.collision_layer = 0
+	area.collision_mask = 2
 	var shape = CircleShape2D.new()
 	shape.radius = detection_radius
 	var collider = CollisionShape2D.new()
@@ -72,7 +74,7 @@ func _on_detection_area_body_entered(body):
 
 func _on_explosion_timer_timeout():
 	if not is_dead and not is_exploding:
-		call_deferred("explode")
+		call_deferred("die")
 
 func die():
 	if is_dead:
@@ -97,6 +99,7 @@ func explode():
 	shape.radius = explosion_radius
 	query.shape = shape
 	query.transform = Transform2D(0, global_position)
+	query.collision_mask = 6
 	query.collide_with_areas = true
 	query.collide_with_bodies = true
 	query.exclude = [self]

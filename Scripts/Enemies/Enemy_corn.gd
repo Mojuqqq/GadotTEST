@@ -51,6 +51,8 @@ func _ready():
 	
 	var vision_area = Area2D.new()
 	vision_area.name = "VisionArea"
+	vision_area.collision_layer = 0
+	vision_area.collision_mask = 2
 	var shape = CircleShape2D.new()
 	shape.radius = fire_range
 	var collider = CollisionShape2D.new()

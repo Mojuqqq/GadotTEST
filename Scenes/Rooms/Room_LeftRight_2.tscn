@@ -51,6 +51,8 @@ rendering_quadrant_size = 128
 
 [node name="DoorRight" type="Area2D" parent="." unique_id=1742698535]
 position = Vector2(1249, 509)
+collision_layer = 128
+collision_mask = 2
 script = ExtResource("1_enqgy")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="DoorRight" unique_id=149409506]
@@ -60,6 +62,8 @@ debug_color = Color(0.8996578, 0.00017442585, 0.7667549, 0.41960785)
 
 [node name="DoorLeft" type="Area2D" parent="." unique_id=940489757]
 position = Vector2(22, 519)
+collision_layer = 128
+collision_mask = 2
 script = ExtResource("1_enqgy")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="DoorLeft" unique_id=607577638]

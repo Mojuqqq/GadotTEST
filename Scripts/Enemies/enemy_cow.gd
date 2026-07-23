@@ -21,6 +21,8 @@ func _ready():
 	# Создаём зону обнаружения
 	var area = Area2D.new()
 	area.name = "AttackArea"
+	area.collision_layer = 0
+	area.collision_mask = 2
 	var shape = CircleShape2D.new()
 	shape.radius = detection_radius
 	var collider = CollisionShape2D.new()

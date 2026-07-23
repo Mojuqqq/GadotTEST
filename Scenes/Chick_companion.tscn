@@ -10,6 +10,7 @@ radius = 24.083189
 radius = 6.707315
 
 [node name="Chick_companion" type="CharacterBody2D" unique_id=240231144]
+collision_layer = 512
 script = ExtResource("1_p7yfh")
 
 [node name="Sprite2D" type="Sprite2D" parent="." unique_id=1048545208]
@@ -21,7 +22,8 @@ texture = ExtResource("2_1g0th")
 shape = SubResource("CircleShape2D_7fd37")
 
 [node name="AttackArea" type="Area2D" parent="." unique_id=1036444361]
-collision_layer = 2
+collision_layer = 0
+collision_mask = 4
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="AttackArea" unique_id=403790771]
 scale = Vector2(4.9200015, 4.9200015)

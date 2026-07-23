@@ -7,6 +7,7 @@ var damage := 1
 @export var max_range: float = 300.0
 var total_distance_traveled: float = 0.0
 var hit := false
+var deactivation_requested := false
 signal returned_to_pool(egg)
 
 @onready var sprite = $Sprite2D
@@ -91,6 +92,7 @@ func activate(pos: Vector2, dir: Vector2, damage_amount: int):
 	damage = damage_amount
 
 	hit = false
+	deactivation_requested = false
 	total_distance_traveled = 0.0
 
 	visible = true
@@ -98,8 +100,16 @@ func activate(pos: Vector2, dir: Vector2, damage_amount: int):
 	set_deferred("monitoring", true)
 
 func deactivate():
+	if deactivation_requested:
+		return
+
+	deactivation_requested = true
+	call_deferred("_deactivate_now")
+
+
+func _deactivate_now():
 	visible = false
-	set_deferred("monitoring", false)
+	monitoring = false
 	process_mode = Node.PROCESS_MODE_DISABLED
 
 	returned_to_pool.emit(self)

@@ -55,7 +55,8 @@ position = Vector2(226, 329)
 
 [node name="DoorRight" type="Area2D" parent="." unique_id=865334450]
 position = Vector2(1252, 516)
-collision_layer = 2
+collision_layer = 128
+collision_mask = 2
 script = ExtResource("1_0w1aw")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="DoorRight" unique_id=793316805]

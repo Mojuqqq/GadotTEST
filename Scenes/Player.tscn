@@ -9,7 +9,7 @@ radius = 28.0
 height = 110.0
 
 [node name="Player" type="CharacterBody2D" unique_id=1259915293 groups=["Player"]]
-collision_mask = 2
+collision_layer = 2
 script = ExtResource("1_kyqiw")
 egg_scene = ExtResource("2_gntrk")
 

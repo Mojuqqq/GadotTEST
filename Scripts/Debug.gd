@@ -2,19 +2,16 @@ extends Node
 
 var item_menu_open: bool = false
 var enemy_menu_open: bool = false
+var current_menu: CanvasLayer = null
 
 func _ready():
-	print("Debug: F1 — выбор предмета, F2 — выбор врага")
+	process_mode = Node.PROCESS_MODE_ALWAYS
 
-func _input(event):
-	if event is InputEventKey and event.pressed:
-		if event.keycode == KEY_F1 and not item_menu_open:
-			open_item_menu()
-		if event.keycode == KEY_F2 and not enemy_menu_open:
-			open_enemy_menu()
-		# Закрыть меню по Escape
-		if event.keycode == KEY_ESCAPE:
-			close_all_menus()
+	if not OS.is_debug_build():
+		set_process_unhandled_input(false)
+		return
+
+	print("Debug: F1 — выбор предмета, F2 — выбор врага")
 
 func open_item_menu():
 	var room = GameManager.get_current_room()
@@ -25,11 +22,14 @@ func open_item_menu():
 		print("Нет предметов.")
 		return
 	
-	item_menu_open = true
-	var menu = create_menu("Выберите предмет:", GameManager.all_items, func(item):
+	current_menu = create_menu(
+	"Выберите предмет:",
+	GameManager.all_items,
+	func(item):
 		give_item(item)
-	)
-	room.add_child(menu)
+)
+
+	room.add_child(current_menu)
 
 func open_enemy_menu():
 	var room = GameManager.get_current_room()
@@ -41,10 +41,14 @@ func open_enemy_menu():
 		return
 	
 	enemy_menu_open = true
-	var menu = create_menu("Выберите врага:", GameManager.enemy_pool, func(scene):
+	current_menu = create_menu(
+	"Выберите врага:",
+	GameManager.enemy_pool,
+	func(scene):
 		spawn_enemy(scene)
-	)
-	room.add_child(menu)
+)
+
+	room.add_child(current_menu)
 
 func create_menu(title: String, item_list: Array, callback: Callable) -> CanvasLayer:
 	var layer = CanvasLayer.new()
@@ -131,9 +135,32 @@ func spawn_enemy(scene: PackedScene):
 	print("Дебаг: заспавнен враг ", enemy.name)
 
 func close_all_menus():
-	# Найти все CanvasLayer с layer=100 и удалить
-	for child in get_tree().current_scene.get_children():
-		if child is CanvasLayer and child.layer == 100:
-			child.queue_free()
+	if is_instance_valid(current_menu):
+		current_menu.queue_free()
+
+	current_menu = null
 	item_menu_open = false
 	enemy_menu_open = false
+
+func _unhandled_input(event: InputEvent) -> void:
+	if not OS.is_debug_build():
+		return
+
+	if event.is_action_pressed("debug_give_item"):
+		if not item_menu_open and not enemy_menu_open:
+			open_item_menu()
+
+		get_viewport().set_input_as_handled()
+		return
+
+	if event.is_action_pressed("debug_spawn_enemy"):
+		if not item_menu_open and not enemy_menu_open:
+			open_enemy_menu()
+
+		get_viewport().set_input_as_handled()
+		return
+
+	if event.is_action_pressed("pause"):
+		if item_menu_open or enemy_menu_open:
+			close_all_menus()
+			get_viewport().set_input_as_handled()

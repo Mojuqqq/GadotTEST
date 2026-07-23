@@ -1,6 +1,6 @@
 [gd_scene format=3 uid="uid://bfltle5inqqhr"]
 
-[ext_resource type="Script" uid="uid://xx7ekibvsjd8" path="res://Scripts/Enemies/enemy_cow.gd" id="1_gu25w"]
+[ext_resource type="Script" uid="uid://xx7ekibvsjd8" path="res://Scripts/Enemies/Enemy_cow.gd" id="1_gu25w"]
 [ext_resource type="Texture2D" uid="uid://8pog2fqey6oq" path="res://Export/Enemies/Enemy_cow.png" id="2_a7icg"]
 
 [sub_resource type="CapsuleShape2D" id="CapsuleShape2D_benfh"]
@@ -8,7 +8,7 @@ radius = 56.5
 height = 120.0
 
 [node name="Enemy_cow" type="CharacterBody2D" unique_id=1582234891]
-collision_mask = 3
+collision_layer = 4
 script = ExtResource("1_gu25w")
 
 [node name="Sprite2D" type="Sprite2D" parent="." unique_id=1470356182]
