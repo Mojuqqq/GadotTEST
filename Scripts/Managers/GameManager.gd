@@ -9,6 +9,10 @@ signal room_changed(room_name: StringName, room_index: int)
 signal enemies_changed(count: int)
 signal game_over(victory: bool)
 signal stats_changed(stats)
+signal banked_gold_changed(value: int)
+signal run_gold_changed(value: int)
+signal keys_changed(value: int)
+signal total_gold_changed(value: int)
 
 
 enum GameState {
@@ -23,23 +27,13 @@ const RunStateService = preload("res://Scripts/Managers/RunState.gd")
 const DungeonService = preload("res://Scripts/Managers/DungeonManager.gd")
 const ItemDatabaseService = preload("res://Scripts/Managers/ItemDatabase.gd")
 const GameFlowService = preload("res://Scripts/Managers/GameFlow.gd")
+const EconomyService = preload("res://Scripts/Managers/EconomyManager.gd")
 
 var _run_state = RunStateService.new()
 var _dungeon = DungeonService.new()
 var _items = ItemDatabaseService.new()
 var _flow = GameFlowService.new()
-
-
-# =========================================================
-# СОВМЕСТИМЫЕ СВОЙСТВА
-#
-# Благодаря этим свойствам старый код продолжит работать:
-#
-# GameManager.player
-# GameManager.player_stats
-# GameManager.room_width
-# GameManager.enemy_pool
-# =========================================================
+var _economy = EconomyService.new()
 
 
 # Состояние игры
@@ -57,6 +51,26 @@ var game_over_started: bool:
 	set(value):
 		_flow.game_over_started = value
 
+# Экономика
+
+var banked_gold: int:
+	get:
+		return _economy.banked_gold
+
+
+var run_gold: int:
+	get:
+		return _economy.run_gold
+
+
+var keys: int:
+	get:
+		return _economy.keys
+
+
+var total_gold: int:
+	get:
+		return _economy.get_total_gold()
 
 # Игрок
 
@@ -223,6 +237,13 @@ func _ready() -> void:
 	_add_service(_dungeon, "DungeonManager")
 	_add_service(_items, "ItemDatabase")
 	_add_service(_flow, "GameFlow")
+	_add_service(_economy,"EconomyManager")
+	
+	_economy.banked_gold_changed.connect(_on_banked_gold_changed)
+	_economy.run_gold_changed.connect(_on_run_gold_changed)
+	_economy.keys_changed.connect(_on_keys_changed)
+	_economy.total_gold_changed.connect(_on_total_gold_changed)
+	_economy.emit_current_state()
 
 	_connect_service_signals()
 
@@ -454,3 +475,65 @@ func _on_game_over(
 	victory: bool
 ) -> void:
 	game_over.emit(victory)
+
+func start_new_run_economy() -> void:
+	_economy.start_new_run()
+
+
+func add_gold(amount: int) -> void:
+	_economy.add_gold(amount)
+
+
+func add_keys(amount: int = 1) -> void:
+	_economy.add_keys(amount)
+
+
+func can_afford(amount: int) -> bool:
+	return _economy.can_afford(amount)
+
+
+func spend_gold(amount: int) -> bool:
+	return _economy.spend_gold(amount)
+
+
+func has_key() -> bool:
+	return _economy.has_key()
+
+
+func use_key() -> bool:
+	return _economy.use_key()
+
+
+func leave_floor_economy() -> int:
+	return _economy.leave_floor()
+
+
+func finish_run_voluntarily() -> int:
+	return _economy.finish_run_voluntarily()
+
+
+func lose_run_rewards() -> Dictionary:
+	return _economy.lose_run_rewards()
+	
+func _on_banked_gold_changed(
+	value: int
+) -> void:
+	banked_gold_changed.emit(value)
+
+
+func _on_run_gold_changed(
+	value: int
+) -> void:
+	run_gold_changed.emit(value)
+
+
+func _on_keys_changed(
+	value: int
+) -> void:
+	keys_changed.emit(value)
+
+
+func _on_total_gold_changed(
+	value: int
+) -> void:
+	total_gold_changed.emit(value)

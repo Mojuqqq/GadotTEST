@@ -1,6 +1,6 @@
 [gd_scene format=3 uid="uid://cy8mddadcgpo6"]
 
-[ext_resource type="Script" uid="uid://kufldvcamw52" path="res://Scripts/PauseMenu.gd" id="1_lj4oq"]
+[ext_resource type="Script" uid="uid://kufldvcamw52" path="res://Scripts/UI/PauseMenu.gd" id="1_lj4oq"]
 
 [node name="PauseMenu" type="CanvasLayer" unique_id=1377435284]
 offset = Vector2(640, 512)
@@ -21,28 +21,27 @@ offset_bottom = -62.0
 text = "Пауза"
 horizontal_alignment = 1
 
-[node name="ContinueButton" type="Button" parent="." unique_id=1263184364]
-offset_left = -66.0
-offset_top = 1.0
-offset_right = 64.0
-offset_bottom = 32.0
+[node name="VBoxContainer" type="VBoxContainer" parent="." unique_id=1570263261]
+offset_left = -122.0
+offset_right = 123.0
+offset_bottom = 101.0
+alignment = 1
+
+[node name="ContinueButton" type="Button" parent="VBoxContainer" unique_id=1263184364]
+layout_mode = 2
 text = "Продолжить"
 
-[node name="ReplayButton" type="Button" parent="." unique_id=1134063829]
-offset_left = -65.0
-offset_top = 43.0
-offset_right = 65.0
-offset_bottom = 66.0
-text = "Переиграть"
+[node name="NextFloorButton" type="Button" parent="VBoxContainer" unique_id=1134063829]
+layout_mode = 2
+text = "Перейти на следующий этаж"
 
-[node name="MenuButton" type="Button" parent="." unique_id=482639398]
-offset_left = -65.0
-offset_top = 84.0
-offset_right = 62.0
-offset_bottom = 115.0
+[node name="MenuButton" type="Button" parent="VBoxContainer" unique_id=482639398]
+layout_mode = 2
 text = "Главное меню
 "
 
-[connection signal="pressed" from="ContinueButton" to="." method="_on_continue_button_pressed"]
-[connection signal="pressed" from="ReplayButton" to="." method="_on_replay_button_pressed"]
-[connection signal="pressed" from="MenuButton" to="." method="_on_menu_button_pressed"]
+[node name="NextFloorDialog" type="ConfirmationDialog" parent="." unique_id=843787473]
+
+[connection signal="pressed" from="VBoxContainer/ContinueButton" to="." method="_on_continue_button_pressed"]
+[connection signal="pressed" from="VBoxContainer/NextFloorButton" to="." method="_on_replay_button_pressed"]
+[connection signal="pressed" from="VBoxContainer/MenuButton" to="." method="_on_menu_button_pressed"]
