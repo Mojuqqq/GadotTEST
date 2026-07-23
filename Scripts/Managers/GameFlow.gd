@@ -6,10 +6,10 @@ signal game_over(victory: bool)
 
 enum GameState {MENU,PLAYING,GAME_OVER,VICTORY}
 
-const MAIN_SCENE_PATH := "res://Scenes/Main.tscn"
-const MENU_SCENE_PATH := "res://Scenes/Main_menu.tscn"
-const VICTORY_SCENE_PATH := "res://Scenes/Victory.tscn"
-const GAME_OVER_SCENE_PATH := "res://Scenes/Game_over.tscn"
+const MAIN_SCENE_PATH := "res://Scenes/Core/Main.tscn"
+const MENU_SCENE_PATH := "res://Scripts/UI/Main_menu.gd"
+const VICTORY_SCENE_PATH := "res://Scripts/UI/Victory.gd"
+const GAME_OVER_SCENE_PATH := "res://Scripts/UI/Game_over.gd"
 
 
 var state: int = GameState.MENU

@@ -72,3 +72,6 @@ debug_color = Color(0.8996578, 0.00017442585, 0.7667549, 0.41960785)
 
 [node name="SpawnPoint" type="Marker2D" parent="." unique_id=1794341211]
 position = Vector2(131, 509)
+
+[node name="ReturnSpawnPoint" type="Marker2D" parent="." unique_id=1748228230]
+position = Vector2(1206, 522)

@@ -1,7 +1,7 @@
 [gd_scene format=3 uid="uid://nqq6as3gyh7a"]
 
-[ext_resource type="Texture2D" uid="uid://dthg43tatnve4" path="res://Export/Enemies/Enemy_chicken.png" id="1_t35b1"]
-[ext_resource type="Script" uid="uid://cf4mg8gxkxkhd" path="res://Scripts/Enemy_chicken.gd" id="1_vfuto"]
+[ext_resource type="Texture2D" uid="uid://dthg43tatnve4" path="res://Export/Characters/Enemies/Enemy_chicken.png" id="1_t35b1"]
+[ext_resource type="Script" uid="uid://cf4mg8gxkxkhd" path="res://Scripts/Enemies/Enemy_chicken.gd" id="1_vfuto"]
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_7fd37"]
 radius = 24.083189

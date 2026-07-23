@@ -1,24 +1,19 @@
-extends CharacterBody2D
+extends BaseEnemy
 
-@export var hp: int = 1
 @export var speed: float = 20
 @export var damage: int = 1
 @export var attack_cooldown: float = 1.0
-@export var min_distance: float = 60.0   # дистанция, на которой останавливается
+@export var min_distance: float = 60.0
 
-signal died(victim: Node)
-
-var can_attack: bool = true
 var player: Node2D = null
 var is_player_in_range: bool = false
 var attack_timer: Timer = null
-var is_dead: bool = false
-var room_limits: Rect2
-var slow_multiplier: float = 1.0
-var original_speed: float
 
 func _ready():
-	original_speed = speed  # сохраняем базовую скорость
+	hp = 1
+	max_hp = 1
+	super()  # создаёт HP bar
+	
 	add_to_group("Enemies")
 	print("Курица создана! HP = ", hp, ", позиция: ", global_position)
 	find_player()
@@ -34,28 +29,16 @@ func _ready():
 		attack_area.body_entered.connect(_on_attack_area_body_entered)
 		attack_area.body_exited.connect(_on_attack_area_body_exited)
 
-func apply_slow(factor: float):
-	slow_multiplier = factor
-	speed = original_speed * slow_multiplier
-
-func remove_slow():
-	slow_multiplier = 1.0
-	speed = original_speed
-	
 func find_player():
 	var nodes = get_tree().get_nodes_in_group("Player")
 	if nodes.size() > 0:
 		player = nodes[0]
 
-func set_room_limits(limits: Rect2):
-	room_limits = limits
-	
 func _physics_process(_delta):
 	if player == null:
 		find_player()
 		return
 	
-	# Движение к игроку с остановкой на min_distance
 	var distance = global_position.distance_to(player.global_position)
 	if distance > min_distance:
 		var direction = (player.global_position - global_position).normalized()
@@ -67,10 +50,7 @@ func _physics_process(_delta):
 	if room_limits != Rect2():
 		global_position.x = clamp(global_position.x, room_limits.position.x + 10, room_limits.position.x + room_limits.size.x - 10)
 		global_position.y = clamp(global_position.y, room_limits.position.y + 10, room_limits.position.y + room_limits.size.y - 10)
-		
-func set_active(active: bool):
-	set_physics_process(active)
-		
+
 func _on_attack_area_body_entered(body):
 	if body.is_in_group("Player"):
 		is_player_in_range = true
@@ -88,19 +68,3 @@ func _on_attack_timer_timeout():
 	if is_player_in_range and player != null and player.has_method("take_damage"):
 		player.take_damage(damage)
 		print("Курица атакует! Урон: ", damage)
-
-func take_damage(amount: int):
-	if is_dead:
-		return
-	hp -= amount
-	print("Курица получила урон! HP = ", hp)
-	if hp <= 0:
-		die()
-
-func die():
-	if is_dead:
-		return
-	is_dead = true
-	print("Враг умер!")
-	died.emit(self)   # передаём себя
-	queue_free()

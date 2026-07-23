@@ -1,0 +1,278 @@
+extends CharacterBody2D
+
+@export var base_speed: float = 300.0
+@export var egg_scene: PackedScene
+var egg_pool: Array[Node] = []
+const INITIAL_POOL_SIZE := 20
+
+var external_force: Vector2 = Vector2.ZERO
+var current_speed: float = 300.0
+var time_since_last_shot: float = 0.0
+
+# Эффект слёз
+var is_crying: bool = false
+var tear_timer: Timer = null
+
+var rooster_companion: Node2D = null
+var chick_bomb: Node2D = null
+
+
+const ROOSTER_SCENE := preload(
+	"res://Scenes/Companions/Rooster_companion.tscn"
+)
+
+const CHICK_BOMB_SCENE := preload(
+	"res://Scenes/Companions/Chick_bomb_companion.tscn"
+)
+
+func _ready():
+	add_to_group("Player")
+	if GameManager.player_stats:
+		current_speed = GameManager.player_stats.speed
+	else:
+		current_speed = base_speed
+	
+	tear_timer = Timer.new()
+	tear_timer.one_shot = true
+	tear_timer.timeout.connect(_on_tear_effect_end)
+	add_child(tear_timer)
+
+	call_deferred("_create_egg_pool")
+	
+func _create_egg_pool():
+	for i in INITIAL_POOL_SIZE:
+		var egg = egg_scene.instantiate()
+		get_tree().current_scene.add_child(egg)
+
+		egg.returned_to_pool.connect(_on_egg_returned_to_pool)
+		egg.deactivate()
+
+		# deactivate() отправляет сигнал, поэтому убираем возможный дубль
+		if not egg_pool.has(egg):
+			egg_pool.append(egg)
+
+func _on_egg_returned_to_pool(egg):
+	if not egg_pool.has(egg):
+		egg_pool.append(egg)
+
+func _physics_process(delta):
+	# === Движение ===
+	var direction = Vector2.ZERO
+	if Input.is_action_pressed("move_left"):   direction.x -= 1
+	if Input.is_action_pressed("move_right"):  direction.x += 1
+	if Input.is_action_pressed("move_up"):     direction.y -= 1
+	if Input.is_action_pressed("move_down"):   direction.y += 1
+	direction = direction.normalized()
+	
+	var desired_velocity = direction * current_speed
+	velocity = desired_velocity + external_force
+	external_force = external_force.lerp(Vector2.ZERO, 0.1)
+	move_and_slide()
+	
+	# === Стрельба ===
+	time_since_last_shot += delta   # время тикает всегда
+	
+	var is_shooting = Input.is_mouse_button_pressed(MOUSE_BUTTON_LEFT)
+	var fire_rate = GameManager.player_stats.fire_rate if GameManager.player_stats else 0.3
+	
+	if is_shooting and time_since_last_shot >= fire_rate:
+		shoot()
+		time_since_last_shot = 0.0
+
+func update_speed(new_speed: float):
+	current_speed = new_speed
+
+func apply_push(force: Vector2):
+	external_force += force
+
+func shoot():
+	
+	if egg_scene == null:
+		return
+
+	var egg
+
+	if egg_pool.is_empty():
+		egg = egg_scene.instantiate()
+		get_tree().current_scene.add_child(egg)
+		egg.returned_to_pool.connect(_on_egg_returned_to_pool)
+	else:
+		egg = egg_pool.pop_back()
+
+	var dir = (get_global_mouse_position() - global_position).normalized()
+
+	if is_crying:
+		dir = -dir
+
+	if GameManager.player_stats:
+		egg.damage = GameManager.player_stats.damage
+		egg.speed = GameManager.player_stats.egg_speed
+		egg.max_range = (
+			GameManager.player_stats.attack_range
+			* GameManager.player_stats.attack_range_multiplier
+		)
+
+		if GameManager.player_stats.has_golden_egg and egg.has_method("set_golden"):
+			egg.set_golden()
+
+	egg.activate(global_position, dir, egg.damage)
+
+func apply_tear_effect(duration: float):
+	is_crying = true
+	modulate = Color(0.5, 0.5, 1.0, 1.0)
+	tear_timer.stop()
+	tear_timer.wait_time = duration
+	tear_timer.start()
+
+func _on_tear_effect_end():
+	is_crying = false
+	modulate = Color.WHITE
+
+func take_damage(damage: int):
+	GameManager.take_damage(damage)
+
+func die():
+	print("Игрок умер!")
+
+	remove_companions()
+
+	call_deferred("queue_free")
+	
+func spawn_companion(
+	companion_type: String
+) -> void:
+	match companion_type:
+		"rooster":
+			_spawn_rooster()
+
+		"chick":
+			_spawn_chick_bomb()
+
+		_:
+			push_warning(
+				"Неизвестный тип компаньона: "
+				+ companion_type
+			)
+
+
+func _spawn_rooster() -> void:
+	if (
+		is_instance_valid(rooster_companion)
+		and not rooster_companion.is_queued_for_deletion()
+	):
+		print("Петух уже существует")
+		return
+
+	var instance := (
+		ROOSTER_SCENE.instantiate()
+		as Node2D
+	)
+
+	if instance == null:
+		push_error(
+			"Не удалось создать петуха."
+		)
+		return
+
+	get_tree().current_scene.add_child(instance)
+
+	instance.global_position = (
+		global_position
+		+ Vector2(55, 0)
+	)
+
+	if instance.has_method("set_player"):
+		instance.set_player(self)
+
+	rooster_companion = instance
+
+	instance.tree_exited.connect(
+		_on_rooster_removed.bind(instance)
+	)
+
+	print("Создан боевой петух")
+
+
+func _spawn_chick_bomb() -> void:
+	if (
+		is_instance_valid(chick_bomb)
+		and not chick_bomb.is_queued_for_deletion()
+	):
+		print("Цыплёнок уже существует")
+		return
+
+	var instance := (
+		CHICK_BOMB_SCENE.instantiate()
+		as Node2D
+	)
+
+	if instance == null:
+		push_error(
+			"Не удалось создать цыплёнка."
+		)
+		return
+
+	get_tree().current_scene.add_child(instance)
+
+	instance.global_position = (
+		global_position
+		+ Vector2(-45, 0)
+	)
+
+	if instance.has_method("set_player"):
+		instance.set_player(self)
+
+	chick_bomb = instance
+
+	instance.tree_exited.connect(
+		_on_chick_bomb_removed.bind(instance)
+	)
+
+	print("Создано яйцо цыплёнка")
+
+
+func _on_rooster_removed(
+	instance: Node
+) -> void:
+	if rooster_companion == instance:
+		rooster_companion = null
+
+
+func _on_chick_bomb_removed(
+	instance: Node
+) -> void:
+	if chick_bomb == instance:
+		chick_bomb = null
+
+func remove_companions() -> void:
+	if is_instance_valid(rooster_companion):
+		rooster_companion.queue_free()
+
+	if is_instance_valid(chick_bomb):
+		chick_bomb.queue_free()
+
+	rooster_companion = null
+	chick_bomb = null
+
+func teleport_companions_to_player() -> void:
+	if (
+		is_instance_valid(rooster_companion)
+		and not rooster_companion.is_queued_for_deletion()
+	):
+		if rooster_companion.has_method(
+			"teleport_to_player"
+		):
+			rooster_companion.teleport_to_player(
+				Vector2(55, 0)
+			)
+
+	if (
+		is_instance_valid(chick_bomb)
+		and not chick_bomb.is_queued_for_deletion()
+	):
+		if chick_bomb.has_method(
+			"teleport_to_player"
+		):
+			chick_bomb.teleport_to_player(
+				Vector2(-55, 0)
+			)

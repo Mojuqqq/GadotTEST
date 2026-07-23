@@ -8,7 +8,7 @@ var all_items: Array[ItemData] = []
 # СОЗДАНИЕ БАЗЫ ПРЕДМЕТОВ
 # =========================================================
 
-func init_items(_game_manager: Node) -> void:
+func init_items(_game_manager: Node):
 	all_items.clear()
 
 	var items_data: Array[Dictionary] = [
@@ -16,7 +16,7 @@ func init_items(_game_manager: Node) -> void:
 			"id": "energy",
 			"name": "⚡ Скоростные сапоги",
 			"desc": "+15% скорость",
-			"icon": "res://Export/Item_icons/New_boots.png",
+			"icon": "res://Export//Items/New_boots.png",
 			"apply": func(stats, gm):
 				stats.speed *= 1.15
 
@@ -36,7 +36,7 @@ func init_items(_game_manager: Node) -> void:
 			"id": "eye",
 			"name": "👁 Новые очки",
 			"desc": "Увеличивает дальность атаки",
-			"icon": "res://Export/Item_icons/New_glasses.png",
+			"icon": "res://Export/Items/New_glasses.png",
 			"apply": func(stats, gm):
 				stats.attack_range_multiplier = 1.5
 				gm.notify_stats_changed()
@@ -46,7 +46,7 @@ func init_items(_game_manager: Node) -> void:
 			"id": "golden_egg",
 			"name": "🥚 Золотое яйцо",
 			"desc": "+50% урон",
-			"icon": "res://Export/Item_icons/Gold_egg.png",
+			"icon": "res://Export/Items/Gold_egg.png",
 			"apply": func(stats, gm):
 				stats.damage = ceili(
 					stats.damage * 1.5
@@ -61,9 +61,9 @@ func init_items(_game_manager: Node) -> void:
 			"id": "battle_rooster",
 			"name": "🐔 Боевой петух",
 			"desc": "Помощник атакует врагов",
-			"icon": "res://Export/Item_icons/Crazy_chicken.png",
+			"icon": "res://Export/Items/Crazy_chicken.png",
 			"apply": func(stats, gm):
-				stats.has_chick = true
+				stats.has_rooster = true
 				gm.notify_stats_changed()
 
 				if (
@@ -82,7 +82,7 @@ func init_items(_game_manager: Node) -> void:
 			"id": "omelet",
 			"name": "🍳 Омлет",
 			"desc": "+2 сердца",
-			"icon": "res://Export/Item_icons/Omlet.png",
+			"icon": "res://Export/Items/Omlet.png",
 			"apply": func(_stats, gm):
 				gm.increase_max_hp(2)
 	},
@@ -91,7 +91,7 @@ func init_items(_game_manager: Node) -> void:
 			"id": "hot_sauce",
 			"name": "🌶 Острый соус",
 			"desc": "Яйца летят быстрее",
-			"icon": "res://Export/Item_icons/Hot_sauce.png",
+			"icon": "res://Export/Items/Hot_sauce.png",
 			"apply": func(stats, gm):
 				stats.egg_speed *= 1.2
 				gm.notify_stats_changed()
@@ -101,7 +101,7 @@ func init_items(_game_manager: Node) -> void:
 			"id": "rotten_egg",
 			"name": "💣 Тухлое яйцо",
 			"desc": "Оставляет ядовитую лужу",
-			"icon": "res://Export/Item_icons/Rotten_egg.png",
+			"icon": "res://Export/Items/Rotten_egg.png",
 			"apply": func(stats, gm):
 				stats.poison_cloud = true
 				gm.notify_stats_changed()
@@ -110,10 +110,10 @@ func init_items(_game_manager: Node) -> void:
 		{
 			"id": "chick",
 			"name": "🐣 Цыплёнок",
-			"desc": "Вылупляется и атакует врагов",
-			"icon": "res://Export/Item_icons/Item_chicken.png",
+			"desc": "Вылупляется, бежит к врагу и взрывается",
+			"icon": "res://Export/Items/Item_chicken.png",
 			"apply": func(stats, gm):
-				stats.has_chick = true
+				stats.has_chick_bomb = true
 				gm.notify_stats_changed()
 
 				if (
@@ -138,7 +138,7 @@ func init_items(_game_manager: Node) -> void:
 
 func _create_items(
 	items_data: Array[Dictionary]
-) -> void:
+):
 	for data in items_data:
 		var item := ItemData.new()
 
