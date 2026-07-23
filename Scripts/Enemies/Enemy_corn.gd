@@ -83,15 +83,37 @@ func _physics_process(_delta):
 		global_position.x = clamp(global_position.x, room_limits.position.x + 10, room_limits.position.x + room_limits.size.x - 10)
 		global_position.y = clamp(global_position.y, room_limits.position.y + 10, room_limits.position.y + room_limits.size.y - 10)
 
-func set_active(active: bool):
-	super(active)  # управляет HP bar и физикой
-	# Дополнительная логика (если нужно)
-	if not active:
-		# Если комната стала неактивной, останавливаем стрельбу
-		if is_firing:
+func set_active(active: bool) -> void:
+	super(active)
+
+	if active:
+		can_fire = true
+		is_firing = false
+		remaining_bursts = 0
+		player_in_range = false
+
+		if (
+			walk_timer != null
+			and walk_timer.is_stopped()
+		):
+			walk_timer.start()
+
+	else:
+		velocity = Vector2.ZERO
+
+		player_in_range = false
+		is_firing = false
+		can_fire = true
+		remaining_bursts = 0
+
+		if walk_timer != null:
+			walk_timer.stop()
+
+		if burst_timer != null:
 			burst_timer.stop()
-			is_firing = false
-			remaining_bursts = 0
+
+		if fire_cooldown_timer != null:
+			fire_cooldown_timer.stop()
 
 func _on_walk_timer_timeout():
 	var angle = randf_range(0, 2 * PI)
@@ -99,10 +121,20 @@ func _on_walk_timer_timeout():
 	walk_timer.wait_time = randf_range(1.0, 3.0)
 	walk_timer.start()
 
-func _on_vision_area_body_entered(body):
+func _on_vision_area_body_entered(
+	body: Node
+) -> void:
+	if not is_active:
+		return
+
 	if body.is_in_group("Player"):
 		player_in_range = true
-		if can_fire and not is_firing and not is_dead:
+
+		if (
+			can_fire
+			and not is_firing
+			and not is_dead
+		):
 			call_deferred("start_firing")
 
 func _on_vision_area_body_exited(body):
@@ -113,13 +145,28 @@ func _on_vision_area_body_exited(body):
 			is_firing = false
 			remaining_bursts = 0
 
-func start_firing():
-	if is_firing or not can_fire or is_dead:
+func start_firing() -> void:
+	if not is_active:
 		return
+
+	if is_firing:
+		return
+
+	if not can_fire:
+		return
+
+	if is_dead:
+		return
+
+	if not player_in_range:
+		return
+
 	is_firing = true
 	can_fire = false
 	remaining_bursts = burst_count
+
 	shoot()
+
 	if burst_count > 1:
 		burst_timer.start()
 
@@ -132,16 +179,41 @@ func _on_burst_timer_timeout():
 		is_firing = false
 		fire_cooldown_timer.start()
 
-func shoot():
-	if player == null or is_dead:
+func shoot() -> void:
+	if not is_active:
 		return
-	var bullet = bullet_scene.instantiate()
-	get_tree().current_scene.add_child(bullet)
-	bullet.global_position = global_position
-	var dir = (player.global_position - global_position).normalized()
-	bullet.setup(dir, bullet_speed, damage)
 
-func _on_fire_cooldown_end():
+	if player == null:
+		return
+
+	if is_dead:
+		return
+
+	if bullet_scene == null:
+		return
+
+	var bullet := bullet_scene.instantiate()
+
+	get_tree().current_scene.add_child(bullet)
+
+	bullet.global_position = global_position
+
+	var direction_to_player := (
+		player.global_position
+		- global_position
+	).normalized()
+
+	bullet.setup(
+		direction_to_player,
+		bullet_speed,
+		damage
+	)
+
+func _on_fire_cooldown_end() -> void:
+	if not is_active:
+		return
+
 	can_fire = true
+
 	if player_in_range and not is_dead:
 		start_firing()

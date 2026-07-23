@@ -11,7 +11,7 @@ config_version=5
 [application]
 
 config/name="Binding of Dina"
-run/main_scene="uid://dly3t3uvgx1as"
+run/main_scene="uid://ce5oy856hrltd"
 config/features=PackedStringArray("4.7", "GL Compatibility")
 config/icon="res://icon.svg"
 

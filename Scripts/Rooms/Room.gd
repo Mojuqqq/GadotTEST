@@ -14,13 +14,36 @@ func _ready():
 	# create_bounce_walls()  # удалено (масло убрано)
 	set_active(false)
 
-func set_active(active: bool):
+func set_active(active: bool) -> void:
 	is_active = active
+
+	# При активации заново собираем список.
+	# Это важно, потому что враги создаются после _ready комнаты.
+	if active:
+		update_enemies_list()
+
 	for enemy in enemies:
-		if is_instance_valid(enemy):
-			print("Вызываем set_active для ", enemy.name)
+		if not is_instance_valid(enemy):
+			continue
+
+		if enemy.is_queued_for_deletion():
+			continue
+
+		if enemy.has_method("set_active"):
 			enemy.set_active(active)
-	print("Комната ", name, " активность: ", active)
+		else:
+			push_warning(
+				"У врага "
+				+ enemy.name
+				+ " отсутствует set_active()"
+			)
+
+	print(
+		"Комната ",
+		name,
+		" активность: ",
+		active
+	)
 
 func find_doors_recursive(node: Node):
 	for child in node.get_children():
@@ -46,15 +69,26 @@ func update_enemies_list():
 	GameManager.enemies_changed.emit(enemies.size())
 	print("Обновлён список врагов: ", enemies.size())
 
-func on_room_entered():
+func on_room_entered() -> void:
 	print("Room.on_room_entered вызван")
+
 	update_enemies_list()
-	if enemies.size() == 0:
-		print("Нет живых врагов, открываем двери")
+
+	if enemies.is_empty():
+		print(
+			"Нет живых врагов, открываем двери"
+		)
+
 		unlock_doors()
 	else:
-		print("Есть живые враги (", enemies.size(), "), закрываем двери")
+		print(
+			"Есть живые враги: ",
+			enemies.size(),
+			". Закрываем двери"
+		)
+
 		lock_doors()
+
 	set_active(true)
 
 func lock_doors():
@@ -114,7 +148,12 @@ func spawn_enemies(count: int, enemy_pool: Array):
 		if enemy.has_method("set_room_limits"):
 			enemy.set_room_limits(limits)
 		
-		enemy.set_physics_process(false)
+		if enemy.has_method("set_active"):
+			enemy.set_active(false)
+		else:
+			enemy.process_mode = (
+				Node.PROCESS_MODE_DISABLED
+			)
 		
 		print("Создан враг в комнате ", name, " на позиции ", enemy.position)
 

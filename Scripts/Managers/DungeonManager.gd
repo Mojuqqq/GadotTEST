@@ -193,11 +193,12 @@ func _spawn_end_room_content(
 	# Босс не должен двигаться,
 	# пока игрок не вошёл в конечную комнату.
 	if boss is Node:
-		boss.set_physics_process(false)
-
-	print(
-		"Босс создан в конечной комнате."
-	)
+		if boss.has_method("set_active"):
+			boss.set_active(false)
+		else:
+			boss.process_mode = (
+				Node.PROCESS_MODE_DISABLED
+			)
 
 
 # =========================================================

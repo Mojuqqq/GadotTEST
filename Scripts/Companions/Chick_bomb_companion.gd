@@ -19,6 +19,7 @@ var target_enemy: Node2D = null
 
 var is_hatched: bool = false
 var is_exploding: bool = false
+var hatch_started: bool = false
 
 var hatch_timer: Timer
 var search_timer: Timer
@@ -51,7 +52,10 @@ func _ready() -> void:
 	)
 	add_child(search_timer)
 
-	hatch_timer.start()
+	# Поиск работает, пока цыплёнок ещё находится в яйце.
+	search_timer.start()
+
+	call_deferred("_find_nearest_enemy")
 
 
 func set_player(player_node: Node2D) -> void:
@@ -59,13 +63,31 @@ func set_player(player_node: Node2D) -> void:
 
 
 func _physics_process(_delta: float) -> void:
-	if not is_hatched or is_exploding:
+	if is_exploding:
 		velocity = Vector2.ZERO
 		return
 
 	if not is_instance_valid(player):
 		_find_player()
 
+	if not is_instance_valid(player):
+		velocity = Vector2.ZERO
+		move_and_slide()
+		return
+
+	# Пока цыплёнок находится в яйце,
+	# яйцо следует за игроком.
+	if not is_hatched:
+		if hatch_started:
+			# Во время вылупления яйцо останавливается.
+			velocity = Vector2.ZERO
+		else:
+			_follow_player()
+
+		move_and_slide()
+		return
+
+	# После вылупления проверяем текущую цель.
 	if not _is_valid_enemy(target_enemy):
 		target_enemy = null
 		_find_nearest_enemy()
@@ -82,11 +104,33 @@ func _physics_process(_delta: float) -> void:
 # ВЫЛУПЛЕНИЕ
 # =========================================================
 
+func _start_hatching() -> void:
+	if is_hatched:
+		return
+
+	if hatch_started:
+		return
+
+	if is_exploding:
+		return
+
+	hatch_started = true
+	hatch_timer.start()
+
+	print(
+		"Яйцо обнаружило врага. "
+		+ "Начинается вылупление"
+	)
+
 func _hatch() -> void:
 	if is_exploding:
 		return
 
+	if is_hatched:
+		return
+
 	is_hatched = true
+	hatch_started = false
 
 	egg_sprite.visible = false
 	chick_sprite.visible = true
@@ -109,8 +153,11 @@ func _hatch() -> void:
 		0.1
 	)
 
-	search_timer.start()
-	_find_nearest_enemy()
+	# Враг мог погибнуть за время вылупления.
+	if not _is_valid_enemy(target_enemy):
+		target_enemy = null
+
+	call_deferred("_find_nearest_enemy")
 
 	print("Цыплёнок вылупился")
 
@@ -165,7 +212,13 @@ func _find_nearest_enemy() -> void:
 	if is_exploding:
 		return
 
-	var current_room := GameManager.get_current_room()
+	var current_room: Node2D = (
+	GameManager.get_current_room() as Node2D
+)
+
+	if current_room == null:
+		target_enemy = null
+		return
 
 	var nearest_enemy: Node2D = null
 	var nearest_distance := detection_range
@@ -176,12 +229,8 @@ func _find_nearest_enemy() -> void:
 		if not _is_valid_enemy(enemy):
 			continue
 
-		# Цыплёнок не должен бежать к врагам
-		# в соседних комнатах.
-		if (
-			current_room != null
-			and not current_room.is_ancestor_of(enemy)
-		):
+		# Не реагируем на врагов из соседних комнат.
+		if not current_room.is_ancestor_of(enemy):
 			continue
 
 		var distance := global_position.distance_to(
@@ -193,6 +242,13 @@ func _find_nearest_enemy() -> void:
 			nearest_enemy = enemy
 
 	target_enemy = nearest_enemy
+
+	# Пока это яйцо, найденный враг запускает вылупление.
+	if not is_hatched:
+		if target_enemy != null:
+			_start_hatching()
+
+		return
 
 
 func _is_valid_enemy(enemy) -> bool:
@@ -230,7 +286,9 @@ func _explode() -> void:
 		true
 	)
 
-	var current_room := GameManager.get_current_room()
+	var current_room: Node2D = (
+	GameManager.get_current_room() as Node2D
+)
 	var damaged_enemies := 0
 
 	for enemy in get_tree().get_nodes_in_group(
@@ -306,9 +364,12 @@ func teleport_to_player(
 
 	global_position = player.global_position + offset
 	velocity = Vector2.ZERO
-
-	# Убираем цель из предыдущей комнаты.
 	target_enemy = null
 
-	if is_hatched:
-		call_deferred("_find_nearest_enemy")
+	# Если яйцо начало вылупляться в старой комнате,
+	# отменяем процесс и снова ждём врага.
+	if not is_hatched and hatch_started:
+		hatch_timer.stop()
+		hatch_started = false
+
+	call_deferred("_find_nearest_enemy")

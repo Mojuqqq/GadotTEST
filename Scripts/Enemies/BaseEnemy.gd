@@ -36,14 +36,34 @@ func _ready():
 func set_room_limits(limits: Rect2):
 	room_limits = limits
 
-func set_active(active: bool):
+func set_active(active: bool) -> void:
 	is_active = active
-	set_physics_process(active)
-	if hp_bar:
-		hp_bar.visible = active
-		print("HP bar для ", name, " видимость: ", active)
+
+	if active:
+		# Сначала возвращаем обработку узла и его детей.
+		process_mode = Node.PROCESS_MODE_INHERIT
+
+		set_process(true)
+		set_physics_process(true)
+
+		_set_detection_areas_enabled(true)
+
 	else:
-		print("HP bar для ", name, " отсутствует!")
+		velocity = Vector2.ZERO
+
+		# Отключаем Area2D, чтобы враг не замечал игрока
+		# через стену или из соседней комнаты.
+		_set_detection_areas_enabled(false)
+
+		set_process(false)
+		set_physics_process(false)
+
+		# Останавливает обработку дочерних Timer,
+		# Area2D и других узлов врага.
+		process_mode = Node.PROCESS_MODE_DISABLED
+
+	if hp_bar != null:
+		hp_bar.visible = active
 
 func take_damage(amount: int):
 	if is_dead:
@@ -74,3 +94,24 @@ func die():
 		hp_bar = null
 	died.emit(self)
 	queue_free()
+	
+func _set_detection_areas_enabled(
+	enabled: bool
+) -> void:
+	var area_nodes := find_children(
+		"*",
+		"Area2D",
+		true,
+		false
+	)
+
+	for node in area_nodes:
+		var area := node as Area2D
+
+		if area == null:
+			continue
+
+		area.set_deferred(
+			"monitoring",
+			enabled
+		)

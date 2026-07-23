@@ -69,13 +69,17 @@ func _physics_process(_delta):
 		global_position.y = clamp(global_position.y, room_limits.position.y + 10, room_limits.position.y + room_limits.size.y - 10)
 
 # === Управление активностью комнаты ===
-func set_active(active: bool):
-	super(active)  # вызывает базовую версию (управляет HP bar и физикой)
+func set_active(active: bool) -> void:
+	super(active)
+
+	if attack_timer == null:
+		return
+
 	if active:
-		if not attack_timer.is_stopped():
-			attack_timer.stop()
+		attack_timer.wait_time = 0.5
 		attack_timer.start()
 	else:
+		velocity = Vector2.ZERO
 		attack_timer.stop()
 
 # === Атака ===
