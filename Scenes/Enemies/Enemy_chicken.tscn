@@ -25,7 +25,7 @@ shape = SubResource("CircleShape2D_7fd37")
 
 [node name="AttackArea" type="Area2D" parent="." unique_id=1036444361]
 collision_layer = 0
-collision_mask = 2
+collision_mask = 514
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="AttackArea" unique_id=403790771]
 scale = Vector2(4.9200015, 4.9200015)

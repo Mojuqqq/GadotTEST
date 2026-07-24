@@ -14,7 +14,7 @@ extends BaseEnemy
 @export var dash_speed_multiplier: float = 4.0
 
 var player: Node2D = null
-var is_player_in_range: bool = false
+var attack_targets: Array[Node2D] = []
 var attack_timer: Timer = null
 
 # Состояние рывка
@@ -95,20 +95,56 @@ func _physics_process(_delta):
 		global_position.y = clamp(global_position.y, room_limits.position.y + 10, room_limits.position.y + room_limits.size.y - 10)
 
 # === Обработка зоны атаки ===
-func _on_attack_area_body_entered(body):
-	if body.is_in_group("Player"):
-		is_player_in_range = true
-		if attack_timer.is_stopped():
-			attack_timer.start()
+func _on_attack_area_body_entered(
+	body: Node
+) -> void:
+	if not is_player_side_target(body):
+		return
 
-func _on_attack_area_body_exited(body):
-	if body.is_in_group("Player"):
-		is_player_in_range = false
+	var target := body as Node2D
+
+	if target == null:
+		return
+
+	if not attack_targets.has(target):
+		attack_targets.append(target)
+
+	if attack_timer.is_stopped():
+		attack_timer.start()
+
+
+func _on_attack_area_body_exited(
+	body: Node
+) -> void:
+	var target := body as Node2D
+
+	if target == null:
+		return
+
+	attack_targets.erase(target)
+
+	if attack_targets.is_empty():
 		attack_timer.stop()
 
-func _on_attack_timer_timeout():
-	if is_player_in_range and player != null and player.has_method("take_damage"):
-		player.take_damage(damage)
+
+func _on_attack_timer_timeout() -> void:
+	for target in attack_targets.duplicate():
+		if not is_player_side_target(target):
+			attack_targets.erase(target)
+			continue
+
+		target.take_damage(damage)
+
+		print(
+			"Морковь атакует ",
+			target.name,
+			". Урон: ",
+			damage
+		)
+
+		return
+
+	attack_timer.stop()
 
 # === Управление рывком ===
 func start_dash():

@@ -6,7 +6,7 @@ extends BaseEnemy
 @export var min_distance: float = 60.0
 
 var player: Node2D = null
-var is_player_in_range: bool = false
+var attack_targets: Array[Node2D] = []
 var attack_timer: Timer = null
 
 func _ready():
@@ -51,20 +51,63 @@ func _physics_process(_delta):
 		global_position.x = clamp(global_position.x, room_limits.position.x + 10, room_limits.position.x + room_limits.size.x - 10)
 		global_position.y = clamp(global_position.y, room_limits.position.y + 10, room_limits.position.y + room_limits.size.y - 10)
 
-func _on_attack_area_body_entered(body):
-	if body.is_in_group("Player"):
-		is_player_in_range = true
-		if attack_timer.is_stopped():
-			attack_timer.start()
-		print("Игрок в зоне атаки курицы")
+func _on_attack_area_body_entered(
+	body: Node
+) -> void:
+	if not is_player_side_target(body):
+		return
 
-func _on_attack_area_body_exited(body):
-	if body.is_in_group("Player"):
-		is_player_in_range = false
+	var target := body as Node2D
+
+	if target == null:
+		return
+
+	if not attack_targets.has(target):
+		attack_targets.append(target)
+
+	if attack_timer.is_stopped():
+		attack_timer.start()
+
+	print(
+		"Цель вошла в зону атаки курицы: ",
+		target.name
+	)
+
+
+func _on_attack_area_body_exited(
+	body: Node
+) -> void:
+	var target := body as Node2D
+
+	if target == null:
+		return
+
+	attack_targets.erase(target)
+
+	if attack_targets.is_empty():
 		attack_timer.stop()
-		print("Игрок вышел из зоны атаки курицы")
 
-func _on_attack_timer_timeout():
-	if is_player_in_range and player != null and player.has_method("take_damage"):
-		player.take_damage(damage)
-		print("Курица атакует! Урон: ", damage)
+	print(
+		"Цель вышла из зоны атаки курицы: ",
+		target.name
+	)
+
+
+func _on_attack_timer_timeout() -> void:
+	for target in attack_targets.duplicate():
+		if not is_player_side_target(target):
+			attack_targets.erase(target)
+			continue
+
+		target.take_damage(damage)
+
+		print(
+			"Курица атакует ",
+			target.name,
+			". Урон: ",
+			damage
+		)
+
+		return
+
+	attack_timer.stop()

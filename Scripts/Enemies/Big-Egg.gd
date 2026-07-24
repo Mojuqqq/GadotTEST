@@ -17,12 +17,36 @@ func _physics_process(delta):
 func _on_visible_on_screen_notifier_2d_screen_exited():
 	queue_free()
 
-func _on_body_entered(body):
-	# Попадание в игрока
-	if body.is_in_group("Player") and body.has_method("take_damage"):
+func _on_body_entered(
+	body: Node
+) -> void:
+	if body.is_in_group("Enemies"):
+		return
+
+	var is_valid_damage_target: bool = (
+		body.is_in_group("Player")
+		or body.is_in_group("Companions")
+	)
+
+	if (
+		is_valid_damage_target
+		and body.has_method("take_damage")
+	):
 		body.take_damage(damage)
+
+		print(
+			"Снаряд босса попал в ",
+			body.name,
+			". Урон: ",
+			damage
+		)
+
 		queue_free()
 		return
-	# Столкновение со стеной (или объектами, не врагами)
-	if body is StaticBody2D or body is TileMap or body.is_in_group("Walls"):
+
+	if (
+		body is StaticBody2D
+		or body is TileMap
+		or body.is_in_group("Walls")
+	):
 		queue_free()

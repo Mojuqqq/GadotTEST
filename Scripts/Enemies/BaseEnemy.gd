@@ -116,6 +116,20 @@ func die():
 	_drop_loot()
 	queue_free()
 	
+func is_player_side_target(
+	body: Node
+) -> bool:
+	if not is_instance_valid(body):
+		return false
+
+	if not body.has_method("take_damage"):
+		return false
+
+	return (
+		body.is_in_group("Player")
+		or body.is_in_group("Companions")
+	)
+
 func _set_detection_areas_enabled(
 	enabled: bool
 ) -> void:

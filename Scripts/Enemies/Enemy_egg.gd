@@ -20,7 +20,7 @@ func _ready():
 	var area = Area2D.new()
 	area.name = "DetectionArea"
 	area.collision_layer = 0
-	area.collision_mask = 2
+	area.collision_mask = 514
 	var shape = CircleShape2D.new()
 	shape.radius = detection_radius
 	var collider = CollisionShape2D.new()
@@ -140,7 +140,7 @@ func explode():
 	shape.radius = explosion_radius
 	query.shape = shape
 	query.transform = Transform2D(0, global_position)
-	query.collision_mask = 6
+	query.collision_mask = 514
 	query.collide_with_areas = true
 	query.collide_with_bodies = true
 	query.exclude = [self]

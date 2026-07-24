@@ -9,7 +9,7 @@ height = 18.0
 
 [node name="corn_bullet" type="Area2D" unique_id=1890707529]
 collision_layer = 16
-collision_mask = 3
+collision_mask = 515
 script = ExtResource("1_4erc5")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=22679666]

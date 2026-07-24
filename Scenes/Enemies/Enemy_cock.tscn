@@ -11,8 +11,8 @@ radius = 74.0
 height = 194.0
 
 [sub_resource type="CapsuleShape2D" id="CapsuleShape2D_8p53q"]
-radius = 15.040646
-height = 39.43088
+radius = 39.837387
+height = 80.89429
 
 [node name="Enemy_cock" type="CharacterBody2D" unique_id=240231144]
 collision_layer = 4
@@ -28,7 +28,7 @@ shape = SubResource("CapsuleShape2D_q8716")
 
 [node name="AttackArea" type="Area2D" parent="." unique_id=1036444361]
 collision_layer = 0
-collision_mask = 2
+collision_mask = 514
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="AttackArea" unique_id=403790771]
 scale = Vector2(4.9200015, 4.9200015)
