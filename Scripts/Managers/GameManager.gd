@@ -734,85 +734,92 @@ func add_item_to_inventory(
 
 	var final_amount: int = amount
 
-	# Значение -1 означает:
-	# взять случайное количество из ItemData.
+	# Значение -1 означает случайное количество,
+	# указанное в данных предмета.
 	if final_amount < 0:
 		final_amount = (
 			_inventory.roll_grant_amount(item)
 		)
 
-	var result: Dictionary = (
-		_inventory.add_item(
-			item,
-			final_amount
-		)
-	)
+	if final_amount <= 0:
+		return {
+			"success": false,
+			"message": "Количество должно быть больше нуля.",
+			"added_amount": 0
+		}
 
-	if not bool(
-		result.get(
-			"success",
-			false
-		)
-	):
-		return result
-
-	var added_amount: int = int(
-		result.get(
-			"added_amount",
-			0
-		)
-	)
-
+	# Пассивные награды применяются мгновенно
+	# и не сохраняются в инвентаре.
 	if (
 		item.use_mode
 		== ItemData.UseMode.PASSIVE
 	):
-		_apply_passive_item_effect(
+		return _apply_passive_reward(
 			item,
-			added_amount
+			final_amount
 		)
 
-	return result
+	# Все используемые предметы отправляются
+	# в обычный инвентарь.
+	return _inventory.add_item(
+		item,
+		final_amount
+	)
 
-func _apply_passive_item_effect(
+func _apply_passive_reward(
 	item: ItemData,
-	stack_amount: int
-) -> void:
-	if item == null:
-		return
-
-	if stack_amount <= 0:
-		return
-
+	amount: int
+) -> Dictionary:
 	if player_stats == null:
-		push_warning(
-			"Не удалось применить пассивный предмет: "
-			+ item.name
-			+ ". Характеристики игрока не найдены."
-		)
-		return
+		return {
+			"success": false,
+			"message": (
+				"Не найдены характеристики игрока."
+			),
+			"added_amount": 0
+		}
 
 	if not item.apply.is_valid():
-		push_warning(
-			"У пассивного предмета отсутствует эффект: "
-			+ item.name
-		)
-		return
+		return {
+			"success": false,
+			"message": (
+				"У награды отсутствует эффект: "
+				+ item.name
+			),
+			"added_amount": 0
+		}
 
-	for _stack_index in range(
-		stack_amount
-	):
+	for _stack_index in range(amount):
 		item.apply.call(
 			player_stats,
 			self
 		)
 
 	print(
-		"Применён пассивный предмет: ",
+		"Применена пассивная награда: ",
 		item.name,
-		". Новых стаков: ",
-		stack_amount
+		". Стаков получено: ",
+		amount
 	)
+
+	return {
+		"success": true,
+		"message": (
+			"Получено улучшение: "
+			+ item.name
+			+ (
+				" ×" + str(amount)
+				if amount > 1
+				else ""
+			)
+		),
+		"item": item,
+		"requested_amount": amount,
+		"added_amount": amount,
+		"overflow_amount": 0,
+		"new_amount": 0,
+		"applied_immediately": true
+	}
 
 func roll_item_grant_amount(
 	item: ItemData
@@ -922,20 +929,6 @@ func use_quick_slot(
 			)
 		}
 
-	# Пассивные предметы уже действуют после получения.
-	# Нажатие на быстрый слот не списывает их.
-	if (
-		item.use_mode
-		== ItemData.UseMode.PASSIVE
-	):
-		return {
-			"success": true,
-			"consumed": false,
-			"message": (
-				item.name
-				+ ": пассивный эффект уже активен."
-			)
-		}
 
 	# Боеприпасы не используются сразу.
 	# Клавиша включает или выключает выбранный тип снаряда.
