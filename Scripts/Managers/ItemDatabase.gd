@@ -130,26 +130,23 @@ func init_items(_game_manager: Node):
 	},
 
 		{
-			"id": "chick",
-			"name": "🐣 Цыплёнок",
-			"desc": "Вылупляется, бежит к врагу и взрывается",
-			"icon": "res://Assets/Art/Items/Item_chicken.png",
-			"shop_price": 35,
-			"apply": func(stats, gm):
-				stats.has_chick_bomb = true
-				gm.notify_stats_changed()
+	"id": "chick",
+	"name": "🐣 Цыплёнок",
+	"desc": (
+		"Вылупляется, бежит к ближайшему врагу "
+		+ "и взрывается"
+	),
+	"icon": "res://Assets/Art/Items/Item_chicken.png",
+	"shop_price": 35,
 
-				if (
-					is_instance_valid(gm.player)
-					and not gm.player.is_queued_for_deletion()
-					and gm.player.has_method(
-						"spawn_companion"
-					)
-				):
-					gm.player.spawn_companion(
-						"chick"
-					)
-	}
+	"use_mode": ItemData.UseMode.COMPANION,
+	"min_grant_amount": 1,
+	"max_grant_amount": 1,
+	"max_inventory_stack": 10,
+
+	"apply": func(_stats, _gm):
+		pass
+}
 	]
 
 	_create_items(items_data)

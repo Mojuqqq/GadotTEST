@@ -234,6 +234,9 @@ func use_inventory_item(
 		"battle_rooster":
 			return _use_battle_rooster()
 
+		"chick":
+			return _use_chick_bomb()
+
 		_:
 			return {
 				"success": false,
@@ -386,6 +389,10 @@ func rollback_inventory_item_use(
 			if _has_active_rooster():
 				rooster_companion.queue_free()
 
+		"chick":
+			if _has_active_chick_bomb():
+				chick_bomb.queue_free()
+
 		_:
 			pass
 
@@ -452,14 +459,62 @@ func _spawn_rooster() -> Node2D:
 
 	return instance
 
+func _use_chick_bomb() -> Dictionary:
+	if _has_active_chick_bomb():
+		return {
+			"success": false,
+			"message": (
+				"Цыплёнок уже находится рядом."
+			)
+		}
 
-func _spawn_chick_bomb() -> void:
-	if (
+	var instance: Node2D = (
+		_spawn_chick_bomb()
+	)
+
+	if instance == null:
+		return {
+			"success": false,
+			"message": (
+				"Не удалось создать цыплёнка."
+			)
+		}
+
+	return {
+		"success": true,
+		"message": "Цыплёнок призван.",
+		"rollback_on_consume_failure": true
+	}
+
+
+func _has_active_chick_bomb() -> bool:
+	return (
 		is_instance_valid(chick_bomb)
 		and not chick_bomb.is_queued_for_deletion()
-	):
-		print("Цыплёнок уже существует")
-		return
+	)
+
+func _spawn_chick_bomb() -> Node2D:
+	if _has_active_chick_bomb():
+		print(
+			"Цыплёнок уже существует."
+		)
+		return null
+
+	if CHICK_BOMB_SCENE == null:
+		push_error(
+			"Не назначена сцена цыплёнка."
+		)
+		return null
+
+	var current_scene: Node = (
+		get_tree().current_scene
+	)
+
+	if current_scene == null:
+		push_error(
+			"Не найдена текущая игровая сцена."
+		)
+		return null
 
 	var instance := (
 		CHICK_BOMB_SCENE.instantiate()
@@ -470,13 +525,13 @@ func _spawn_chick_bomb() -> void:
 		push_error(
 			"Не удалось создать цыплёнка."
 		)
-		return
+		return null
 
-	get_tree().current_scene.add_child(instance)
+	current_scene.add_child(instance)
 
 	instance.global_position = (
 		global_position
-		+ Vector2(-45, 0)
+		+ Vector2(-45.0, 0.0)
 	)
 
 	if instance.has_method("set_player"):
@@ -485,10 +540,15 @@ func _spawn_chick_bomb() -> void:
 	chick_bomb = instance
 
 	instance.tree_exited.connect(
-		_on_chick_bomb_removed.bind(instance)
+		_on_chick_bomb_removed.bind(instance),
+		CONNECT_ONE_SHOT
 	)
 
-	print("Создано яйцо цыплёнка")
+	print(
+		"Создан цыплёнок."
+	)
+
+	return instance
 
 
 func _on_rooster_removed(
