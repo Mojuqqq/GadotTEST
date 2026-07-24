@@ -741,9 +741,77 @@ func add_item_to_inventory(
 			_inventory.roll_grant_amount(item)
 		)
 
-	return _inventory.add_item(
-		item,
-		final_amount
+	var result: Dictionary = (
+		_inventory.add_item(
+			item,
+			final_amount
+		)
+	)
+
+	if not bool(
+		result.get(
+			"success",
+			false
+		)
+	):
+		return result
+
+	var added_amount: int = int(
+		result.get(
+			"added_amount",
+			0
+		)
+	)
+
+	if (
+		item.use_mode
+		== ItemData.UseMode.PASSIVE
+	):
+		_apply_passive_item_effect(
+			item,
+			added_amount
+		)
+
+	return result
+
+func _apply_passive_item_effect(
+	item: ItemData,
+	stack_amount: int
+) -> void:
+	if item == null:
+		return
+
+	if stack_amount <= 0:
+		return
+
+	if player_stats == null:
+		push_warning(
+			"Не удалось применить пассивный предмет: "
+			+ item.name
+			+ ". Характеристики игрока не найдены."
+		)
+		return
+
+	if not item.apply.is_valid():
+		push_warning(
+			"У пассивного предмета отсутствует эффект: "
+			+ item.name
+		)
+		return
+
+	for _stack_index in range(
+		stack_amount
+	):
+		item.apply.call(
+			player_stats,
+			self
+		)
+
+	print(
+		"Применён пассивный предмет: ",
+		item.name,
+		". Новых стаков: ",
+		stack_amount
 	)
 
 func roll_item_grant_amount(
@@ -851,6 +919,21 @@ func use_quick_slot(
 			"success": false,
 			"message": (
 				"Предмет закончился."
+			)
+		}
+
+	# Пассивные предметы уже действуют после получения.
+	# Нажатие на быстрый слот не списывает их.
+	if (
+		item.use_mode
+		== ItemData.UseMode.PASSIVE
+	):
+		return {
+			"success": true,
+			"consumed": false,
+			"message": (
+				item.name
+				+ ": пассивный эффект уже активен."
 			)
 		}
 

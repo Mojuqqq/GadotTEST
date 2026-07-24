@@ -33,54 +33,54 @@ func init_items(_game_manager: Node):
 				gm.notify_stats_changed()
 	},
 
-		{
-			"id": "eye",
-			"name": "👁 Новые очки",
-			"desc": "Увеличивает дальность атаки",
-			"icon": "res://Assets/Art/Items/New_glasses.png",
-			"shop_price": 25,
-			"apply": func(stats, gm):
-				stats.attack_range_multiplier = 1.5
-				gm.notify_stats_changed()
-	},
+{
+	"id": "eye",
+	"name": "👁 Новые очки",
+	"desc": "Увеличивает дальность атаки",
+	"icon": "res://Assets/Art/Items/New_glasses.png",
+	"shop_price": 25,
+	"apply": func(stats, gm):
+		stats.attack_range_multiplier *= 1.5
+		gm.notify_stats_changed()
+},
+
+{
+	"id": "golden_egg",
+	"name": "🥚 Золотое яйцо",
+	"desc": "+50% урон",
+	"icon": "res://Assets/Art/Items/Gold_egg.png",
+	"shop_price": 35,
+	"apply": func(stats, gm):
+		stats.damage = ceili(
+			stats.damage * 1.5
+		)
+
+		stats.has_golden_egg = true
+
+		gm.notify_stats_changed()
+},
 
 		{
-			"id": "golden_egg",
-			"name": "🥚 Золотое яйцо",
-			"desc": "+50% урон",
-			"icon": "res://Assets/Art/Items/Gold_egg.png",
-			"shop_price": 35,
-			"apply": func(stats, gm):
-				stats.damage = ceili(
-					stats.damage * 1.5
-				)
+	"id": "battle_rooster",
+	"name": "🐔 Боевой петух",
+	"desc": (
+		"Призывает боевого петуха. "
+		+ "Одновременно может быть активен "
+		+ "только один петух."
+	),
+	"icon": (
+		"res://Assets/Art/Items/Crazy_chicken.png"
+	),
+	"shop_price": 40,
 
-				stats.has_golden_egg = true
+	"use_mode": ItemData.UseMode.COMPANION,
+	"min_grant_amount": 1,
+	"max_grant_amount": 1,
+	"max_inventory_stack": 10,
 
-				gm.notify_stats_changed()
-	},
-
-				{
-			"id": "battle_rooster",
-			"name": "🐔 Боевой петух",
-			"desc": (
-				"Призывает боевого петуха. "
-				+ "Одновременно может быть активен "
-				+ "только один петух."
-			),
-			"icon": (
-				"res://Assets/Art/Items/Crazy_chicken.png"
-			),
-			"shop_price": 40,
-
-			"use_mode": ItemData.UseMode.COMPANION,
-			"min_grant_amount": 1,
-			"max_grant_amount": 1,
-			"max_inventory_stack": 10,
-
-			"apply": func(_stats, _gm):
-				pass
-	},
+	"apply": func(_stats, _gm):
+		pass
+},
 
 		{
 	"id": "omelet",
@@ -100,42 +100,42 @@ func init_items(_game_manager: Node):
 		pass
 },
 
-		{
-			"id": "hot_sauce",
-			"name": "🌶 Острый соус",
-			"desc": (
-				"+20% к скорости полёта яиц "
-				+ "на 30 секунд"
-			),
-			"icon": (
-				"res://Assets/Art/Items/Hot_sauce.png"
-			),
-			"shop_price": 15,
-			"use_mode": ItemData.UseMode.TIMED,
-			"min_grant_amount": 1,
-			"max_grant_amount": 1,
-			"max_inventory_stack": 10,
+{
+	"id": "hot_sauce",
+	"name": "🌶 Острый соус",
+	"desc": (
+		"+20% к скорости полёта яиц "
+		+ "на 30 секунд"
+	),
+	"icon": (
+		"res://Assets/Art/Items/Hot_sauce.png"
+	),
+	"shop_price": 15,
+	"use_mode": ItemData.UseMode.TIMED,
+	"min_grant_amount": 1,
+	"max_grant_amount": 1,
+	"max_inventory_stack": 10,
 
-			"apply": func(_stats, _gm):
-				pass
-	},
+	"apply": func(_stats, _gm):
+		pass
+},
 
-		{
-			"id": "rotten_egg",
-			"name": "💣 Тухлое яйцо",
-			"desc": "Оставляет ядовитую лужу",
-			"icon": "res://Assets/Art/Items/Rotten_egg.png",
-			"shop_price": 25,
+{
+	"id": "rotten_egg",
+	"name": "💣 Тухлое яйцо",
+	"desc": "Оставляет ядовитую лужу",
+	"icon": "res://Assets/Art/Items/Rotten_egg.png",
+	"shop_price": 25,
 
-			"use_mode": ItemData.UseMode.AMMO,
-			"min_grant_amount": 2,
-			"max_grant_amount": 5,
-			"max_inventory_stack": 20,
+	"use_mode": ItemData.UseMode.AMMO,
+	"min_grant_amount": 2,
+	"max_grant_amount": 5,
+	"max_inventory_stack": 20,
 
-			"apply": func(stats, gm):
-				stats.poison_cloud = true
-				gm.notify_stats_changed()
-	},
+	"apply": func(stats, gm):
+		stats.poison_cloud = true
+		gm.notify_stats_changed()
+},
 
 		{
 	"id": "chick",
