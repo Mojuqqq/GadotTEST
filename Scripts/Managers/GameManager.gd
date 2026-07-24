@@ -809,6 +809,157 @@ func select_quick_slot(
 		slot_index
 	)
 
+func use_quick_slot(
+	slot_index: int
+) -> Dictionary:
+	if (
+		slot_index < 0
+		or slot_index >= get_quick_slot_count()
+	):
+		return {
+			"success": false,
+			"message": (
+				"Некорректный быстрый слот."
+			)
+		}
+
+	var item: ItemData = (
+		get_quick_slot_item(
+			slot_index
+		)
+	)
+
+	if item == null:
+		return {
+			"success": false,
+			"message": (
+				"Быстрый слот "
+				+ str(slot_index + 1)
+				+ " пуст."
+			)
+		}
+
+	if not has_inventory_item(
+		item.id,
+		1
+	):
+		clear_quick_slot(
+			slot_index
+		)
+
+		return {
+			"success": false,
+			"message": (
+				"Предмет закончился."
+			)
+		}
+
+	# Боеприпасы не используются сразу.
+	# Клавиша включает или выключает выбранный тип снаряда.
+	if (
+		item.use_mode
+		== ItemData.UseMode.AMMO
+	):
+		if (
+			get_selected_quick_slot()
+			== slot_index
+		):
+			clear_selected_quick_slot()
+
+			return {
+				"success": true,
+				"consumed": false,
+				"message": (
+					"Боеприпас выключен. "
+					+ "Используются обычные яйца."
+				)
+			}
+
+		var selected: bool = (
+			select_quick_slot(
+				slot_index
+			)
+		)
+
+		return {
+			"success": selected,
+			"consumed": false,
+			"message": (
+				"Выбран боеприпас: "
+				+ item.name
+			)
+		}
+
+	if not is_instance_valid(player):
+		return {
+			"success": false,
+			"message": (
+				"Игрок не найден."
+			)
+		}
+
+	if not player.has_method(
+		"use_inventory_item"
+	):
+		return {
+			"success": false,
+			"message": (
+				"Игрок не умеет использовать предметы."
+			)
+		}
+
+	var use_result = player.call(
+		"use_inventory_item",
+		item.id
+	)
+
+	if not (use_result is Dictionary):
+		return {
+			"success": false,
+			"message": (
+				"Предмет вернул некорректный результат."
+			)
+		}
+
+	var result: Dictionary = use_result
+
+	if not bool(
+		result.get(
+			"success",
+			false
+		)
+	):
+		return result
+
+	var removed: bool = (
+		remove_inventory_item(
+			item.id,
+			1
+		)
+	)
+
+	if not removed:
+		push_warning(
+			"Эффект предмета был запущен, "
+			+ "но предмет не удалось списать: "
+			+ item.id
+		)
+
+		return {
+			"success": false,
+			"message": (
+				"Не удалось списать предмет."
+			)
+		}
+
+	result["consumed"] = true
+	result["remaining_amount"] = (
+		get_inventory_item_amount(
+			item.id
+		)
+	)
+
+	return result
 
 func clear_selected_quick_slot() -> void:
 	_inventory.clear_selected_quick_slot()
@@ -919,3 +1070,27 @@ func _open_inventory_menu() -> void:
 		return
 
 	current_scene.add_child(menu)
+	
+func get_active_timed_effects() -> Array[Dictionary]:
+	if not is_instance_valid(player):
+		return []
+
+	if not player.has_method(
+		"get_active_timed_effects"
+	):
+		return []
+
+	var raw_result = player.call(
+		"get_active_timed_effects"
+	)
+
+	if not (raw_result is Array):
+		return []
+
+	var result: Array[Dictionary] = []
+
+	for entry in raw_result:
+		if entry is Dictionary:
+			result.append(entry)
+
+	return result

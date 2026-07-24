@@ -95,12 +95,21 @@ func init_items(_game_manager: Node):
 		{
 			"id": "hot_sauce",
 			"name": "🌶 Острый соус",
-			"desc": "Яйца летят быстрее",
-			"icon": "res://Assets/Art/Items/Hot_sauce.png",
+			"desc": (
+				"+20% к скорости полёта яиц "
+				+ "на 30 секунд"
+			),
+			"icon": (
+				"res://Assets/Art/Items/Hot_sauce.png"
+			),
 			"shop_price": 15,
-			"apply": func(stats, gm):
-				stats.egg_speed *= 1.2
-				gm.notify_stats_changed()
+			"use_mode": ItemData.UseMode.TIMED,
+			"min_grant_amount": 1,
+			"max_grant_amount": 1,
+			"max_inventory_stack": 10,
+
+			"apply": func(_stats, _gm):
+				pass
 	},
 
 		{

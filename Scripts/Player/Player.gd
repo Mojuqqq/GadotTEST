@@ -8,6 +8,18 @@ const INITIAL_POOL_SIZE := 20
 var external_force: Vector2 = Vector2.ZERO
 var current_speed: float = 300.0
 var time_since_last_shot: float = 0.0
+@export_group("Hot Sauce")
+var hot_sauce_effect_total_duration: float = 0.0
+
+@export_range(1.0, 120.0, 1.0)
+var hot_sauce_duration: float = 30.0
+
+@export_range(1.0, 3.0, 0.05)
+var hot_sauce_egg_speed_multiplier: float = 1.2
+
+
+var current_egg_speed_multiplier: float = 1.0
+var hot_sauce_timer: Timer = null
 
 # Эффект слёз
 var is_crying: bool = false
@@ -36,7 +48,17 @@ func _ready():
 	tear_timer.one_shot = true
 	tear_timer.timeout.connect(_on_tear_effect_end)
 	add_child(tear_timer)
+	
+	hot_sauce_timer = Timer.new()
+	hot_sauce_timer.name = "HotSauceTimer"
+	hot_sauce_timer.one_shot = true
 
+	hot_sauce_timer.timeout.connect(
+		_on_hot_sauce_effect_ended
+	)
+
+	add_child(hot_sauce_timer)
+	
 	call_deferred("_create_egg_pool")
 	
 func _create_egg_pool():
@@ -125,6 +147,7 @@ func shoot() -> void:
 
 		egg.speed = (
 			GameManager.player_stats.egg_speed
+			* current_egg_speed_multiplier
 		)
 
 		egg.max_range = (
@@ -195,6 +218,99 @@ func _should_use_rotten_egg() -> bool:
 	return GameManager.has_inventory_item(
 		"rotten_egg",
 		1
+	)
+
+# =========================================================
+# ИСПОЛЬЗОВАНИЕ ПРЕДМЕТОВ
+# =========================================================
+
+func use_inventory_item(
+	item_id: String
+) -> Dictionary:
+	match item_id:
+		"hot_sauce":
+			return _use_hot_sauce()
+
+		_:
+			return {
+				"success": false,
+				"message": (
+					"Использование предмета "
+					+ item_id
+					+ " пока не реализовано."
+				)
+			}
+
+
+func _use_hot_sauce() -> Dictionary:
+	if hot_sauce_timer == null:
+		return {
+			"success": false,
+			"message": (
+				"Не найден таймер острого соуса."
+			)
+		}
+
+	current_egg_speed_multiplier = (
+		hot_sauce_egg_speed_multiplier
+	)
+
+	var remaining_time: float = 0.0
+
+	if not hot_sauce_timer.is_stopped():
+		remaining_time = (
+			hot_sauce_timer.time_left
+		)
+
+	var new_duration: float = (
+		remaining_time
+		+ hot_sauce_duration
+	)
+
+	hot_sauce_effect_total_duration = (
+		new_duration
+	)
+
+	hot_sauce_timer.start(
+		new_duration
+	)
+
+	print(
+		"Острый соус активирован. ",
+		"Множитель скорости яиц: ",
+		current_egg_speed_multiplier,
+		". Осталось секунд: ",
+		new_duration
+	)
+
+	return {
+		"success": true,
+		"message": (
+			"Острый соус: скорость яиц +"
+			+ str(
+				roundi(
+					(
+						hot_sauce_egg_speed_multiplier
+						- 1.0
+					)
+					* 100.0
+				)
+			)
+			+ "% на "
+			+ str(
+				roundi(new_duration)
+			)
+			+ " сек."
+		)
+	}
+
+
+func _on_hot_sauce_effect_ended() -> void:
+	current_egg_speed_multiplier = 1.0
+	hot_sauce_effect_total_duration = 0.0
+
+	print(
+		"Действие острого соуса закончилось."
 	)
 
 func apply_tear_effect(duration: float):
@@ -356,3 +472,21 @@ func teleport_companions_to_player() -> void:
 			chick_bomb.teleport_to_player(
 				Vector2(-55, 0)
 			)
+
+func get_active_timed_effects() -> Array[Dictionary]:
+	var effects: Array[Dictionary] = []
+
+	if (
+		hot_sauce_timer != null
+		and not hot_sauce_timer.is_stopped()
+	):
+		effects.append({
+			"item_id": "hot_sauce",
+			"time_left": hot_sauce_timer.time_left,
+			"duration": maxf(
+				hot_sauce_effect_total_duration,
+				hot_sauce_duration
+			)
+		})
+
+	return effects

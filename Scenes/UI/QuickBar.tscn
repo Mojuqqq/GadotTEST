@@ -20,10 +20,20 @@ grow_horizontal = 2
 grow_vertical = 0
 offset_transform_enabled = true
 
-[node name="Background" type="PanelContainer" parent="QuickBarRoot" unique_id=1714726136]
+[node name="MainVBox" type="VBoxContainer" parent="QuickBarRoot" unique_id=1369256715]
+layout_mode = 2
+theme_override_constants/separation = 6
+
+[node name="ActiveEffectsContainer" type="HBoxContainer" parent="QuickBarRoot/MainVBox" unique_id=228144089]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_constants/separation = 8
+alignment = 1
+
+[node name="Background" type="PanelContainer" parent="QuickBarRoot/MainVBox" unique_id=1714726136]
 layout_mode = 2
 
-[node name="SlotsContainer" type="HBoxContainer" parent="QuickBarRoot/Background" unique_id=2062182896]
+[node name="SlotsContainer" type="HBoxContainer" parent="QuickBarRoot/MainVBox/Background" unique_id=2062182896]
 unique_name_in_owner = true
 layout_mode = 2
 theme_override_constants/separation = 8
