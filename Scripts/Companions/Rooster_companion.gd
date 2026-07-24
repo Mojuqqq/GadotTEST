@@ -7,7 +7,17 @@ extends CharacterBody2D
 @export var attack_range: float = 75.0
 @export var damage: int = 2
 @export var attack_cooldown: float = 0.8
+@export_group("Health")
 
+@export_range(1, 100, 1)
+var max_health: int = 6
+
+var current_health: int = 6
+var is_dying: bool = false
+
+signal health_changed(current_health: int,max_health: int)
+
+signal died
 @export var detection_range: float = 500.0
 @export var search_interval: float = 0.25
 
@@ -22,7 +32,17 @@ var search_timer: Timer
 
 
 func _ready() -> void:
+	current_health = maxi(
+		max_health,
+		1
+	)
+
+	health_changed.emit(
+		current_health,
+		max_health
+	)
 	add_to_group("Allies")
+	add_to_group("Companions")
 
 	attack_timer = Timer.new()
 	attack_timer.one_shot = true
@@ -47,6 +67,10 @@ func set_player(player_node: Node2D) -> void:
 
 
 func _physics_process(_delta: float) -> void:
+	if is_dying:
+		velocity = Vector2.ZERO
+		return
+	
 	if not is_instance_valid(player):
 		_find_player()
 
@@ -198,3 +222,67 @@ func teleport_to_player(
 	target_enemy = null
 
 	call_deferred("_find_nearest_enemy")
+	
+# =========================================================
+# ЗДОРОВЬЕ
+# =========================================================
+
+func take_damage(
+	amount: int
+) -> void:
+	if is_dying:
+		return
+
+	if amount <= 0:
+		return
+
+	current_health = maxi(
+		current_health - amount,
+		0
+	)
+
+	health_changed.emit(
+		current_health,
+		max_health
+	)
+
+	print(
+		"Боевой петух получил урон: ",
+		amount,
+		". Осталось здоровья: ",
+		current_health,
+		"/",
+		max_health
+	)
+
+	if current_health <= 0:
+		die()
+
+
+func die() -> void:
+	if is_dying:
+		return
+
+	is_dying = true
+
+	velocity = Vector2.ZERO
+	can_attack = false
+	target_enemy = null
+
+	if is_instance_valid(attack_timer):
+		attack_timer.stop()
+
+	if is_instance_valid(search_timer):
+		search_timer.stop()
+
+	set_physics_process(false)
+
+	died.emit()
+
+	print(
+		"Боевой петух погиб."
+	)
+
+	call_deferred(
+		"queue_free"
+	)

@@ -939,9 +939,27 @@ func use_quick_slot(
 	)
 
 	if not removed:
+		var should_rollback: bool = bool(
+			result.get(
+				"rollback_on_consume_failure",
+				false
+			)
+		)
+
+		if (
+			should_rollback
+			and player.has_method(
+				"rollback_inventory_item_use"
+			)
+		):
+			player.call(
+				"rollback_inventory_item_use",
+				item.id
+			)
+
 		push_warning(
-			"Эффект предмета был запущен, "
-			+ "но предмет не удалось списать: "
+			"Предмет был применён, "
+			+ "но его не удалось списать: "
 			+ item.id
 		)
 

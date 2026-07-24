@@ -60,26 +60,26 @@ func init_items(_game_manager: Node):
 				gm.notify_stats_changed()
 	},
 
-		{
+				{
 			"id": "battle_rooster",
 			"name": "🐔 Боевой петух",
-			"desc": "Помощник атакует врагов",
-			"icon": "res://Assets/Art/Items/Crazy_chicken.png",
+			"desc": (
+				"Призывает боевого петуха. "
+				+ "Одновременно может быть активен "
+				+ "только один петух."
+			),
+			"icon": (
+				"res://Assets/Art/Items/Crazy_chicken.png"
+			),
 			"shop_price": 40,
-			"apply": func(stats, gm):
-				stats.has_rooster = true
-				gm.notify_stats_changed()
 
-				if (
-					is_instance_valid(gm.player)
-					and not gm.player.is_queued_for_deletion()
-					and gm.player.has_method(
-						"spawn_companion"
-					)
-				):
-					gm.player.spawn_companion(
-						"rooster"
-					)
+			"use_mode": ItemData.UseMode.COMPANION,
+			"min_grant_amount": 1,
+			"max_grant_amount": 1,
+			"max_inventory_stack": 10,
+
+			"apply": func(_stats, _gm):
+				pass
 	},
 
 		{

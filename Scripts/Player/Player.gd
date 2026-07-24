@@ -231,6 +231,9 @@ func use_inventory_item(
 		"hot_sauce":
 			return _use_hot_sauce()
 
+		"battle_rooster":
+			return _use_battle_rooster()
+
 		_:
 			return {
 				"success": false,
@@ -350,14 +353,70 @@ func spawn_companion(
 				+ companion_type
 			)
 
+func _use_battle_rooster() -> Dictionary:
+	if _has_active_rooster():
+		return {
+			"success": false,
+			"message": (
+				"Боевой петух уже находится рядом."
+			)
+		}
 
-func _spawn_rooster() -> void:
-	if (
+	var instance: Node2D = _spawn_rooster()
+
+	if instance == null:
+		return {
+			"success": false,
+			"message": (
+				"Не удалось призвать боевого петуха."
+			)
+		}
+
+	return {
+		"success": true,
+		"message": "Боевой петух призван.",
+		"rollback_on_consume_failure": true
+	}
+
+func rollback_inventory_item_use(
+	item_id: String
+) -> void:
+	match item_id:
+		"battle_rooster":
+			if _has_active_rooster():
+				rooster_companion.queue_free()
+
+		_:
+			pass
+
+func _has_active_rooster() -> bool:
+	return (
 		is_instance_valid(rooster_companion)
 		and not rooster_companion.is_queued_for_deletion()
-	):
-		print("Петух уже существует")
-		return
+	)
+
+func _spawn_rooster() -> Node2D:
+	if _has_active_rooster():
+		print(
+			"Боевой петух уже существует."
+		)
+		return null
+
+	if ROOSTER_SCENE == null:
+		push_error(
+			"Не назначена сцена боевого петуха."
+		)
+		return null
+
+	var current_scene: Node = (
+		get_tree().current_scene
+	)
+
+	if current_scene == null:
+		push_error(
+			"Не найдена текущая игровая сцена."
+		)
+		return null
 
 	var instance := (
 		ROOSTER_SCENE.instantiate()
@@ -366,15 +425,15 @@ func _spawn_rooster() -> void:
 
 	if instance == null:
 		push_error(
-			"Не удалось создать петуха."
+			"Не удалось создать боевого петуха."
 		)
-		return
+		return null
 
-	get_tree().current_scene.add_child(instance)
+	current_scene.add_child(instance)
 
 	instance.global_position = (
 		global_position
-		+ Vector2(55, 0)
+		+ Vector2(55.0, 0.0)
 	)
 
 	if instance.has_method("set_player"):
@@ -383,10 +442,15 @@ func _spawn_rooster() -> void:
 	rooster_companion = instance
 
 	instance.tree_exited.connect(
-		_on_rooster_removed.bind(instance)
+		_on_rooster_removed.bind(instance),
+		CONNECT_ONE_SHOT
 	)
 
-	print("Создан боевой петух")
+	print(
+		"Создан боевой петух."
+	)
+
+	return instance
 
 
 func _spawn_chick_bomb() -> void:
