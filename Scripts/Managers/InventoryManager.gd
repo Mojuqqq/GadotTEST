@@ -161,6 +161,10 @@ func add_item(
 
 	_items[item_id] = item
 	_amounts[item_id] = new_amount
+	
+	_assign_item_to_first_free_quick_slot(
+		item_id
+	)
 
 	item_amount_changed.emit(
 		item_id,
@@ -314,6 +318,29 @@ func is_empty() -> bool:
 # =========================================================
 # БЫСТРЫЕ СЛОТЫ
 # =========================================================
+func _assign_item_to_first_free_quick_slot(
+	item_id: String
+) -> void:
+	if item_id.is_empty():
+		return
+
+	# Предмет уже находится в быстром доступе.
+	if _quick_slots.find(item_id) >= 0:
+		return
+
+	var free_slot_index: int = (
+		_quick_slots.find("")
+	)
+
+	# Все пять слотов заняты — предмет остаётся
+	# только в обычном инвентаре.
+	if free_slot_index < 0:
+		return
+
+	assign_item_to_quick_slot(
+		item_id,
+		free_slot_index
+	)
 
 func assign_item_to_quick_slot(
 	item_id: String,
