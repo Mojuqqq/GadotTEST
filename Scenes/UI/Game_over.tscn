@@ -15,26 +15,37 @@ offset_bottom = 192.0
 
 [node name="Label" type="Label" parent="." unique_id=1457287629]
 offset_left = -60.0
-offset_top = -85.0
+offset_top = -109.0
 offset_right = 59.0
-offset_bottom = -62.0
+offset_bottom = -86.0
 text = "Game Over"
 horizontal_alignment = 1
 
 [node name="ReplayButton" type="Button" parent="." unique_id=1134063829]
 offset_left = -65.0
-offset_top = 43.0
+offset_top = 91.0
 offset_right = 65.0
-offset_bottom = 66.0
+offset_bottom = 122.0
 text = "Переиграть"
 
 [node name="MenuButton" type="Button" parent="." unique_id=1955100415]
 offset_left = -65.0
-offset_top = 84.0
+offset_top = 132.0
 offset_right = 62.0
-offset_bottom = 115.0
+offset_bottom = 163.0
 text = "Главное меню
 "
+
+[node name="LossesLabel" type="Label" parent="." unique_id=1569036786]
+unique_name_in_owner = true
+offset_left = -183.0
+offset_top = -64.0
+offset_right = 186.0
+offset_bottom = 69.0
+text = "Потеряно золота: 0
+Потеряно ключей: 0"
+horizontal_alignment = 1
+autowrap_mode = 3
 
 [connection signal="pressed" from="ReplayButton" to="." method="_on_restart_button_pressed"]
 [connection signal="pressed" from="MenuButton" to="." method="_on_menu_button_pressed"]

@@ -1,0 +1,21 @@
+[gd_scene format=3 uid="uid://ba8yo767vmhuo"]
+
+[ext_resource type="Script" uid="uid://duxc7vouegne8" path="res://Scripts/Interactables/Pickups/GoldPickup.gd" id="1_ovn5o"]
+[ext_resource type="Texture2D" uid="uid://dgcoahpwyr26p" path="res://Assets/Art/Interectables/Pickups/Gold.png" id="1_ywomc"]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_g4v7s"]
+radius = 25.079872
+
+[node name="GoldPickup" type="Area2D" unique_id=1973258632]
+collision_layer = 0
+collision_mask = 2
+monitorable = false
+script = ExtResource("1_ovn5o")
+
+[node name="Sprite2D" type="Sprite2D" parent="." unique_id=1728137993]
+z_index = 5
+scale = Vector2(0.5154639, 0.5154639)
+texture = ExtResource("1_ywomc")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=1764453864]
+shape = SubResource("CircleShape2D_g4v7s")

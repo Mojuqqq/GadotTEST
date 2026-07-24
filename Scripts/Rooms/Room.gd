@@ -1,4 +1,18 @@
 extends Node2D
+class_name Room
+
+const MERCHANT_SCENE: PackedScene = preload("res://Scenes/Interactables/NPC/Merchant.tscn")
+
+enum RoomType {
+	START,
+	COMBAT,
+	TREASURE,
+	SHOP,
+	BOSS
+}
+
+@export_group("Room Settings")
+var room_type: RoomType = RoomType.COMBAT
 
 var doors: Array = []
 var enemies: Array = []
@@ -70,10 +84,27 @@ func update_enemies_list():
 	print("Обновлён список врагов: ", enemies.size())
 
 func on_room_entered() -> void:
-	print("Room.on_room_entered вызван")
+	print(
+		"Room.on_room_entered вызван: ",
+		name,
+		", тип: ",
+		room_type
+	)
 
 	update_enemies_list()
 
+	# Стартовая комната и сокровищница
+	# не запускают боевую блокировку дверей.
+	if (
+		is_start_room()
+		or is_treasure_room()
+		or is_shop_room()
+	):
+		unlock_doors()
+		set_active(true)
+		return
+
+	# Боевые комнаты и комната босса.
 	if enemies.is_empty():
 		print(
 			"Нет живых врагов, открываем двери"
@@ -119,12 +150,15 @@ func _on_enemy_died(victim: Node):
 		is_cleared = true
 		unlock_doors()
 		print("Комната очищена, двери открыты!")
-		call_deferred("spawn_chest")
 
 	# Победа только после очистки конечной комнаты
 		if name == "EndRoom":
-			print("Победа! Конечная комната очищена.")
-			GameManager.trigger_game_over(true)
+			print(
+				"Босс побеждён. "
+				+ "Этаж завершён."
+			)
+
+			GameManager.complete_floor()
 
 func spawn_enemies(count: int, enemy_pool: Array):
 	if count <= 0 or enemy_pool.size() == 0:
@@ -157,18 +191,138 @@ func spawn_enemies(count: int, enemy_pool: Array):
 		
 		print("Создан враг в комнате ", name, " на позиции ", enemy.position)
 
-func spawn_chest():
-	if GameManager.all_items.size() == 0:
+func spawn_chest() -> void:
+	if not is_treasure_room():
+		push_warning(
+			"Попытка создать сундук не в TREASURE-комнате: "
+			+ name
+		)
 		return
-	var item = GameManager.all_items[randi_range(0, GameManager.all_items.size() - 1)]
-	
-	var chest_scene = preload("res://Scenes/Interactables/Chest.tscn")
-	var chest = chest_scene.instantiate()
-	
-	var margin = 100
-	var x = randf_range(margin, GameManager.room_width - margin)
-	var y = randf_range(margin, GameManager.room_height - margin)
+
+	if GameManager.all_items.is_empty():
+		push_warning(
+			"Нельзя создать сундук: список предметов пуст."
+		)
+		return
+
+	var existing_chest := get_node_or_null(
+		"GeneratedChest"
+	)
+
+	if existing_chest != null:
+		return
+
+	var item = GameManager.all_items.pick_random()
+
+	var chest_scene: PackedScene = preload(
+		"res://Scenes/Interactables/Chest.tscn"
+	)
+
+	var chest := chest_scene.instantiate()
+
+	if chest == null:
+		push_warning(
+			"Не удалось создать сундук."
+		)
+		return
+
+	chest.name = "GeneratedChest"
 	chest.item = item
+
 	add_child(chest)
+
+	var margin: float = 100.0
+
+	var x: float = randf_range(
+		margin,
+		GameManager.room_width - margin
+	)
+
+	var y: float = randf_range(
+		margin,
+		GameManager.room_height - margin
+	)
+
 	chest.position = Vector2(x, y)
-	print("Сундук создан в комнате ", name)
+
+	print(
+		"Сундук создан в комнате сокровищ: ",
+		name
+	)
+	
+func set_room_type(new_type: RoomType) -> void:
+	room_type = new_type
+	
+func is_start_room() -> bool:
+	return room_type == RoomType.START
+
+
+func is_combat_room() -> bool:
+	return room_type == RoomType.COMBAT
+
+
+func is_treasure_room() -> bool:
+	return room_type == RoomType.TREASURE
+
+
+func is_shop_room() -> bool:
+	return room_type == RoomType.SHOP
+
+
+func is_boss_room() -> bool:
+	return room_type == RoomType.BOSS
+
+func spawn_merchant() -> void:
+	if not is_shop_room():
+		push_warning(
+			"Попытка создать торговца не в SHOP-комнате: "
+			+ name
+		)
+		return
+
+	var existing_merchant := get_node_or_null(
+		"GeneratedMerchant"
+	)
+
+	if existing_merchant != null:
+		return
+
+	if MERCHANT_SCENE == null:
+		push_error(
+			"Не удалось загрузить сцену торговца."
+		)
+		return
+
+	var merchant := (
+		MERCHANT_SCENE.instantiate()
+		as Node2D
+	)
+
+	if merchant == null:
+		push_error(
+			"Корень Merchant.tscn должен быть Node2D."
+		)
+		return
+
+	merchant.name = "GeneratedMerchant"
+
+	add_child(merchant)
+
+	var spawn_point := get_node_or_null(
+		"MerchantSpawnPoint"
+	) as Marker2D
+
+	if spawn_point != null:
+		merchant.global_position = (
+			spawn_point.global_position
+		)
+	else:
+		merchant.position = Vector2(
+			GameManager.room_width * 0.5,
+			GameManager.room_height * 0.5
+		)
+
+	print(
+		"Торговец создан в комнате магазина: ",
+		name
+	)

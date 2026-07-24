@@ -1,0 +1,21 @@
+[gd_scene format=3 uid="uid://dek2svpx162ao"]
+
+[ext_resource type="Texture2D" uid="uid://t4bq3arn3sr8" path="res://Assets/Art/Interectables/Pickups/Key.png" id="1_4wwgb"]
+[ext_resource type="Script" uid="uid://c2n8nbjnewv8v" path="res://Scripts/Interactables/Pickups/KeyPickup.gd" id="1_w0ckf"]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_w0ckf"]
+radius = 25.079872
+
+[node name="KeyPickup" type="Area2D" unique_id=1714819595]
+collision_layer = 0
+collision_mask = 2
+monitorable = false
+script = ExtResource("1_w0ckf")
+
+[node name="Sprite2D" type="Sprite2D" parent="." unique_id=1940332502]
+z_index = 5
+scale = Vector2(1.2903227, 1.2903227)
+texture = ExtResource("1_4wwgb")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=1557822138]
+shape = SubResource("CircleShape2D_w0ckf")

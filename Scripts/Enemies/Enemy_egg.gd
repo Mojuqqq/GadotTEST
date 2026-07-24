@@ -72,25 +72,66 @@ func _on_detection_area_body_entered(body):
 			explosion_timer.stop()
 		explosion_timer.start()
 
-func _on_explosion_timer_timeout():
-	if not is_dead and not is_exploding:
-		call_deferred("die")
-
-func die():
-	if is_dead:
+func _on_explosion_timer_timeout() -> void:
+	if is_dead or is_exploding:
 		return
+
+	# Яйцо взорвалось самостоятельно:
+	# лут не выдаём.
+	_die_and_explode(false)
+
+func die() -> void:
+	if is_dead or is_exploding:
+		return
+
+	_die_and_explode(true)
+	
+func _die_and_explode(
+	should_drop_loot: bool
+) -> void:
+	if is_dead or is_exploding:
+		return
+
 	is_dead = true
-	if explosion_timer and not explosion_timer.is_stopped():
+	velocity = Vector2.ZERO
+
+	set_physics_process(false)
+
+	if (
+		explosion_timer != null
+		and not explosion_timer.is_stopped()
+	):
 		explosion_timer.stop()
+
+	# Лут появляется только при уничтожении уроном.
+	if should_drop_loot:
+		_drop_loot()
+
+	if hp_bar != null:
+		hp_bar.queue_free()
+		hp_bar = null
+
 	died.emit(self)
-	explode()
-	# queue_free() уже внутри explode
+
+	# Откладываем взрыв, поскольку смерть могла произойти
+	# внутри обработки физического столкновения.
+	call_deferred("explode")
 
 func explode():
 	if is_exploding:
 		return
+
 	is_exploding = true
-	print("ВЗРЫВ! Урон: ", damage, " радиус: ", explosion_radius)
+	is_dead = true
+	velocity = Vector2.ZERO
+	set_physics_process(false)
+
+	print(
+		"ВЗРЫВ! Урон: ",
+		damage,
+		" радиус: ",
+		explosion_radius
+	)
 	
 	# Используем PhysicsDirectSpaceState2D для поиска целей
 	var space_state = get_world_2d().direct_space_state
@@ -113,3 +154,6 @@ func explode():
 	
 	set_physics_process(false)
 	queue_free()
+	
+func can_receive_guaranteed_key() -> bool:
+	return false

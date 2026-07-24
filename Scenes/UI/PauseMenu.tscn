@@ -21,27 +21,36 @@ offset_bottom = -62.0
 text = "Пауза"
 horizontal_alignment = 1
 
-[node name="VBoxContainer" type="VBoxContainer" parent="." unique_id=1570263261]
+[node name="ContinueButton" type="Button" parent="." unique_id=1263184364]
 offset_left = -122.0
+offset_top = -24.0
 offset_right = 123.0
-offset_bottom = 101.0
-alignment = 1
-
-[node name="ContinueButton" type="Button" parent="VBoxContainer" unique_id=1263184364]
-layout_mode = 2
+offset_bottom = 7.0
 text = "Продолжить"
 
-[node name="NextFloorButton" type="Button" parent="VBoxContainer" unique_id=1134063829]
-layout_mode = 2
+[node name="NextFloorButton" type="Button" parent="." unique_id=1134063829]
+offset_left = -122.0
+offset_top = 17.0
+offset_right = 123.0
+offset_bottom = 48.0
 text = "Перейти на следующий этаж"
 
-[node name="MenuButton" type="Button" parent="VBoxContainer" unique_id=482639398]
-layout_mode = 2
+[node name="MenuButton" type="Button" parent="." unique_id=482639398]
+offset_left = -122.0
+offset_top = 59.0
+offset_right = 123.0
+offset_bottom = 90.0
 text = "Главное меню
 "
 
 [node name="NextFloorDialog" type="ConfirmationDialog" parent="." unique_id=843787473]
+oversampling_override = 1.0
 
-[connection signal="pressed" from="VBoxContainer/ContinueButton" to="." method="_on_continue_button_pressed"]
-[connection signal="pressed" from="VBoxContainer/NextFloorButton" to="." method="_on_replay_button_pressed"]
-[connection signal="pressed" from="VBoxContainer/MenuButton" to="." method="_on_menu_button_pressed"]
+[node name="ExitRunDialog" type="ConfirmationDialog" parent="." unique_id=2004716105]
+unique_name_in_owner = true
+oversampling_override = 1.0
+
+[connection signal="pressed" from="ContinueButton" to="." method="_on_continue_button_pressed"]
+[connection signal="pressed" from="NextFloorButton" to="." method="_on_replay_button_pressed"]
+[connection signal="pressed" from="MenuButton" to="." method="_on_menu_button_pressed"]
+[connection signal="confirmed" from="NextFloorDialog" to="." method="_on_next_floor_confirmed"]

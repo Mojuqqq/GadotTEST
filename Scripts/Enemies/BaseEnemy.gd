@@ -14,6 +14,26 @@ var room_limits: Rect2
 var hp_bar: ProgressBar = null
 var is_active: bool = false
 
+# === Лут ===
+@export_group("Loot")
+@export var gold_pickup_scene: PackedScene = preload("res://Scenes/Interactables/Pickups/GoldPickup.tscn")
+
+@export_range(0, 100, 1)
+var gold_drop_chance: float = 100.0
+
+@export var min_gold_drop: int = 1
+@export var max_gold_drop: int = 3
+
+@export var key_pickup_scene: PackedScene = preload("res://Scenes/Interactables/Pickups/KeyPickup.tscn")
+
+@export_range(0.0, 100.0, 0.1)
+var key_drop_chance: float = 5.0
+
+@export var guaranteed_key_drop: bool = false
+@export var can_carry_guaranteed_key: bool = true
+
+var loot_dropped: bool = false
+
 func _ready():
 	# Создаём HP bar
 	hp_bar = ProgressBar.new()
@@ -93,6 +113,7 @@ func die():
 		hp_bar.queue_free()
 		hp_bar = null
 	died.emit(self)
+	_drop_loot()
 	queue_free()
 	
 func _set_detection_areas_enabled(
@@ -115,3 +136,137 @@ func _set_detection_areas_enabled(
 			"monitoring",
 			enabled
 		)
+
+func _drop_loot() -> void:
+	if loot_dropped:
+		return
+
+	loot_dropped = true
+
+	# Гарантированный ключ имеет высший приоритет.
+	if guaranteed_key_drop:
+		_spawn_pickup(
+			key_pickup_scene,
+			1,
+			"ключ"
+		)
+		return
+
+	# Обычный случайный ключ.
+	var key_roll: float = randf_range(
+		0.0,
+		100.0
+	)
+
+	if key_roll <= key_drop_chance:
+		_spawn_pickup(
+			key_pickup_scene,
+			1,
+			"ключ"
+		)
+		return
+
+	# Если ключ не выпал, проверяем золото.
+	var gold_roll: float = randf_range(
+		0.0,
+		100.0
+	)
+
+	if gold_roll > gold_drop_chance:
+		return
+
+	var minimum: int = mini(
+		min_gold_drop,
+		max_gold_drop
+	)
+
+	var maximum: int = maxi(
+		min_gold_drop,
+		max_gold_drop
+	)
+
+	var gold_amount: int = randi_range(
+		maxi(minimum, 1),
+		maxi(maximum, 1)
+	)
+
+	_spawn_pickup(
+		gold_pickup_scene,
+		gold_amount,
+		"золото"
+	)
+	
+func _spawn_pickup(
+	pickup_scene: PackedScene,
+	amount: int,
+	loot_name: String
+) -> void:
+	if pickup_scene == null:
+		push_warning(
+			"У врага "
+			+ name
+			+ " не назначена сцена добычи: "
+			+ loot_name
+		)
+		return
+
+	var pickup_parent: Node2D = (
+		get_parent() as Node2D
+	)
+
+	if not is_instance_valid(pickup_parent):
+		push_warning(
+			"Не найден родитель для добычи врага"
+		)
+		return
+
+	var pickup: Area2D = (
+		pickup_scene.instantiate() as Area2D
+	)
+
+	if pickup == null:
+		push_warning(
+			"Не удалось создать добычу: "
+			+ loot_name
+		)
+		return
+
+	# Позицию задаём до добавления в дерево,
+	# чтобы анимация предмета стартовала правильно.
+	pickup.position = pickup_parent.to_local(
+		global_position
+	)
+
+	if pickup.has_method("setup"):
+		pickup.setup(amount)
+
+	# Отложенное добавление защищает от ошибки
+	# flushing queries при смерти от столкновения.
+	pickup_parent.call_deferred(
+		"add_child",
+		pickup
+	)
+
+	print(
+		"Враг ",
+		name,
+		" выбросил ",
+		loot_name,
+		": ",
+		amount
+	)
+
+func can_receive_guaranteed_key() -> bool:
+	return (
+		can_carry_guaranteed_key
+		and not is_dead
+	)
+
+
+func assign_guaranteed_key() -> void:
+	guaranteed_key_drop = true
+
+	print(
+		"Врагу назначен гарантированный ключ: ",
+		name
+	)

@@ -1,9 +1,9 @@
 [gd_resource type="TileSet" format=3 uid="uid://dno7e7rye4vth"]
 
-[ext_resource type="Texture2D" uid="uid://b6fkd87eptftl" path="res://Export/Environment/Tiles/Earth 128x128.png" id="1_xu45m"]
-[ext_resource type="Texture2D" uid="uid://bm1dvdbukov0" path="res://Export/Environment/Tiles/Grass.png" id="2_k34jv"]
-[ext_resource type="Texture2D" uid="uid://blftkyg43vafq" path="res://Export/Environment/Tiles/Earth.png" id="3_rkant"]
-[ext_resource type="Texture2D" uid="uid://bl5c078m7awki" path="res://Export/Environment/Doors/Plants.png" id="4_ww5eo"]
+[ext_resource type="Texture2D" uid="uid://b6fkd87eptftl" path="res://Assets/Art/Environment/Tiles/Earth 128x128.png" id="1_xu45m"]
+[ext_resource type="Texture2D" uid="uid://bm1dvdbukov0" path="res://Assets/Art/Environment/Tiles/Grass.png" id="2_k34jv"]
+[ext_resource type="Texture2D" uid="uid://blftkyg43vafq" path="res://Assets/Art/Environment/Tiles/Earth.png" id="3_rkant"]
+[ext_resource type="Texture2D" uid="uid://bl5c078m7awki" path="res://Assets/Art/Environment/Doors/Plants.png" id="4_ww5eo"]
 
 [sub_resource type="PhysicsMaterial" id="PhysicsMaterial_k8xgd"]
 

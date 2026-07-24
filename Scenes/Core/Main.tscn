@@ -1,8 +1,8 @@
 [gd_scene format=3 uid="uid://dly3t3uvgx1as"]
 
-[ext_resource type="PackedScene" uid="uid://d0eu2fyd2sbyv" path="res://Scenes/Player.tscn" id="1_idj7w"]
+[ext_resource type="PackedScene" uid="uid://d0eu2fyd2sbyv" path="res://Scenes/Player/Player.tscn" id="1_idj7w"]
 [ext_resource type="PackedScene" uid="uid://b7rx7hf5nbu21" path="res://Scenes/Rooms/Room_Right.tscn" id="1_pbw6q"]
-[ext_resource type="Script" uid="uid://30tiqpvilvbe" path="res://Scripts/Main.gd" id="1_vy5pj"]
+[ext_resource type="Script" uid="uid://30tiqpvilvbe" path="res://Scripts/Core/Main.gd" id="1_vy5pj"]
 [ext_resource type="PackedScene" uid="uid://h665heaerces" path="res://Scenes/Rooms/Room_Left.tscn" id="2_v1gob"]
 [ext_resource type="PackedScene" uid="uid://bix4l3qrfihc1" path="res://Scenes/Rooms/Room_LeftRight.tscn" id="3_50glp"]
 [ext_resource type="PackedScene" uid="uid://nqq6as3gyh7a" path="res://Scenes/Enemies/Enemy_chicken.tscn" id="4_rgh2o"]
@@ -10,13 +10,14 @@
 [ext_resource type="PackedScene" uid="uid://chdv8hrn3omhf" path="res://Scenes/Rooms/Room_LeftRight_3.tscn" id="5_bmxlf"]
 [ext_resource type="PackedScene" uid="uid://bfltle5inqqhr" path="res://Scenes/Enemies/Enemy_cow.tscn" id="8_bmxlf"]
 [ext_resource type="PackedScene" uid="uid://dfh1vkyscefxw" path="res://Scenes/Enemies/Enemy_egg.tscn" id="9_grg3l"]
-[ext_resource type="PackedScene" uid="uid://dux56347sws2d" path="res://Scenes/UI.tscn" id="9_vy5pj"]
+[ext_resource type="PackedScene" uid="uid://dux56347sws2d" path="res://Scenes/UI/UI.tscn" id="9_vy5pj"]
 [ext_resource type="PackedScene" uid="uid://cqtvq0voq4fph" path="res://Scenes/Enemies/Enemy_carrot.tscn" id="10_frkhe"]
 [ext_resource type="PackedScene" uid="uid://c2n4eww25erye" path="res://Scenes/Enemies/Enemy_corn.tscn" id="11_1p5hy"]
 [ext_resource type="PackedScene" uid="uid://m4leu411eb0" path="res://Scenes/Enemies/Enemy_onion.tscn" id="12_h1m7h"]
 [ext_resource type="PackedScene" uid="uid://cai6g7bruh7sj" path="res://Scenes/Enemies/Enemy_cock.tscn" id="13_erwvk"]
-[ext_resource type="PackedScene" uid="uid://cy8mddadcgpo6" path="res://Scenes/PauseMenu.tscn" id="17_2w5on"]
-[ext_resource type="Script" uid="uid://b4wp3f70s1114" path="res://Scripts/Debug.gd" id="17_346fj"]
+[ext_resource type="PackedScene" uid="uid://cy8mddadcgpo6" path="res://Scenes/UI/PauseMenu.tscn" id="17_2w5on"]
+[ext_resource type="Script" uid="uid://b4wp3f70s1114" path="res://Scripts/Debug/Debug.gd" id="17_346fj"]
+[ext_resource type="PackedScene" uid="uid://bbrstd1ll3ice" path="res://Scenes/UI/EconomyHUD.tscn" id="17_e8w2b"]
 
 [node name="Main" type="Node2D" unique_id=248219871]
 script = ExtResource("1_vy5pj")
@@ -44,7 +45,10 @@ position_smoothing_speed = 10.0
 [node name="UI" parent="." unique_id=1833129806 instance=ExtResource("9_vy5pj")]
 
 [node name="PauseMenu" parent="." unique_id=1377435284 instance=ExtResource("17_2w5on")]
-layer = 2
+layer = 10
+
+[node name="EconomyHud" parent="." unique_id=1192681930 instance=ExtResource("17_e8w2b")]
+layer = 5
 
 [node name="Debug" type="Node" parent="." unique_id=164917208]
 script = ExtResource("17_346fj")

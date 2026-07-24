@@ -24,14 +24,16 @@ func set_player(player_node: Node2D) -> void:
 
 	if player_stats != null:
 		player_max_hp = player_stats.max_hp
-		player_hp = player_stats.max_hp
 	else:
+		player_max_hp = DEFAULT_MAX_HP
 		player_hp = player_max_hp
 
 	player_hp_changed.emit(
 		player_hp,
 		player_max_hp
 	)
+
+	_apply_speed_to_player()
 
 
 func unregister_player(player_node: Node) -> void:

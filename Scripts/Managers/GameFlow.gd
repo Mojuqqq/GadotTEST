@@ -158,3 +158,14 @@ func _change_scene(scene_path: String):
 
 	if error != OK:
 		push_error("Не удалось загрузить сцену: "+ scene_path+ ". Код ошибки: "+ str(error))
+
+func go_to_next_floor() -> void:
+	game_over_started = false
+	state = GameState.PLAYING
+
+	get_tree().paused = false
+
+	call_deferred(
+		"_change_scene",
+		MAIN_SCENE_PATH
+	)

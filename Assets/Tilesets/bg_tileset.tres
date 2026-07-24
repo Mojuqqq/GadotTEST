@@ -1,12 +1,12 @@
 [gd_resource type="TileSet" format=3 uid="uid://bfntpbasvpw8j"]
 
-[ext_resource type="Texture2D" uid="uid://b6fkd87eptftl" path="res://Export/Environment/Tiles/Earth 128x128.png" id="1_50aob"]
-[ext_resource type="Texture2D" uid="uid://cvn2uii6bc1c0" path="res://Export/Environment/Tiles/Walls.png" id="1_g3kov"]
-[ext_resource type="Texture2D" uid="uid://bm1dvdbukov0" path="res://Export/Environment/Tiles/Grass.png" id="2_g3kov"]
-[ext_resource type="Texture2D" uid="uid://blftkyg43vafq" path="res://Export/Environment/Tiles/Earth.png" id="3_80pnj"]
-[ext_resource type="Texture2D" uid="uid://bl5c078m7awki" path="res://Export/Environment/Doors/Plants.png" id="4_7ryw1"]
-[ext_resource type="Texture2D" uid="uid://dt8kitn3r6r07" path="res://Export/Environment/Doors/Doors_right.png" id="6_7ryw1"]
-[ext_resource type="Texture2D" uid="uid://dwn8ufxq5u4oj" path="res://Export/Environment/Doors/Doors_left.png" id="7_dylh5"]
+[ext_resource type="Texture2D" uid="uid://b6fkd87eptftl" path="res://Assets/Art/Environment/Tiles/Earth 128x128.png" id="1_50aob"]
+[ext_resource type="Texture2D" uid="uid://cvn2uii6bc1c0" path="res://Assets/Art/Environment/Tiles/Walls.png" id="1_g3kov"]
+[ext_resource type="Texture2D" uid="uid://bm1dvdbukov0" path="res://Assets/Art/Environment/Tiles/Grass.png" id="2_g3kov"]
+[ext_resource type="Texture2D" uid="uid://blftkyg43vafq" path="res://Assets/Art/Environment/Tiles/Earth.png" id="3_80pnj"]
+[ext_resource type="Texture2D" uid="uid://bl5c078m7awki" path="res://Assets/Art/Environment/Doors/Plants.png" id="4_7ryw1"]
+[ext_resource type="Texture2D" uid="uid://dt8kitn3r6r07" path="res://Assets/Art/Environment/Doors/Doors_right.png" id="6_7ryw1"]
+[ext_resource type="Texture2D" uid="uid://dwn8ufxq5u4oj" path="res://Assets/Art/Environment/Doors/Doors_left.png" id="7_dylh5"]
 
 [sub_resource type="PhysicsMaterial" id="PhysicsMaterial_k8xgd"]
 

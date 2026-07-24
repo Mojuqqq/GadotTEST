@@ -25,20 +25,26 @@ func _ready() -> void:
 	if player and not player.is_in_group("Player"):
 		player.add_to_group("Player")
 
-	var stats := PlayerStats.new()
-
-	stats.max_hp = 5
-	stats.damage = 1
-	stats.speed = 300.0
-	stats.fire_rate = 0.8
-	stats.egg_speed = 700.0
-	stats.attack_range = 300.0
-
-	# Сначала новый игрок.
 	GameManager.set_player(player)
 
-	# Затем его характеристики.
-	GameManager.set_player_stats(stats)
+# Характеристики создаём только в самом начале забега.
+	if GameManager.player_stats == null:
+		var stats := PlayerStats.new()
+
+		stats.max_hp = 5
+		stats.damage = 1
+		stats.speed = 300.0
+		stats.fire_rate = 0.8
+		stats.egg_speed = 700.0
+		stats.attack_range = 300.0
+
+		GameManager.set_player_stats(stats)
+	else:
+		# Новый узел игрока получает сохранённую
+		# скорость текущего забега.
+		player.update_speed(
+			GameManager.player_stats.speed
+		)
 
 	# Настройки комнат.
 	GameManager.room_width = room_width

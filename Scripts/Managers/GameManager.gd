@@ -13,6 +13,7 @@ signal banked_gold_changed(value: int)
 signal run_gold_changed(value: int)
 signal keys_changed(value: int)
 signal total_gold_changed(value: int)
+signal floor_completed_changed(completed: bool)
 
 
 enum GameState {
@@ -34,6 +35,9 @@ var _dungeon = DungeonService.new()
 var _items = ItemDatabaseService.new()
 var _flow = GameFlowService.new()
 var _economy = EconomyService.new()
+var floor_completed: bool = false
+var last_lost_gold: int = 0
+var last_lost_keys: int = 0
 
 
 # Состояние игры
@@ -285,6 +289,11 @@ func _connect_service_signals() -> void:
 # =========================================================
 
 func start_game() -> void:
+	last_lost_gold = 0
+	last_lost_keys = 0
+
+	_economy.start_new_run()
+
 	_flow.start_game(
 		Callable(self, "reset_game_state")
 	)
@@ -293,6 +302,32 @@ func start_game() -> void:
 func trigger_game_over(
 	victory: bool = false
 ) -> void:
+	if _flow.game_over_started:
+		return
+
+	last_lost_gold = 0
+	last_lost_keys = 0
+
+	if not victory:
+		var lost_rewards: Dictionary = (
+			_economy.lose_run_rewards()
+		)
+
+		last_lost_gold = int(
+			lost_rewards.get("gold", 0)
+		)
+
+		last_lost_keys = int(
+			lost_rewards.get("keys", 0)
+		)
+
+		print(
+			"Игрок погиб. Потеряно золота: ",
+			last_lost_gold,
+			", ключей: ",
+			last_lost_keys
+		)
+
 	_flow.trigger_game_over(
 		victory,
 		_run_state.player
@@ -432,13 +467,12 @@ func reset_game_state() -> void:
 	_run_state.reset()
 	_dungeon.reset()
 	_flow.reset()
+	floor_completed = false
+	floor_completed_changed.emit(false)
 
 
 # =========================================================
 # ПЕРЕДАЧА СИГНАЛОВ НАРУЖУ
-#
-# UI продолжает слушать сигналы GameManager,
-# а не отдельные менеджеры.
 # =========================================================
 
 func _on_player_hp_changed(
@@ -478,7 +512,6 @@ func _on_game_over(
 
 func start_new_run_economy() -> void:
 	_economy.start_new_run()
-
 
 func add_gold(amount: int) -> void:
 	_economy.add_gold(amount)
@@ -527,13 +560,94 @@ func _on_run_gold_changed(
 	run_gold_changed.emit(value)
 
 
-func _on_keys_changed(
-	value: int
-) -> void:
+func _on_keys_changed(value: int) -> void:
 	keys_changed.emit(value)
 
 
-func _on_total_gold_changed(
-	value: int
-) -> void:
+func _on_total_gold_changed(value: int) -> void:
 	total_gold_changed.emit(value)
+
+func complete_floor() -> void:
+	if floor_completed:
+		return
+
+	floor_completed = true
+	floor_completed_changed.emit(true)
+
+	print("Этаж успешно завершён")
+
+
+func go_to_next_floor() -> void:
+	if not floor_completed:
+		push_warning(
+			"Нельзя перейти дальше: "
+			+ "этаж ещё не завершён."
+		)
+		return
+
+	var lost_keys: int = (
+		_economy.leave_floor()
+	)
+
+	print(
+		"Переход на следующий этаж. "
+		+ "Потеряно ключей: "
+		+ str(lost_keys)
+	)
+
+	floor_completed = false
+	floor_completed_changed.emit(false)
+
+	# Комнаты очищаются, но характеристики,
+	# здоровье и экономика забега остаются.
+	_dungeon.reset()
+
+	_flow.go_to_next_floor()
+	
+func finish_run_and_return_to_menu() -> void:
+	if not floor_completed:
+		push_warning(
+			"Нельзя сохранить награды: "
+			+ "забег ещё не завершён."
+		)
+		return
+
+	var deposited_gold: int = (
+		_economy.finish_run_voluntarily()
+	)
+
+	print(
+		"Забег завершён успешно. "
+		+ "Сохранено золота: "
+		+ str(deposited_gold)
+	)
+
+	floor_completed = false
+	floor_completed_changed.emit(false)
+
+	get_tree().paused = false
+
+	_flow.return_to_menu(
+		Callable(self, "reset_game_state")
+	)
+
+func abandon_run_and_return_to_menu() -> void:
+	var lost_rewards: Dictionary = (
+		_economy.lose_run_rewards()
+	)
+
+	print(
+		"Забег прерван. Потеряно золота: ",
+		lost_rewards.get("gold", 0),
+		", ключей: ",
+		lost_rewards.get("keys", 0)
+	)
+
+	floor_completed = false
+	floor_completed_changed.emit(false)
+
+	get_tree().paused = false
+
+	_flow.return_to_menu(
+		Callable(self, "reset_game_state")
+	)

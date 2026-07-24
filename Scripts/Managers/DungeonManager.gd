@@ -55,7 +55,7 @@ var enemies_in_end_room: int = 4
 # ГЕНЕРАЦИЯ КОМНАТ
 # =========================================================
 
-func generate_dungeon(root_node: Node):
+func generate_dungeon(root_node: Node) -> void:
 	_clear_existing_rooms()
 
 	if start_room_scene == null:
@@ -70,27 +70,105 @@ func generate_dungeon(root_node: Node):
 		push_error("Пул промежуточных комнат пуст.")
 		return
 
-	var intermediate_count := randi_range(min_rooms,max_rooms)
+	var intermediate_count: int = randi_range(
+		min_rooms,
+		max_rooms
+	)
 
-	print("Генерация: ",intermediate_count," промежуточных комнат")
+	var treasure_room_index: int = -1
 
-	var start_room := _create_room(start_room_scene,"StartRoom",root_node,Vector2.ZERO)
+	if intermediate_count > 0:
+		treasure_room_index = randi_range(
+			0,
+			intermediate_count - 1
+		)
+
+	var shop_room_index: int = -1
+
+	# Магазин появляется только при трёх
+	# и более промежуточных комнатах.
+	if intermediate_count >= 3:
+		var available_indices: Array[int] = []
+
+		for index in range(intermediate_count):
+			if index == treasure_room_index:
+				continue
+
+			available_indices.append(index)
+
+		if not available_indices.is_empty():
+			shop_room_index = available_indices.pick_random()
+
+	print(
+		"Генерация: ",
+		intermediate_count,
+		" промежуточных комнат"
+	)
+
+	print(
+		"Индекс комнаты сокровищ: ",
+		treasure_room_index
+	)
+	
+	print(
+	"Индекс комнаты магазина: ",
+	shop_room_index
+	)
+
+	var start_room := _create_room(
+		start_room_scene,
+		"StartRoom",
+		root_node,
+		Vector2.ZERO,
+		Room.RoomType.START
+	)
 
 	if start_room == null:
 		return
 
 	room_instances.append(start_room)
 
-	spawn_enemies_for_room(start_room,0)
+	spawn_enemies_for_room(
+		start_room,
+		0
+	)
 
-	var previous_room := start_room
+	var previous_room: Node2D = start_room
 
 	for index in range(intermediate_count):
-		var random_scene: PackedScene = (room_pool.pick_random())
+		var random_scene: PackedScene = (
+			room_pool.pick_random()
+		)
 
-		var room_position := (previous_room.global_position+ Vector2(room_width + room_spacing,0))
+		var room_position: Vector2 = (
+			previous_room.global_position
+			+ Vector2(
+				room_width + room_spacing,
+				0
+			)
+		)
 
-		var room := _create_room(random_scene,"Room" + str(index + 1),root_node,room_position)
+		var generated_room_type: int = (
+				Room.RoomType.COMBAT
+		)
+
+		if index == treasure_room_index:
+			generated_room_type = (
+				Room.RoomType.TREASURE
+			)
+
+		elif index == shop_room_index:
+			generated_room_type = (
+				Room.RoomType.SHOP
+			)
+
+		var room := _create_room(
+			random_scene,
+			"Room" + str(index + 1),
+			root_node,
+			room_position,
+			generated_room_type
+		)
 
 		if room == null:
 			continue
@@ -98,11 +176,45 @@ func generate_dungeon(root_node: Node):
 		room_instances.append(room)
 		previous_room = room
 
-		spawn_enemies_for_room(room,index + 1)
+		if generated_room_type == Room.RoomType.TREASURE:
+			room.call_deferred("spawn_chest")
 
-	var end_position := (previous_room.global_position+ Vector2(room_width + room_spacing,0))
+			print(
+				"Создана комната сокровищ: ",
+				room.name
+			)
 
-	var end_room := _create_room(end_room_scene,"EndRoom",root_node,end_position)
+		elif generated_room_type == Room.RoomType.SHOP:
+			room.call_deferred(
+				"spawn_merchant"
+			)
+
+			print(
+				"Создана комната магазина: ",
+				room.name
+			)
+
+		else:
+			spawn_enemies_for_room(
+				room,
+				index + 1
+			)
+
+	var end_position: Vector2 = (
+		previous_room.global_position
+		+ Vector2(
+			room_width + room_spacing,
+			0
+		)
+	)
+
+	var end_room := _create_room(
+		end_room_scene,
+		"EndRoom",
+		root_node,
+		end_position,
+		Room.RoomType.BOSS
+	)
 
 	if end_room == null:
 		return
@@ -110,6 +222,8 @@ func generate_dungeon(root_node: Node):
 	room_instances.append(end_room)
 
 	_spawn_end_room_content(end_room)
+	
+	_assign_guaranteed_key_carrier()
 
 	connect_rooms()
 	disable_unconnected_doors()
@@ -120,9 +234,12 @@ func generate_dungeon(root_node: Node):
 # СОЗДАНИЕ ОДНОЙ КОМНАТЫ
 # =========================================================
 
-func _create_room(scene: PackedScene,room_name: String,
+func _create_room(
+	scene: PackedScene,
+	room_name: String,
 	root_node: Node,
-	room_position: Vector2
+	room_position: Vector2,
+	generated_room_type: int
 ) -> Node2D:
 	if scene == null:
 		push_error(
@@ -130,6 +247,7 @@ func _create_room(scene: PackedScene,room_name: String,
 			+ room_name
 			+ ": сцена не назначена."
 		)
+
 		return null
 
 	var room := scene.instantiate() as Node2D
@@ -139,13 +257,30 @@ func _create_room(scene: PackedScene,room_name: String,
 			"Корень комнаты должен быть Node2D: "
 			+ room_name
 		)
+
 		return null
 
 	room.name = room_name
 
-	root_node.add_child(room)
+	if room.has_method("set_room_type"):
+		room.set_room_type(
+			generated_room_type
+		)
+	else:
+		push_warning(
+			"У комнаты нет метода set_room_type(): "
+			+ room_name
+		)
 
+	root_node.add_child(room)
 	room.global_position = room_position
+
+	print(
+		"Создана комната ",
+		room_name,
+		", тип: ",
+		generated_room_type
+	)
 
 	return room
 
@@ -200,6 +335,210 @@ func _spawn_end_room_content(
 				Node.PROCESS_MODE_DISABLED
 			)
 
+# =========================================================
+# ГАРАНТИРОВАННЫЙ КЛЮЧ
+# =========================================================
+
+func _assign_guaranteed_key_carrier() -> void:
+	var candidates: Array[Node] = (
+		_collect_key_carrier_candidates()
+	)
+
+	# Теоретически все случайно созданные враги
+	# могут оказаться неподходящими, например яйцами.
+	# Тогда создаём одного безопасного моба дополнительно.
+	if candidates.is_empty():
+		var fallback_enemy: Node = (
+			_spawn_fallback_key_carrier()
+		)
+
+		if fallback_enemy != null:
+			candidates.append(fallback_enemy)
+
+	if candidates.is_empty():
+		push_error(
+			"Не удалось назначить гарантированный ключ: "
+			+ "на этаже нет подходящих мобов."
+		)
+		return
+
+	var carrier: Node = candidates.pick_random()
+
+	if not is_instance_valid(carrier):
+		push_error(
+			"Выбранный носитель ключа недействителен."
+		)
+		return
+
+	carrier.call("assign_guaranteed_key")
+
+	var carrier_room: Node = carrier.get_parent()
+
+	var room_name: String = "неизвестная комната"
+
+	if is_instance_valid(carrier_room):
+		room_name = carrier_room.name
+
+	print(
+		"Гарантированный ключ назначен мобу ",
+		carrier.name,
+		" в комнате ",
+		room_name
+	)
+
+
+func _collect_key_carrier_candidates() -> Array[Node]:
+	var candidates: Array[Node] = []
+
+	var all_enemies := get_tree().get_nodes_in_group(
+		"Enemies"
+	)
+
+	for room in room_instances:
+		if not is_instance_valid(room):
+			continue
+
+		if room.is_queued_for_deletion():
+			continue
+
+		if not room.has_method("is_combat_room"):
+			continue
+
+		# START, TREASURE и BOSS исключаются.
+		if not bool(room.call("is_combat_room")):
+			continue
+
+		for enemy in all_enemies:
+			if not is_instance_valid(enemy):
+				continue
+
+			if enemy.is_queued_for_deletion():
+				continue
+
+			if not room.is_ancestor_of(enemy):
+				continue
+
+			if not _can_enemy_carry_key(enemy):
+				continue
+
+			candidates.append(enemy)
+
+	return candidates
+
+
+func _can_enemy_carry_key(enemy: Node) -> bool:
+	if not is_instance_valid(enemy):
+		return false
+
+	if enemy.is_queued_for_deletion():
+		return false
+
+	if not enemy.has_method(
+		"can_receive_guaranteed_key"
+	):
+		return false
+
+	return bool(
+		enemy.call(
+			"can_receive_guaranteed_key"
+		)
+	)
+
+func _spawn_fallback_key_carrier() -> Node:
+	var combat_rooms: Array[Node2D] = []
+
+	for room in room_instances:
+		if not is_instance_valid(room):
+			continue
+
+		if not room.has_method("is_combat_room"):
+			continue
+
+		if bool(room.call("is_combat_room")):
+			combat_rooms.append(room)
+
+	if combat_rooms.is_empty():
+		push_error(
+			"Не найдена боевая комната "
+			+ "для гарантированного ключа."
+		)
+		return null
+
+	var safe_enemy_scenes: Array[PackedScene] = []
+
+	for enemy_scene in enemy_pool:
+		if enemy_scene == null:
+			continue
+
+		var preview: Node = (
+			enemy_scene.instantiate()
+		)
+
+		if preview == null:
+			continue
+
+		var can_carry: bool = (
+			_can_enemy_carry_key(preview)
+		)
+
+		preview.free()
+
+		if can_carry:
+			safe_enemy_scenes.append(
+				enemy_scene
+			)
+
+	if safe_enemy_scenes.is_empty():
+		push_error(
+			"В enemy_pool нет ни одного моба, "
+			+ "которому можно назначить ключ."
+		)
+		return null
+
+	var target_room: Node2D = (
+		combat_rooms.pick_random()
+	)
+
+	var safe_scene: PackedScene = (
+		safe_enemy_scenes.pick_random()
+	)
+
+	# Используем существующую систему комнаты,
+	# чтобы моб получил позицию, границы и деактивацию.
+	target_room.call(
+		"spawn_enemies",
+		1,
+		[safe_scene]
+	)
+
+	if target_room.has_method(
+		"update_enemies_list"
+	):
+		target_room.call(
+			"update_enemies_list"
+		)
+
+	var all_enemies := get_tree().get_nodes_in_group(
+		"Enemies"
+	)
+
+	for enemy in all_enemies:
+		if not is_instance_valid(enemy):
+			continue
+
+		if not target_room.is_ancestor_of(enemy):
+			continue
+
+		if _can_enemy_carry_key(enemy):
+			print(
+				"Создан дополнительный моб "
+				+ "для гарантированного ключа: ",
+				enemy.name
+			)
+
+			return enemy
+
+	return null
 
 # =========================================================
 # СОЕДИНЕНИЕ КОМНАТ
