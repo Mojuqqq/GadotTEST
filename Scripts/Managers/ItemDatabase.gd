@@ -109,6 +109,12 @@ func init_items(_game_manager: Node):
 			"desc": "Оставляет ядовитую лужу",
 			"icon": "res://Assets/Art/Items/Rotten_egg.png",
 			"shop_price": 25,
+
+			"use_mode": ItemData.UseMode.AMMO,
+			"min_grant_amount": 2,
+			"max_grant_amount": 5,
+			"max_inventory_stack": 20,
+
 			"apply": func(stats, gm):
 				stats.poison_cloud = true
 				gm.notify_stats_changed()
@@ -159,6 +165,47 @@ func _create_items(
 			1
 		)
 
+		var use_mode_value: int = int(
+			data.get(
+				"use_mode",
+				ItemData.UseMode.PASSIVE
+			)
+		)
+
+		item.use_mode = (
+			use_mode_value as ItemData.UseMode
+		)
+
+		item.min_grant_amount = maxi(
+			int(
+				data.get(
+					"min_grant_amount",
+					1
+				)
+			),
+			1
+		)
+
+		item.max_grant_amount = maxi(
+			int(
+				data.get(
+					"max_grant_amount",
+					item.min_grant_amount
+				)
+			),
+			item.min_grant_amount
+		)
+
+		item.max_inventory_stack = maxi(
+			int(
+				data.get(
+					"max_inventory_stack",
+					99
+				)
+			),
+			1
+		)
+		
 		item.apply = data.get(
 			"apply",
 			Callable()

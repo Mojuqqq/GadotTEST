@@ -1,9 +1,5 @@
 extends Node
 
-# GameManager остаётся единственным Autoload.
-# Он больше не хранит всю игровую логику внутри себя,
-# а передаёт работу отдельным менеджерам.
-
 signal player_hp_changed(hp: int, max_hp: int)
 signal room_changed(room_name: StringName, room_index: int)
 signal enemies_changed(count: int)
@@ -14,7 +10,11 @@ signal run_gold_changed(value: int)
 signal keys_changed(value: int)
 signal total_gold_changed(value: int)
 signal floor_completed_changed(completed: bool)
-
+signal inventory_changed(entries: Array)
+signal inventory_item_amount_changed(item_id: String,amount: int)
+signal inventory_item_added(item: ItemData,amount: int)
+signal quick_slots_changed(slots: Array)
+signal selected_quick_slot_changed(slot_index: int)
 
 enum GameState {
 	MENU,
@@ -29,6 +29,8 @@ const DungeonService = preload("res://Scripts/Managers/DungeonManager.gd")
 const ItemDatabaseService = preload("res://Scripts/Managers/ItemDatabase.gd")
 const GameFlowService = preload("res://Scripts/Managers/GameFlow.gd")
 const EconomyService = preload("res://Scripts/Managers/EconomyManager.gd")
+const InventoryService = preload("res://Scripts/Managers/InventoryManager.gd")
+const INVENTORY_MENU_SCENE: PackedScene = preload("res://Scenes/UI/InventoryMenu.tscn")
 
 var _run_state = RunStateService.new()
 var _dungeon = DungeonService.new()
@@ -38,7 +40,7 @@ var _economy = EconomyService.new()
 var floor_completed: bool = false
 var last_lost_gold: int = 0
 var last_lost_keys: int = 0
-
+var _inventory = InventoryService.new()
 
 # Состояние игры
 
@@ -242,6 +244,8 @@ func _ready() -> void:
 	_add_service(_items, "ItemDatabase")
 	_add_service(_flow, "GameFlow")
 	_add_service(_economy,"EconomyManager")
+	_add_service(_inventory,"InventoryManager")
+	set_process_input(true)
 	
 	_economy.banked_gold_changed.connect(_on_banked_gold_changed)
 	_economy.run_gold_changed.connect(_on_run_gold_changed)
@@ -252,6 +256,7 @@ func _ready() -> void:
 	_connect_service_signals()
 
 	_items.init_items(self)
+	_inventory.emit_current_state()
 
 
 func _add_service(
@@ -282,6 +287,26 @@ func _connect_service_signals() -> void:
 	_flow.game_over.connect(
 		_on_game_over
 	)
+	
+	_inventory.inventory_changed.connect(
+		_on_inventory_changed
+	)
+
+	_inventory.item_amount_changed.connect(
+		_on_inventory_item_amount_changed
+	)
+
+	_inventory.item_added.connect(
+		_on_inventory_item_added
+	)
+	
+	_inventory.quick_slots_changed.connect(
+		_on_quick_slots_changed
+	)
+
+	_inventory.selected_quick_slot_changed.connect(
+		_on_selected_quick_slot_changed
+	)
 
 
 # =========================================================
@@ -293,6 +318,7 @@ func start_game() -> void:
 	last_lost_keys = 0
 
 	_economy.start_new_run()
+	_inventory.start_new_run()
 
 	_flow.start_game(
 		Callable(self, "reset_game_state")
@@ -466,6 +492,7 @@ func spawn_enemies_for_room(
 func reset_game_state() -> void:
 	_run_state.reset()
 	_dungeon.reset()
+	_inventory.reset()
 	_flow.reset()
 	floor_completed = false
 	floor_completed_changed.emit(false)
@@ -651,3 +678,244 @@ func abandon_run_and_return_to_menu() -> void:
 	_flow.return_to_menu(
 		Callable(self, "reset_game_state")
 	)
+	
+func _on_inventory_changed(
+	entries: Array
+) -> void:
+	inventory_changed.emit(entries)
+
+
+func _on_inventory_item_amount_changed(
+	item_id: String,
+	amount: int
+) -> void:
+	inventory_item_amount_changed.emit(
+		item_id,
+		amount
+	)
+
+
+func _on_inventory_item_added(
+	item: ItemData,
+	amount: int
+) -> void:
+	inventory_item_added.emit(
+		item,
+		amount
+	)
+
+func _on_quick_slots_changed(
+	slots: Array
+) -> void:
+	quick_slots_changed.emit(slots)
+
+
+func _on_selected_quick_slot_changed(
+	slot_index: int
+) -> void:
+	selected_quick_slot_changed.emit(
+		slot_index
+	)
+	
+# =========================================================
+# ИНВЕНТАРЬ
+# =========================================================
+
+func add_item_to_inventory(
+	item: ItemData,
+	amount: int = -1
+) -> Dictionary:
+	if item == null:
+		return {
+			"success": false,
+			"message": "Предмет не назначен.",
+			"added_amount": 0
+		}
+
+	var final_amount: int = amount
+
+	# Значение -1 означает:
+	# взять случайное количество из ItemData.
+	if final_amount < 0:
+		final_amount = (
+			_inventory.roll_grant_amount(item)
+		)
+
+	return _inventory.add_item(
+		item,
+		final_amount
+	)
+
+func roll_item_grant_amount(
+	item: ItemData
+) -> int:
+	return _inventory.roll_grant_amount(item)
+
+func remove_inventory_item(
+	item_id: String,
+	amount: int = 1
+) -> bool:
+	return _inventory.remove_item(
+		item_id,
+		amount
+	)
+
+
+func get_inventory_item_amount(
+	item_id: String
+) -> int:
+	return _inventory.get_amount(item_id)
+
+
+func has_inventory_item(
+	item_id: String,
+	amount: int = 1
+) -> bool:
+	return _inventory.has_item(
+		item_id,
+		amount
+	)
+
+
+func get_inventory_entries() -> Array[Dictionary]:
+	return _inventory.get_entries()
+
+
+func clear_run_inventory() -> void:
+	_inventory.clear_inventory()
+
+func assign_item_to_quick_slot(
+	item_id: String,
+	slot_index: int
+) -> Dictionary:
+	return _inventory.assign_item_to_quick_slot(
+		item_id,
+		slot_index
+	)
+
+
+func clear_quick_slot(
+	slot_index: int
+) -> bool:
+	return _inventory.clear_quick_slot(
+		slot_index
+	)
+
+
+func select_quick_slot(
+	slot_index: int
+) -> bool:
+	return _inventory.select_quick_slot(
+		slot_index
+	)
+
+
+func clear_selected_quick_slot() -> void:
+	_inventory.clear_selected_quick_slot()
+
+
+func get_quick_slot_count() -> int:
+	return _inventory.get_quick_slot_count()
+
+
+func get_quick_slots() -> Array[String]:
+	return _inventory.get_quick_slots()
+
+
+func get_quick_slot_item_id(
+	slot_index: int
+) -> String:
+	return _inventory.get_quick_slot_item_id(
+		slot_index
+	)
+
+
+func get_quick_slot_item(
+	slot_index: int
+) -> ItemData:
+	return _inventory.get_quick_slot_item(
+		slot_index
+	)
+
+
+func get_selected_quick_slot() -> int:
+	return _inventory.get_selected_quick_slot()
+
+
+func get_quick_slot_entries() -> Array[Dictionary]:
+	return _inventory.get_quick_slot_entries()
+
+# =========================================================
+# ОКНО ИНВЕНТАРЯ
+# =========================================================
+
+func _input(
+	event: InputEvent
+) -> void:
+	if not event.is_action_pressed(
+		"inventory"
+	):
+		return
+
+	print(
+		"Нажата кнопка inventory. state=",
+		state,
+		", paused=",
+		get_tree().paused
+	)
+
+	if state != GameState.PLAYING:
+		print(
+			"Инвентарь не открыт: "
+			+ "состояние игры не PLAYING."
+		)
+		return
+
+	if get_tree().paused:
+		print(
+			"Инвентарь не открыт: "
+			+ "игра уже на паузе."
+		)
+		return
+
+	if get_tree().get_first_node_in_group(
+		"InventoryMenu"
+	) != null:
+		print(
+			"Инвентарь уже открыт."
+		)
+		return
+
+	get_viewport().set_input_as_handled()
+
+	_open_inventory_menu()
+
+
+func _open_inventory_menu() -> void:
+	if INVENTORY_MENU_SCENE == null:
+		push_error(
+			"Не удалось загрузить InventoryMenu.tscn"
+		)
+		return
+
+	var current_scene: Node = (
+		get_tree().current_scene
+	)
+
+	if current_scene == null:
+		push_error(
+			"Не найдена текущая игровая сцена."
+		)
+		return
+
+	var menu := (
+		INVENTORY_MENU_SCENE.instantiate()
+	)
+
+	if menu == null:
+		push_error(
+			"Не удалось создать InventoryMenu."
+		)
+		return
+
+	current_scene.add_child(menu)

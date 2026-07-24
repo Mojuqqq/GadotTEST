@@ -295,7 +295,7 @@ func _show_add_items() -> void:
 			button.pressed.connect(
 				Callable(
 					self,
-					"_give_item"
+					"give_item"
 				).bind(item)
 			)
 
@@ -305,40 +305,53 @@ func _show_add_items() -> void:
 		Callable(self, "_show_items_menu")
 	)
 
-func _give_item(item: ItemData) -> void:
+func give_item(
+	item: ItemData
+) -> void:
 	if item == null:
-		_set_status(
-			"Не удалось добавить предмет."
+		push_warning(
+			"Debug: не выбран предмет."
 		)
 		return
 
-	if not item.apply.is_valid():
-		_set_status(
-			"У предмета не назначено действие: "
-			+ _get_item_display_name(item)
+	var result: Dictionary = (
+		GameManager.add_item_to_inventory(
+			item
+		)
+	)
+
+	var success: bool = bool(
+		result.get(
+			"success",
+			false
+		)
+	)
+
+	var added_amount: int = int(
+		result.get(
+			"added_amount",
+			0
+		)
+	)
+
+	if not success:
+		push_warning(
+			"Debug: предмет не добавлен. "
+			+ str(
+				result.get(
+					"message",
+					"Неизвестная ошибка."
+				)
+			)
 		)
 		return
-
-	item.apply.call(
-		GameManager.player_stats,
-		GameManager
-	)
-
-	GameManager.emit_signal(
-		"stats_changed",
-		GameManager.player_stats
-	)
-
-	_set_status(
-		"Добавлен предмет: "
-		+ _get_item_display_name(item)
-	)
 
 	print(
-		"Дебаг: добавлен предмет: ",
-		_get_item_display_name(item)
+		"Debug: в инвентарь добавлен предмет: ",
+		item.name,
+		" ×",
+		added_amount
 	)
-
 
 func _get_item_display_name(
 	item: ItemData

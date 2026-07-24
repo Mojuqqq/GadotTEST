@@ -85,8 +85,7 @@ func update_speed(new_speed: float):
 func apply_push(force: Vector2):
 	external_force += force
 
-func shoot():
-	
+func shoot() -> void:
 	if egg_scene == null:
 		return
 
@@ -94,28 +93,109 @@ func shoot():
 
 	if egg_pool.is_empty():
 		egg = egg_scene.instantiate()
-		get_tree().current_scene.add_child(egg)
-		egg.returned_to_pool.connect(_on_egg_returned_to_pool)
+
+		get_tree().current_scene.add_child(
+			egg
+		)
+
+		egg.returned_to_pool.connect(
+			_on_egg_returned_to_pool
+		)
 	else:
 		egg = egg_pool.pop_back()
 
-	var dir = (get_global_mouse_position() - global_position).normalized()
+	var dir: Vector2 = (
+		get_global_mouse_position()
+		- global_position
+	).normalized()
 
 	if is_crying:
 		dir = -dir
 
+	var use_rotten_egg: bool = (
+		_should_use_rotten_egg()
+	)
+
+	var use_golden_egg: bool = false
+
 	if GameManager.player_stats:
-		egg.damage = GameManager.player_stats.damage
-		egg.speed = GameManager.player_stats.egg_speed
+		egg.damage = (
+			GameManager.player_stats.damage
+		)
+
+		egg.speed = (
+			GameManager.player_stats.egg_speed
+		)
+
 		egg.max_range = (
 			GameManager.player_stats.attack_range
 			* GameManager.player_stats.attack_range_multiplier
 		)
 
-		if GameManager.player_stats.has_golden_egg and egg.has_method("set_golden"):
-			egg.set_golden()
+		use_golden_egg = (
+			GameManager.player_stats.has_golden_egg
+		)
 
-	egg.activate(global_position, dir, egg.damage)
+	egg.activate(
+		global_position,
+		dir,
+		egg.damage,
+		use_rotten_egg,
+		use_golden_egg
+	)
+
+	# Списываем тухлое яйцо только после
+	# успешного создания снаряда.
+	if use_rotten_egg:
+		var removed: bool = (
+			GameManager.remove_inventory_item(
+				"rotten_egg",
+				1
+			)
+		)
+
+		if removed:
+			print(
+				"Использовано тухлое яйцо. Осталось: ",
+				GameManager.get_inventory_item_amount(
+					"rotten_egg"
+				)
+			)
+		else:
+			push_warning(
+				"Не удалось списать тухлое яйцо."
+			)
+
+func _should_use_rotten_egg() -> bool:
+	var selected_slot: int = (
+		GameManager.get_selected_quick_slot()
+	)
+
+	if selected_slot < 0:
+		return false
+
+	var selected_item: ItemData = (
+		GameManager.get_quick_slot_item(
+			selected_slot
+		)
+	)
+
+	if selected_item == null:
+		return false
+
+	if (
+		selected_item.use_mode
+		!= ItemData.UseMode.AMMO
+	):
+		return false
+
+	if selected_item.id != "rotten_egg":
+		return false
+
+	return GameManager.has_inventory_item(
+		"rotten_egg",
+		1
+	)
 
 func apply_tear_effect(duration: float):
 	is_crying = true

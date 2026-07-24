@@ -98,6 +98,15 @@ func _create_offer_button(
 	var price: int = int(
 		offer.get("price", 0)
 	)
+	var amount: int = maxi(
+	int(
+		offer.get(
+			"amount",
+			1
+		)
+	),
+	1
+)
 	var sold: bool = bool(
 		offer.get("sold", false)
 	)
@@ -105,7 +114,12 @@ func _create_offer_button(
 	var item_name: String = (
 		_get_item_name(item)
 	)
-
+	var offer_name: String = item_name
+	if amount > 1:
+		offer_name += (
+			" ×"
+			+ str(amount)
+		)
 	var button := Button.new()
 
 	button.custom_minimum_size = Vector2(
@@ -119,14 +133,14 @@ func _create_offer_button(
 
 	if sold:
 		button.text = (
-			item_name
+			offer_name
 			+ " — ПРОДАНО"
 		)
 
 		button.disabled = true
 	else:
 		button.text = (
-			item_name
+			offer_name
 			+ " — "
 			+ str(price)
 			+ " золота"

@@ -79,13 +79,33 @@ func _update_interaction_label() -> void:
 		interaction_label.visible = false
 		return
 
-	if GameManager.has_key():
+	if item == null:
+		interaction_label.text = "Сундук пуст"
+	elif not _has_inventory_space_for_item():
+		interaction_label.text = "Стак заполнен"
+	elif GameManager.has_key():
 		interaction_label.text = "[E] Открыть"
 	else:
 		interaction_label.text = "Нужен ключ"
 
 	interaction_label.visible = true
 
+func _has_inventory_space_for_item() -> bool:
+	if item == null:
+		return false
+
+	var current_amount: int = (
+		GameManager.get_inventory_item_amount(
+			item.id
+		)
+	)
+
+	var max_amount: int = maxi(
+		item.max_inventory_stack,
+		1
+	)
+
+	return current_amount < max_amount
 
 func _try_open_chest() -> void:
 	if is_opened:
@@ -95,16 +115,66 @@ func _try_open_chest() -> void:
 		_show_no_key_feedback()
 		return
 
-	var key_was_used: bool = GameManager.use_key()
+	if item == null:
+		_show_feedback(
+			"В сундуке отсутствует предмет."
+		)
+		return
+
+	if not _has_inventory_space_for_item():
+		_show_feedback(
+			"Нельзя открыть: стак предмета заполнен."
+		)
+		return
+
+	# Сначала добавляем предмет. Если операция
+	# не удалась, ключ не расходуется.
+	var result: Dictionary = (
+		GameManager.add_item_to_inventory(item)
+	)
+
+	var success: bool = bool(
+		result.get("success", false)
+	)
+
+	if not success:
+		_show_feedback(
+			str(
+				result.get(
+					"message",
+					"Не удалось добавить предмет."
+				)
+			)
+		)
+		return
+
+	var added_amount: int = int(
+		result.get("added_amount", 0)
+	)
+
+	if added_amount <= 0:
+		_show_feedback(
+			"Предмет не был добавлен."
+		)
+		return
+
+	var key_was_used: bool = (
+		GameManager.use_key()
+	)
 
 	if not key_was_used:
+		GameManager.remove_inventory_item(
+			item.id,
+			added_amount
+		)
+
 		_show_no_key_feedback()
 		return
 
-	open()
+	open(added_amount)
 
 
-func open() -> void:
+func open(added_amount: int) -> void:
 	if is_opened:
 		return
 
@@ -112,43 +182,69 @@ func open() -> void:
 	player_near = false
 	interaction_label.visible = false
 
-	if item != null:
-		item.apply.call(
-			GameManager.player_stats,
-			GameManager
-		)
+	print(
+		"Получен предмет в инвентарь: ",
+		item.name,
+		" ×",
+		added_amount
+	)
 
-		print(
-			"Получен предмет: ",
-			item.name
-		)
-
-		GameManager.emit_signal(
-			"stats_changed",
-			GameManager.player_stats
-		)
-
-		show_reward()
+	show_reward(added_amount)
 
 	queue_free()
 
 
-func show_reward() -> void:
+func show_reward(
+	added_amount: int
+) -> void:
 	var popup_scene: PackedScene = preload(
 		"res://Scenes/UI/Reward_popup.tscn"
 	)
 
-	var popup: Node = popup_scene.instantiate()
-
-	get_tree().current_scene.add_child(popup)
-
-	popup.global_position = (
-		global_position
-		+ Vector2(0, -40)
+	var popup: Node = (
+		popup_scene.instantiate()
 	)
 
-	popup.setup(item)
+	if popup == null:
+		push_warning(
+			"Не удалось создать RewardPopup."
+		)
+		return
 
+	var current_scene: Node = (
+		get_tree().current_scene
+	)
+
+	if current_scene == null:
+		popup.queue_free()
+		return
+
+	current_scene.add_child(popup)
+
+	if popup is Node2D:
+		popup.global_position = (
+			global_position
+			+ Vector2(0, -40)
+		)
+
+	if popup.has_method("setup"):
+		popup.call(
+			"setup",
+			item,
+			added_amount
+		)
+	else:
+		push_warning(
+			"У RewardPopup отсутствует setup()."
+		)
+
+func _show_feedback(
+	message: String
+) -> void:
+	interaction_label.text = message
+	interaction_label.visible = true
+
+	print(message)
 
 func _show_no_key_feedback() -> void:
 	interaction_label.text = "Нужен ключ!"

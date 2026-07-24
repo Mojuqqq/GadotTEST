@@ -18,6 +18,7 @@
 [ext_resource type="PackedScene" uid="uid://cy8mddadcgpo6" path="res://Scenes/UI/PauseMenu.tscn" id="17_2w5on"]
 [ext_resource type="Script" uid="uid://b4wp3f70s1114" path="res://Scripts/Debug/Debug.gd" id="17_346fj"]
 [ext_resource type="PackedScene" uid="uid://bbrstd1ll3ice" path="res://Scenes/UI/EconomyHUD.tscn" id="17_e8w2b"]
+[ext_resource type="PackedScene" uid="uid://cn15litic46sq" path="res://Scenes/UI/QuickBar.tscn" id="19_lijq2"]
 
 [node name="Main" type="Node2D" unique_id=248219871]
 script = ExtResource("1_vy5pj")
@@ -52,3 +53,5 @@ layer = 5
 
 [node name="Debug" type="Node" parent="." unique_id=164917208]
 script = ExtResource("17_346fj")
+
+[node name="QuickBar" parent="." unique_id=1780697905 instance=ExtResource("19_lijq2")]

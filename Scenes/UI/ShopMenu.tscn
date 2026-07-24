@@ -1,6 +1,6 @@
 [gd_scene format=3 uid="uid://cb3yv6vo1yn4r"]
 
-[ext_resource type="Script" uid="uid://1d83aldl2yni" path="res://Scenes/UI/ShopMenu.gd" id="1_122np"]
+[ext_resource type="Script" uid="uid://1d83aldl2yni" path="res://Scripts/UI/ShopMenu.gd" id="1_122np"]
 
 [node name="ShopMenu" type="CanvasLayer" unique_id=305738762]
 layer = 50

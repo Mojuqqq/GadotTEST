@@ -129,9 +129,14 @@ func _generate_offers() -> void:
 			1
 		)
 
+		var grant_amount: int = (
+			GameManager.roll_item_grant_amount(item)
+		)
+
 		offers.append({
 			"item": item,
 			"price": price,
+			"amount": grant_amount,
 			"sold": false
 		})
 
@@ -139,6 +144,31 @@ func _generate_offers() -> void:
 func get_offers() -> Array[Dictionary]:
 	return offers
 
+func _has_inventory_space(
+	item: ItemData,
+	amount: int
+) -> bool:
+	if item == null:
+		return false
+
+	if amount <= 0:
+		return false
+
+	var current_amount: int = (
+		GameManager.get_inventory_item_amount(
+			item.id
+		)
+	)
+
+	var maximum_amount: int = maxi(
+		item.max_inventory_stack,
+		1
+	)
+
+	return (
+		current_amount + amount
+		<= maximum_amount
+	)
 
 func purchase_offer(index: int) -> Dictionary:
 	if index < 0 or index >= offers.size():
@@ -155,9 +185,16 @@ func purchase_offer(index: int) -> Dictionary:
 			"message": "Этот товар уже продан."
 		}
 
-	var item = offer.get("item")
-	var price: int = int(
-		offer.get("price", 0)
+	var item := offer.get("item") as ItemData
+
+	var price: int = maxi(
+		int(offer.get("price", 0)),
+		0
+	)
+
+	var amount: int = maxi(
+		int(offer.get("amount", 1)),
+		1
 	)
 
 	if item == null:
@@ -166,11 +203,17 @@ func purchase_offer(index: int) -> Dictionary:
 			"message": "Предмет не назначен."
 		}
 
-	if not item.apply.is_valid():
+	if not _has_inventory_space(
+		item,
+		amount
+	):
 		return {
 			"success": false,
 			"message": (
-				"У предмета отсутствует эффект."
+				"Недостаточно места для "
+				+ item.name
+				+ " ×"
+				+ str(amount)
 			)
 		}
 
@@ -183,25 +226,67 @@ func purchase_offer(index: int) -> Dictionary:
 			)
 		}
 
+	# Сначала добавляем товар.
+	# Если списание золота неожиданно не сработает,
+	# предметы можно безопасно убрать обратно.
+	var inventory_result: Dictionary = (
+		GameManager.add_item_to_inventory(
+			item,
+			amount
+		)
+	)
+
+	if not bool(
+		inventory_result.get(
+			"success",
+			false
+		)
+	):
+		return {
+			"success": false,
+			"message": str(
+				inventory_result.get(
+					"message",
+					"Не удалось добавить предмет."
+				)
+			)
+		}
+
+	var added_amount: int = int(
+		inventory_result.get(
+			"added_amount",
+			0
+		)
+	)
+
+	if added_amount != amount:
+		if added_amount > 0:
+			GameManager.remove_inventory_item(
+				item.id,
+				added_amount
+			)
+
+		return {
+			"success": false,
+			"message": (
+				"Не удалось добавить всю пачку."
+			)
+		}
+
 	var payment_successful: bool = (
 		GameManager.spend_gold(price)
 	)
 
 	if not payment_successful:
+		GameManager.remove_inventory_item(
+			item.id,
+			amount
+		)
+
 		return {
 			"success": false,
 			"message": "Не удалось списать золото."
 		}
-
-	item.apply.call(
-		GameManager.player_stats,
-		GameManager
-	)
-
-	GameManager.emit_signal(
-		"stats_changed",
-		GameManager.player_stats
-	)
 
 	offer["sold"] = true
 	offers[index] = offer
@@ -209,18 +294,28 @@ func purchase_offer(index: int) -> Dictionary:
 	var item_name: String = _get_item_name(item)
 
 	print(
-		"Куплен предмет: ",
+		"Куплен предмет в инвентарь: ",
 		item_name,
+		" ×",
+		amount,
 		", цена: ",
 		price
 	)
 
+	var purchase_message: String = (
+		"Куплено: "
+		+ item_name
+	)
+
+	if amount > 1:
+		purchase_message += (
+			" ×"
+			+ str(amount)
+		)
+
 	return {
 		"success": true,
-		"message": (
-			"Куплено: "
-			+ item_name
-		)
+		"message": purchase_message
 	}
 
 

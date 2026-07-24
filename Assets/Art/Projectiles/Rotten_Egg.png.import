@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://degqybujiirmj"
-path="res://.godot/imported/Player.png-706336a104700f8b49068aff4b8e043d.ctex"
+uid="uid://bimcebnfg72gg"
+path="res://.godot/imported/Rotten_Egg.png-ba4b271b95711dbdefc57465c3470d9c.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://UI/Player.png"
-dest_files=["res://.godot/imported/Player.png-706336a104700f8b49068aff4b8e043d.ctex"]
+source_file="res://Assets/Art/Projectiles/Rotten_Egg.png"
+dest_files=["res://.godot/imported/Rotten_Egg.png-ba4b271b95711dbdefc57465c3470d9c.ctex"]
 
 [params]
 

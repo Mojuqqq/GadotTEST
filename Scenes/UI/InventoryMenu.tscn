@@ -1,0 +1,112 @@
+[gd_scene format=3 uid="uid://c7q5kbxlc5eva"]
+
+[ext_resource type="Script" uid="uid://cf2hf8705yld1" path="res://Scripts/UI/InventoryMenu.gd" id="1_8irge"]
+
+[node name="InventoryMenu" type="CanvasLayer" unique_id=1808838931]
+layer = 60
+script = ExtResource("1_8irge")
+
+[node name="Overlay" type="ColorRect" parent="." unique_id=1905906668]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0, 0, 0, 0.23529412)
+
+[node name="CenterContainer" type="CenterContainer" parent="Overlay" unique_id=172088746]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="PanelContainer" type="PanelContainer" parent="Overlay/CenterContainer" unique_id=418199172]
+custom_minimum_size = Vector2(760, 500)
+layout_mode = 2
+
+[node name="MarginContainer" type="MarginContainer" parent="Overlay/CenterContainer/PanelContainer" unique_id=1060811829]
+custom_minimum_size = Vector2(24, 24)
+layout_mode = 2
+
+[node name="MainVBox" type="VBoxContainer" parent="Overlay/CenterContainer/PanelContainer/MarginContainer" unique_id=1482460999]
+layout_mode = 2
+
+[node name="TitleLabel" type="Label" parent="Overlay/CenterContainer/PanelContainer/MarginContainer/MainVBox" unique_id=1961733442]
+layout_mode = 2
+text = "Инвентарь"
+horizontal_alignment = 1
+
+[node name="Content" type="HBoxContainer" parent="Overlay/CenterContainer/PanelContainer/MarginContainer/MainVBox" unique_id=1938540734]
+layout_mode = 2
+size_flags_vertical = 3
+theme_override_constants/separation = 24
+
+[node name="InventoryColumnContainer" type="VBoxContainer" parent="Overlay/CenterContainer/PanelContainer/MarginContainer/MainVBox/Content" unique_id=210579865]
+custom_minimum_size = Vector2(300, 0)
+layout_mode = 2
+theme_override_constants/separation = 24
+
+[node name="InventoryTitle" type="Label" parent="Overlay/CenterContainer/PanelContainer/MarginContainer/MainVBox/Content/InventoryColumnContainer" unique_id=1347340851]
+layout_mode = 2
+text = "Предметы"
+
+[node name="InventoryScroll" type="ScrollContainer" parent="Overlay/CenterContainer/PanelContainer/MarginContainer/MainVBox/Content/InventoryColumnContainer" unique_id=1827137905]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="ItemList" type="VBoxContainer" parent="Overlay/CenterContainer/PanelContainer/MarginContainer/MainVBox/Content/InventoryColumnContainer/InventoryScroll" unique_id=1126062641]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="DetailsColumn" type="VBoxContainer" parent="Overlay/CenterContainer/PanelContainer/MarginContainer/MainVBox/Content" unique_id=1276703031]
+custom_minimum_size = Vector2(340, 0)
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="ItemIcon" type="TextureRect" parent="Overlay/CenterContainer/PanelContainer/MarginContainer/MainVBox/Content/DetailsColumn" unique_id=892387003]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(96, 96)
+layout_mode = 2
+expand_mode = 1
+stretch_mode = 5
+
+[node name="ItemNameLabel" type="Label" parent="Overlay/CenterContainer/PanelContainer/MarginContainer/MainVBox/Content/DetailsColumn" unique_id=1326640127]
+unique_name_in_owner = true
+layout_mode = 2
+text = "Выберите предмет"
+
+[node name="ItemAmountLabel" type="Label" parent="Overlay/CenterContainer/PanelContainer/MarginContainer/MainVBox/Content/DetailsColumn" unique_id=289958673]
+unique_name_in_owner = true
+layout_mode = 2
+
+[node name="ItemDescriptionLabel" type="Label" parent="Overlay/CenterContainer/PanelContainer/MarginContainer/MainVBox/Content/DetailsColumn" unique_id=1463893655]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(340, 0)
+layout_mode = 2
+size_flags_vertical = 3
+autowrap_mode = 3
+
+[node name="QuickSlotsTitle" type="Label" parent="Overlay/CenterContainer/PanelContainer/MarginContainer/MainVBox/Content/DetailsColumn" unique_id=1396325024]
+layout_mode = 2
+text = "Добавить в быстрый доступ"
+
+[node name="QuickSlotButtons" type="HBoxContainer" parent="Overlay/CenterContainer/PanelContainer/MarginContainer/MainVBox/Content/DetailsColumn" unique_id=295855094]
+unique_name_in_owner = true
+layout_mode = 2
+
+[node name="RemoveFromQuickBarButton" type="Button" parent="Overlay/CenterContainer/PanelContainer/MarginContainer/MainVBox/Content/DetailsColumn" unique_id=1515981858]
+unique_name_in_owner = true
+layout_mode = 2
+text = "Убрать из быстрого доступа"
+
+[node name="StatusLabel" type="Label" parent="Overlay/CenterContainer/PanelContainer/MarginContainer/MainVBox/Content/DetailsColumn" unique_id=43432781]
+unique_name_in_owner = true
+layout_mode = 2
+
+[node name="CloseButton" type="Button" parent="Overlay/CenterContainer/PanelContainer/MarginContainer/MainVBox" unique_id=778006883]
+unique_name_in_owner = true
+layout_mode = 2
+text = "Закрыть"

@@ -1,10 +1,65 @@
 [gd_scene format=3 uid="uid://bbs7ct5geraa4"]
 
 [ext_resource type="Script" uid="uid://3kx5kuidso4k" path="res://Scripts/Effects/PoisonCloud.gd" id="1_u5wov"]
-[ext_resource type="Texture2D" uid="uid://dsqksyd4cnsec" path="res://Assets/Art/Effects/3e383a7b-cd91-4a6a-b92b-2bf37490c1d7.png" id="2_fpt6b"]
+[ext_resource type="Texture2D" uid="uid://c5or2grpn74ol" path="res://Assets/Art/Effects/RottenEgg_Sheet_1.png" id="2_fpt6b"]
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_g4v7s"]
 radius = 61.03278
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_6i04r"]
+atlas = ExtResource("2_fpt6b")
+region = Rect2(0, 0, 160, 160)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_wtnjc"]
+atlas = ExtResource("2_fpt6b")
+region = Rect2(160, 0, 160, 160)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_c6qhk"]
+atlas = ExtResource("2_fpt6b")
+region = Rect2(320, 0, 160, 160)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_51g7b"]
+atlas = ExtResource("2_fpt6b")
+region = Rect2(480, 0, 160, 160)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_g4v7s"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_6i04r")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_wtnjc")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_c6qhk")
+}],
+"loop": 0,
+"name": &"appear",
+"speed": 8.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_c6qhk")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_51g7b")
+}],
+"loop": 0,
+"name": &"disappear",
+"speed": 8.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_wtnjc")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_c6qhk")
+}],
+"loop": 1,
+"name": &"loop",
+"speed": 8.0
+}]
 
 [node name="PoisonCloud" type="Area2D" unique_id=1080377778]
 collision_layer = 32
@@ -14,8 +69,11 @@ script = ExtResource("1_u5wov")
 [node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=869146167]
 shape = SubResource("CircleShape2D_g4v7s")
 
-[node name="Sprite2D" type="Sprite2D" parent="." unique_id=972678339]
-texture = ExtResource("2_fpt6b")
+[node name="Visual" type="AnimatedSprite2D" parent="." unique_id=1633102610]
+texture_filter = 1
+scale = Vector2(1.175, 1.175)
+sprite_frames = SubResource("SpriteFrames_g4v7s")
+animation = &"appear"
 
 [node name="DamageTimer" type="Timer" parent="." unique_id=289552696]
 
