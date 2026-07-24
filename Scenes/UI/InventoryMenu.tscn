@@ -38,6 +38,18 @@ layout_mode = 2
 text = "Инвентарь"
 horizontal_alignment = 1
 
+[node name="PassiveUpgradesSection" type="VBoxContainer" parent="Overlay/CenterContainer/PanelContainer/MarginContainer/MainVBox" unique_id=523123970]
+layout_mode = 2
+
+[node name="PassiveTitle" type="Label" parent="Overlay/CenterContainer/PanelContainer/MarginContainer/MainVBox/PassiveUpgradesSection" unique_id=110836247]
+layout_mode = 2
+text = "Улучшения забега"
+horizontal_alignment = 1
+
+[node name="PassiveUpgradesList" type="VBoxContainer" parent="Overlay/CenterContainer/PanelContainer/MarginContainer/MainVBox/PassiveUpgradesSection" unique_id=1098972783]
+unique_name_in_owner = true
+layout_mode = 2
+
 [node name="Content" type="HBoxContainer" parent="Overlay/CenterContainer/PanelContainer/MarginContainer/MainVBox" unique_id=1938540734]
 layout_mode = 2
 size_flags_vertical = 3
@@ -51,6 +63,7 @@ theme_override_constants/separation = 24
 [node name="InventoryTitle" type="Label" parent="Overlay/CenterContainer/PanelContainer/MarginContainer/MainVBox/Content/InventoryColumnContainer" unique_id=1347340851]
 layout_mode = 2
 text = "Предметы"
+horizontal_alignment = 1
 
 [node name="InventoryScroll" type="ScrollContainer" parent="Overlay/CenterContainer/PanelContainer/MarginContainer/MainVBox/Content/InventoryColumnContainer" unique_id=1827137905]
 layout_mode = 2

@@ -6,6 +6,8 @@ extends CanvasLayer
 @onready var item_name_label: Label = %ItemNameLabel
 @onready var item_amount_label: Label = %ItemAmountLabel
 @onready var item_description_label: Label = %ItemDescriptionLabel
+@onready var passive_upgrades_list: VBoxContainer = (%PassiveUpgradesList)
+
 
 @onready var quick_slot_buttons: HBoxContainer = (
 	%QuickSlotButtons
@@ -63,9 +65,17 @@ func _ready() -> void:
 			_on_quick_slots_changed
 		)
 
+	if not GameManager.passive_upgrades_changed.is_connected(
+		_on_passive_upgrades_changed
+	):
+		GameManager.passive_upgrades_changed.connect(
+			_on_passive_upgrades_changed
+		)
+	
 	_create_quick_slot_buttons()
 	_refresh_inventory()
 	_refresh_selected_item()
+	_refresh_passive_upgrades()
 
 	call_deferred(
 		"_enable_input"
@@ -506,3 +516,49 @@ func _clear_container(
 	for child in container.get_children():
 		container.remove_child(child)
 		child.queue_free()
+		
+func _on_passive_upgrades_changed(
+	_entries: Array
+) -> void:
+	_refresh_passive_upgrades()
+
+
+func _refresh_passive_upgrades() -> void:
+	if passive_upgrades_list == null:
+		return
+
+	for child in passive_upgrades_list.get_children():
+		passive_upgrades_list.remove_child(child)
+		child.queue_free()
+
+	var entries: Array[Dictionary] = (
+		GameManager.get_passive_upgrade_entries()
+	)
+
+	if entries.is_empty():
+		var empty_label := Label.new()
+		empty_label.text = "Пока нет улучшений"
+		passive_upgrades_list.add_child(
+			empty_label
+		)
+		return
+
+	for entry in entries:
+		var item := entry.get("item") as ItemData
+		var count: int = int(
+			entry.get("count", 0)
+		)
+
+		if item == null:
+			continue
+
+		var label := Label.new()
+		label.text = (
+			item.name
+			+ " ×"
+			+ str(count)
+		)
+
+		passive_upgrades_list.add_child(
+			label
+		)

@@ -15,6 +15,7 @@ signal inventory_item_amount_changed(item_id: String,amount: int)
 signal inventory_item_added(item: ItemData,amount: int)
 signal quick_slots_changed(slots: Array)
 signal selected_quick_slot_changed(slot_index: int)
+signal passive_upgrades_changed(entries: Array)
 
 enum GameState {
 	MENU,
@@ -41,6 +42,16 @@ var floor_completed: bool = false
 var last_lost_gold: int = 0
 var last_lost_keys: int = 0
 var _inventory = InventoryService.new()
+var passive_run_upgrades: Dictionary = {
+	"speed_boots": {
+		"item": ItemData,
+		"count": 2
+	},
+	"new_glasses": {
+		"item": ItemData,
+		"count": 1
+	}
+}
 
 # Состояние игры
 
@@ -319,6 +330,7 @@ func start_game() -> void:
 
 	_economy.start_new_run()
 	_inventory.start_new_run()
+	_clear_passive_run_upgrades()
 
 	_flow.start_game(
 		Callable(self, "reset_game_state")
@@ -801,6 +813,10 @@ func _apply_passive_reward(
 		". Стаков получено: ",
 		amount
 	)
+	_register_passive_upgrade(
+		item,
+		amount
+	)
 
 	return {
 		"success": true,
@@ -1188,3 +1204,72 @@ func get_active_timed_effects() -> Array[Dictionary]:
 			result.append(entry)
 
 	return result
+
+
+func _clear_passive_run_upgrades() -> void:
+	passive_run_upgrades.clear()
+	passive_upgrades_changed.emit(
+		get_passive_upgrade_entries()
+	)
+
+
+func _register_passive_upgrade(
+	item: ItemData,
+	amount: int
+) -> void:
+	if item == null:
+		return
+
+	if amount <= 0:
+		return
+
+	if not passive_run_upgrades.has(item.id):
+		passive_run_upgrades[item.id] = {
+			"item": item,
+			"count": 0
+		}
+
+	passive_run_upgrades[item.id]["count"] += amount
+
+	passive_upgrades_changed.emit(
+		get_passive_upgrade_entries()
+	)
+
+
+func get_passive_upgrade_entries() -> Array[Dictionary]:
+	var result: Array[Dictionary] = []
+
+	for item_id in passive_run_upgrades.keys():
+		var entry: Dictionary = passive_run_upgrades[item_id]
+		var item := entry.get("item") as ItemData
+		var count: int = int(
+			entry.get("count", 0)
+		)
+
+		if item == null:
+			continue
+
+		if count <= 0:
+			continue
+
+		result.append({
+			"item_id": item_id,
+			"item": item,
+			"count": count
+		})
+
+	return result
+
+
+func get_passive_upgrade_count(
+	item_id: String
+) -> int:
+	if not passive_run_upgrades.has(item_id):
+		return 0
+
+	return int(
+		passive_run_upgrades[item_id].get(
+			"count",
+			0
+		)
+	)

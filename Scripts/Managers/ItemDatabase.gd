@@ -12,26 +12,26 @@ func init_items(_game_manager: Node):
 	all_items.clear()
 
 	var items_data: Array[Dictionary] = [
-		{
-			"id": "energy",
-			"name": "⚡ Скоростные сапоги",
-			"desc": "+15% скорость",
-			"icon": "res://Assets/Art/Items/New_boots.png",
-			"shop_price": 20,
-			"apply": func(stats, gm):
-				stats.speed *= 1.15
+{
+	"id": "energy",
+	"name": "⚡ Скоростные сапоги",
+	"desc": "+15% скорость",
+	"icon": "res://Assets/Art/Items/New_boots.png",
+	"shop_price": 20,
+	"apply": func(stats, gm):
+		stats.speed *= 1.15
 
-				if (
-					is_instance_valid(gm.player)
-					and not gm.player.is_queued_for_deletion()
-					and gm.player.has_method("update_speed")
-				):
-					gm.player.update_speed(
-						stats.speed
-					)
+		if (
+			is_instance_valid(gm.player)
+			and not gm.player.is_queued_for_deletion()
+			and gm.player.has_method("update_speed")
+		):
+			gm.player.update_speed(
+				stats.speed
+			)
 
-				gm.notify_stats_changed()
-	},
+		gm.notify_stats_changed()
+},
 
 {
 	"id": "eye",
@@ -92,6 +92,7 @@ func init_items(_game_manager: Node):
 	"icon": "res://Assets/Art/Items/Omlet.png",
 	"shop_price": 30,
 
+	"use_mode": ItemData.UseMode.INSTANT,
 	"min_grant_amount": 1,
 	"max_grant_amount": 1,
 	"max_inventory_stack": 10,
