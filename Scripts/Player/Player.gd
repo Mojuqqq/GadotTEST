@@ -237,6 +237,9 @@ func use_inventory_item(
 		"chick":
 			return _use_chick_bomb()
 
+		"omelet":
+			return _use_omelet()
+
 		_:
 			return {
 				"success": false,
@@ -247,6 +250,24 @@ func use_inventory_item(
 				)
 			}
 
+func _use_omelet() -> Dictionary:
+	if GameManager.player_stats == null:
+		return {
+			"success": false,
+			"message": (
+				"Характеристики игрока не найдены."
+			)
+		}
+
+	GameManager.increase_max_hp(2)
+
+	return {
+		"success": true,
+		"message": (
+			"Максимальное здоровье увеличено "
+			+ "на 2 сердца."
+		)
+	}
 
 func _use_hot_sauce() -> Dictionary:
 	if hot_sauce_timer == null:

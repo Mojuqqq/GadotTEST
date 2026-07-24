@@ -83,14 +83,22 @@ func init_items(_game_manager: Node):
 	},
 
 		{
-			"id": "omelet",
-			"name": "🍳 Омлет",
-			"desc": "+2 сердца",
-			"icon": "res://Assets/Art/Items/Omlet.png",
-			"shop_price": 30,
-			"apply": func(_stats, gm):
-				gm.increase_max_hp(2)
-	},
+	"id": "omelet",
+	"name": "🍳 Омлет",
+	"desc": (
+		"Увеличивает максимальное здоровье "
+		+ "на 2 сердца"
+	),
+	"icon": "res://Assets/Art/Items/Omlet.png",
+	"shop_price": 30,
+
+	"min_grant_amount": 1,
+	"max_grant_amount": 1,
+	"max_inventory_stack": 10,
+
+	"apply": func(_stats, _gm):
+		pass
+},
 
 		{
 			"id": "hot_sauce",
