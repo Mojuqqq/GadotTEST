@@ -1,30 +1,136 @@
 [gd_scene format=3 uid="uid://ce5oy856hrltd"]
 
-[ext_resource type="Script" uid="uid://cvdb8d1wxvtfw" path="res://Scripts/Main_menu.gd" id="1_7sp8y"]
+[ext_resource type="Script" uid="uid://cvdb8d1wxvtfw" path="res://Scripts/UI/Main_menu.gd" id="1_7sp8y"]
+[ext_resource type="Texture2D" uid="uid://dkauj83b423oc" path="res://Assets/Art/UI/main_menu_image.png" id="2_mi4od"]
+[ext_resource type="Texture2D" uid="uid://7c5e2egwx5kw" path="res://Assets/Art/UI/button_play.png" id="2_nukk0"]
+[ext_resource type="Texture2D" uid="uid://b4rj7h6skydxb" path="res://Assets/Art/UI/button_play_press.png" id="3_mi4od"]
+[ext_resource type="Texture2D" uid="uid://bwbfggapc0ty6" path="res://Assets/Art/UI/button_play_hover.png" id="4_cdexa"]
+[ext_resource type="Texture2D" uid="uid://cyj578cw1fmyb" path="res://Assets/Art/UI/button_play_disable.png" id="5_i4k7f"]
+[ext_resource type="Texture2D" uid="uid://bebavxso105y7" path="res://Assets/Art/UI/button_new_game.png" id="6_2tscw"]
+[ext_resource type="Texture2D" uid="uid://cflrib13kjv45" path="res://Assets/Art/UI/button_settings.png" id="7_uhpec"]
+[ext_resource type="Texture2D" uid="uid://bgrxf40uj0lds" path="res://Assets/Art/UI/title_panel.png" id="9_cdexa"]
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_et2pw"]
+content_margin_left = 60.0
+content_margin_top = 24.0
+content_margin_right = 60.0
+content_margin_bottom = 24.0
+texture = ExtResource("2_nukk0")
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_gbwy5"]
+content_margin_left = 60.0
+content_margin_top = 24.0
+content_margin_right = 60.0
+content_margin_bottom = 24.0
+texture = ExtResource("3_mi4od")
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_llqno"]
+content_margin_left = 60.0
+content_margin_top = 24.0
+content_margin_right = 60.0
+content_margin_bottom = 24.0
+texture = ExtResource("4_cdexa")
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_rrnkg"]
+content_margin_left = 60.0
+content_margin_top = 24.0
+content_margin_right = 60.0
+content_margin_bottom = 24.0
+texture = ExtResource("5_i4k7f")
 
 [node name="MainMenu" type="CanvasLayer" unique_id=1377435284]
-offset = Vector2(640, 512)
-transform = Transform2D(1, 0, 0, 1, 640, 512)
 script = ExtResource("1_7sp8y")
 
-[node name="Panel" type="Panel" parent="." unique_id=1558507445]
-offset_left = -304.0
-offset_top = -134.0
-offset_right = 310.0
-offset_bottom = 192.0
+[node name="Panel" type="TextureRect" parent="." unique_id=624205319]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 0
+texture = ExtResource("2_mi4od")
+expand_mode = 3
+stretch_mode = 5
+
+[node name="NewGameButton" type="Button" parent="." unique_id=12938649]
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -219.0
+offset_top = -23.0
+offset_right = 219.0
+offset_bottom = 103.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_colors/font_color = Color(0.8392157, 0.7254902, 0.5411765, 1)
+theme_override_colors/font_pressed_color = Color(0.8392157, 0.7254902, 0.5411765, 1)
+theme_override_colors/font_hover_color = Color(0.8392157, 0.7254902, 0.5411765, 1)
+theme_override_colors/font_disabled_color = Color(0.875, 0.875, 0.875, 0.5)
+theme_override_colors/font_outline_color = Color(0.13333334, 0.09019608, 0.043137256, 1)
+theme_override_constants/outline_size = 8
+theme_override_font_sizes/font_size = 24
+theme_override_styles/normal = SubResource("StyleBoxTexture_et2pw")
+theme_override_styles/pressed = SubResource("StyleBoxTexture_gbwy5")
+theme_override_styles/hover = SubResource("StyleBoxTexture_llqno")
+theme_override_styles/disabled = SubResource("StyleBoxTexture_rrnkg")
+text = "Начать игру"
+icon = ExtResource("6_2tscw")
+expand_icon = true
+
+[node name="SettingsButton" type="Button" parent="." unique_id=1512282114]
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -170.99997
+offset_top = 121.0
+offset_right = 267.0
+offset_bottom = 247.0
+grow_horizontal = 2
+grow_vertical = 2
+scale = Vector2(0.8, 0.8)
+theme_override_colors/font_color = Color(0.8392157, 0.7254902, 0.5411765, 1)
+theme_override_colors/font_pressed_color = Color(0.8392157, 0.7254902, 0.5411765, 1)
+theme_override_colors/font_hover_color = Color(0.8392157, 0.7254902, 0.5411765, 1)
+theme_override_colors/font_outline_color = Color(0.13333334, 0.09019608, 0.043137256, 1)
+theme_override_constants/outline_size = 8
+theme_override_font_sizes/font_size = 24
+theme_override_styles/normal = SubResource("StyleBoxTexture_et2pw")
+theme_override_styles/pressed = SubResource("StyleBoxTexture_gbwy5")
+theme_override_styles/hover = SubResource("StyleBoxTexture_llqno")
+text = "Настройки"
+icon = ExtResource("7_uhpec")
+expand_icon = true
+
+[node name="TitlePanel" type="Sprite2D" parent="." unique_id=1189870538]
+position = Vector2(640, 246)
+texture = ExtResource("9_cdexa")
 
 [node name="Label" type="Label" parent="." unique_id=1457287629]
-offset_left = -60.0
-offset_top = -85.0
-offset_right = 59.0
-offset_bottom = -62.0
+custom_minimum_size = Vector2(480, 0)
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -240.0
+offset_top = -363.0
+offset_right = 240.0
+offset_bottom = -149.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_colors/font_color = Color(0.8392157, 0.7254902, 0.5411765, 1)
+theme_override_colors/font_outline_color = Color(0.13333334, 0.09019608, 0.043137256, 1)
+theme_override_constants/line_spacing = -20
+theme_override_constants/outline_size = 14
+theme_override_font_sizes/font_size = 100
 text = "Binding of Dina"
+horizontal_alignment = 1
+vertical_alignment = 1
+autowrap_mode = 3
 
-[node name="Button" type="Button" parent="." unique_id=1134063829]
-offset_left = -65.0
-offset_top = 43.0
-offset_right = 65.0
-offset_bottom = 66.0
-text = "Play"
-
-[connection signal="pressed" from="Button" to="." method="_on_button_pressed"]
+[connection signal="pressed" from="NewGameButton" to="." method="_on_new_game_button_pressed"]
+[connection signal="pressed" from="SettingsButton" to="." method="_on_settings_button_pressed"]
