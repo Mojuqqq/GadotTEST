@@ -515,23 +515,33 @@ func _center_window_on_screen(
 		)
 	)
 
+	var horizontal_offset: int = maxi(
+		int(
+			(
+				float(usable_rect.size.x)
+				- float(window_size.x)
+			)
+			/ 2.0
+		),
+		0
+	)
+
+	var vertical_offset: int = maxi(
+		int(
+			(
+				float(usable_rect.size.y)
+				- float(window_size.y)
+			)
+			/ 2.0
+		),
+		0
+	)
+
 	var window_position := Vector2i(
 		usable_rect.position.x
-		+ maxi(
-			(
-				usable_rect.size.x
-				- window_size.x
-			) / 2,
-			0
-		),
+		+ horizontal_offset,
 		usable_rect.position.y
-		+ maxi(
-			(
-				usable_rect.size.y
-				- window_size.y
-			) / 2,
-			0
-		)
+		+ vertical_offset
 	)
 
 	DisplayServer.window_set_position(

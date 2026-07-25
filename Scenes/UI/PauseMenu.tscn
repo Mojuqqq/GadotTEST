@@ -13,6 +13,7 @@
 [ext_resource type="Texture2D" uid="uid://dmq2f7i6ckc5c" path="res://Assets/Art/UI/button_close.png" id="11_kpum6"]
 [ext_resource type="Texture2D" uid="uid://d0t6wp7rxo425" path="res://Assets/Art/UI/button_close_press.png" id="12_e6kvg"]
 [ext_resource type="Texture2D" uid="uid://nimdybv21mpl" path="res://Assets/Art/UI/button_close_hover.png" id="13_rkfds"]
+[ext_resource type="PackedScene" uid="uid://c1c8qo1iqbg5u" path="res://Scenes/UI/SettingsMenu.tscn" id="14_e6kvg"]
 
 [sub_resource type="StyleBoxTexture" id="StyleBoxTexture_i1ury"]
 content_margin_left = 60.0
@@ -163,6 +164,8 @@ oversampling_override = 1.0
 [node name="ExitRunDialog" type="ConfirmationDialog" parent="." unique_id=2004716105]
 unique_name_in_owner = true
 oversampling_override = 1.0
+
+[node name="SettingsMenu" parent="." unique_id=1734913198 instance=ExtResource("14_e6kvg")]
 
 [connection signal="pressed" from="ContinueButton" to="." method="_on_continue_button_pressed"]
 [connection signal="pressed" from="NextFloorButton" to="." method="_on_next_floor_button_pressed"]

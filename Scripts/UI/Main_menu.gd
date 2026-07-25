@@ -22,15 +22,14 @@ func _ready() -> void:
 			_on_settings_menu_closed
 		)
 
-	settings_button.grab_focus()
-
 
 func _on_settings_button_pressed() -> void:
+	settings_button.release_focus()
 	settings_menu.open_menu()
 
 
 func _on_settings_menu_closed() -> void:
-	settings_button.grab_focus()
+	settings_button.release_focus()
 
 
 func _on_new_game_button_pressed() -> void:

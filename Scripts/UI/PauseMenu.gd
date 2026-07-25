@@ -5,6 +5,8 @@ extends CanvasLayer
 @onready var exit_run_dialog: ConfirmationDialog = (%ExitRunDialog)
 @onready var close_button: TextureButton = ($CloseButton)
 @onready var outside_tap_area: Control = ($black_bg)
+@onready var settings_button: Button = ($SettingsButton)
+@onready var settings_menu: SettingsMenu = ($SettingsMenu)
 
 var exit_will_save_gold: bool = false
 
@@ -45,11 +47,37 @@ func _ready() -> void:
 		outside_tap_area.gui_input.connect(
 			_on_outside_tap_area_gui_input
 		)
+		
+	if not settings_button.pressed.is_connected(
+		_on_settings_button_pressed
+	):
+		settings_button.pressed.connect(
+			_on_settings_button_pressed
+		)
+
+	if not settings_menu.closed.is_connected(
+		_on_settings_menu_closed
+	):
+		settings_menu.closed.connect(
+			_on_settings_menu_closed
+		)
 
 
-func _input(event: InputEvent) -> void:
-	if event.is_action_pressed("pause"):
-		toggle_pause()
+func _input(
+	event: InputEvent
+) -> void:
+	if not event.is_action_pressed(
+		"pause"
+	):
+		return
+
+	get_viewport().set_input_as_handled()
+
+	if settings_menu.is_menu_open():
+		settings_menu.close_menu()
+		return
+
+	toggle_pause()
 
 
 func toggle_pause() -> void:
@@ -159,7 +187,19 @@ func _on_exit_run_confirmed() -> void:
 	else:
 		GameManager.abandon_run_and_return_to_menu()
 		
+func _on_settings_button_pressed() -> void:
+	get_viewport().gui_release_focus()
+	settings_menu.open_menu()
+
+
+func _on_settings_menu_closed() -> void:
+	get_viewport().gui_release_focus()
+
 func close_pause_menu() -> void:
+	if settings_menu.is_menu_open():
+		settings_menu.close_menu()
+		return
+
 	visible = false
 	get_tree().paused = false
 	

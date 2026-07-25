@@ -98,14 +98,14 @@ func open_menu() -> void:
 		Input.MOUSE_MODE_VISIBLE
 	)
 
-	back_button.grab_focus()
-
 	opened.emit()
 
 
 func close_menu() -> void:
 	if not visible:
 		return
+
+	get_viewport().gui_release_focus()
 
 	visible = false
 	closed.emit()
@@ -404,6 +404,7 @@ func _on_close_button_pressed() -> void:
 
 
 func _on_back_button_pressed() -> void:
+	back_button.release_focus()
 	close_menu()
 
 
