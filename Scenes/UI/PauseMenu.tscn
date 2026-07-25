@@ -59,6 +59,7 @@ offset_top = 208.0
 offset_right = 1339.0
 offset_bottom = 1131.0
 scale = Vector2(0.6, 0.6)
+mouse_filter = 0
 texture = ExtResource("2_238ko")
 
 [node name="Title" type="Label" parent="." unique_id=1457287629]

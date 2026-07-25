@@ -3,6 +3,8 @@ extends CanvasLayer
 @onready var next_floor_button: Button = ($NextFloorButton)
 @onready var next_floor_dialog: ConfirmationDialog = ($NextFloorDialog)
 @onready var exit_run_dialog: ConfirmationDialog = (%ExitRunDialog)
+@onready var close_button: TextureButton = ($CloseButton)
+@onready var outside_tap_area: Control = ($black_bg)
 
 var exit_will_save_gold: bool = false
 
@@ -30,6 +32,19 @@ func _ready() -> void:
 			_on_exit_run_confirmed
 		)
 
+	if not close_button.pressed.is_connected(
+		_on_close_button_pressed
+	):
+		close_button.pressed.connect(
+			_on_close_button_pressed
+		)
+	
+	if not outside_tap_area.gui_input.is_connected(
+		_on_outside_tap_area_gui_input
+	):
+		outside_tap_area.gui_input.connect(
+			_on_outside_tap_area_gui_input
+		)
 
 
 func _input(event: InputEvent) -> void:
@@ -46,7 +61,7 @@ func toggle_pause() -> void:
 
 
 func _on_continue_button_pressed() -> void:
-	toggle_pause()
+	close_pause_menu()
 
 
 func _on_next_floor_button_pressed() -> void:
@@ -143,3 +158,37 @@ func _on_exit_run_confirmed() -> void:
 		GameManager.finish_run_and_return_to_menu()
 	else:
 		GameManager.abandon_run_and_return_to_menu()
+		
+func close_pause_menu() -> void:
+	visible = false
+	get_tree().paused = false
+	
+func _on_close_button_pressed() -> void:
+	close_pause_menu()
+
+func _on_outside_tap_area_gui_input(
+	event: InputEvent
+) -> void:
+	if event is InputEventMouseButton:
+		var mouse_event := (
+			event as InputEventMouseButton
+		)
+
+		if (
+			mouse_event.button_index
+			== MOUSE_BUTTON_LEFT
+			and mouse_event.pressed
+		):
+			outside_tap_area.accept_event()
+			close_pause_menu()
+
+		return
+
+	if event is InputEventScreenTouch:
+		var touch_event := (
+			event as InputEventScreenTouch
+		)
+
+		if touch_event.pressed:
+			outside_tap_area.accept_event()
+			close_pause_menu()
