@@ -154,15 +154,18 @@ func _on_enemy_died(victim: Node):
 	# В комнате босса сначала появляется
 	# наградной сундук. Этаж завершится
 	# только после получения награды.
-		if is_boss_room():
-			print(
-				"Босс побеждён. "
-				+ "Создаём наградной сундук."
-			)
+	if is_boss_room():
+		GameManager.add_keys(1)
 
-			call_deferred(
-				"spawn_chest"
-			)
+		print(
+			"Босс побеждён. "
+			+ "Получен гарантированный ключ. "
+			+ "Создаём наградной сундук."
+		)
+
+		call_deferred(
+			"spawn_chest"
+		)
 
 func spawn_enemies(count: int, enemy_pool: Array):
 	if count <= 0 or enemy_pool.size() == 0:
@@ -239,11 +242,6 @@ func spawn_chest() -> void:
 	chest.item = item
 
 	if is_boss_room():
-		chest.set(
-			"requires_key",
-			false
-		)
-
 		if chest.has_signal("collected"):
 			chest.connect(
 				"collected",

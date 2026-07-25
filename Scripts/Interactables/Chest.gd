@@ -179,7 +179,7 @@ func _try_open_chest() -> void:
 
 			_show_no_key_feedback()
 			return
-
+	open(added_amount)
 
 func open(added_amount: int) -> void:
 	if is_opened:
@@ -189,6 +189,15 @@ func open(added_amount: int) -> void:
 	player_near = false
 	interaction_label.visible = false
 
+	# Сундук уже собран, поэтому скрываем его
+	# и отключаем дальнейшее взаимодействие.
+	visible = false
+
+	set_deferred(
+		"monitoring",
+		false
+	)
+
 	print(
 		"Получен предмет в инвентарь: ",
 		item.name,
@@ -196,8 +205,20 @@ func open(added_amount: int) -> void:
 		added_amount
 	)
 
-	show_reward(added_amount)
+	var reward_popup: Node = (
+		show_reward(added_amount)
+	)
 
+	# Ждём, пока RewardPopup завершит Tween
+	# и удалится из дерева сцены.
+	if (
+		reward_popup != null
+		and is_instance_valid(reward_popup)
+	):
+		await reward_popup.tree_exited
+
+	# Только после окончания анимации сообщаем
+	# комнате босса, что награда полностью собрана.
 	collected.emit(
 		item,
 		added_amount
@@ -208,7 +229,7 @@ func open(added_amount: int) -> void:
 
 func show_reward(
 	added_amount: int
-) -> void:
+) -> Node:
 	var popup_scene: PackedScene = preload(
 		"res://Scenes/UI/Reward_popup.tscn"
 	)
@@ -221,7 +242,8 @@ func show_reward(
 		push_warning(
 			"Не удалось создать RewardPopup."
 		)
-		return
+
+		return null
 
 	var current_scene: Node = (
 		get_tree().current_scene
@@ -229,14 +251,21 @@ func show_reward(
 
 	if current_scene == null:
 		popup.queue_free()
-		return
+		return null
 
 	current_scene.add_child(popup)
 
 	if popup is Node2D:
-		popup.global_position = (
+		var popup_2d: Node2D = (
+			popup as Node2D
+		)
+
+		popup_2d.global_position = (
 			global_position
-			+ Vector2(0, -40)
+			+ Vector2(
+				0.0,
+				-40.0
+			)
 		)
 
 	if popup.has_method("setup"):
@@ -249,6 +278,11 @@ func show_reward(
 		push_warning(
 			"У RewardPopup отсутствует setup()."
 		)
+
+		popup.queue_free()
+		return null
+
+	return popup
 
 func _show_feedback(
 	message: String
