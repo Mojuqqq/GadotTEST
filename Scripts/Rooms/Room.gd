@@ -13,6 +13,16 @@ enum RoomType {
 
 @export_group("Room Settings")
 var room_type: RoomType = RoomType.COMBAT
+@export_group("Enemy Spawn")
+
+@export_range(80.0, 250.0, 10.0)
+var enemy_wall_margin: float = 140.0
+
+@export_range(40.0, 200.0, 10.0)
+var enemy_spawn_spacing: float = 100.0
+
+@export_range(1, 50, 1)
+var enemy_spawn_attempts: int = 20
 
 var doors: Array = []
 var enemies: Array = []
@@ -167,36 +177,173 @@ func _on_enemy_died(victim: Node):
 			"spawn_chest"
 		)
 
-func spawn_enemies(count: int, enemy_pool: Array):
-	if count <= 0 or enemy_pool.size() == 0:
+func spawn_enemies(
+	count: int,
+	enemy_pool: Array
+) -> void:
+	if count <= 0 or enemy_pool.is_empty():
 		return
-	
-	var room_width = GameManager.room_width
-	var room_height = GameManager.room_height
-	var margin = 50
-	var room_pos = global_position
-	var limits = Rect2(room_pos.x, room_pos.y, room_width, room_height)
 
-	for i in range(count):
-		var enemy_scene = enemy_pool[randi_range(0, enemy_pool.size() - 1)]
-		var enemy = enemy_scene.instantiate()
+	var room_width: float = float(
+		GameManager.room_width
+	)
+
+	var room_height: float = float(
+		GameManager.room_height
+	)
+
+	var safe_width: float = maxf(
+		room_width - enemy_wall_margin * 2.0,
+		1.0
+	)
+
+	var safe_height: float = maxf(
+		room_height - enemy_wall_margin * 2.0,
+		1.0
+	)
+
+	# Врагам передаются не внешние границы комнаты,
+	# а безопасная область внутри стен.
+	var safe_global_limits := Rect2(
+		global_position
+		+ Vector2(
+			enemy_wall_margin,
+			enemy_wall_margin
+		),
+		Vector2(
+			safe_width,
+			safe_height
+		)
+	)
+
+	var spawned_positions: Array[Vector2] = []
+
+	for index in range(count):
+		var enemy_scene: PackedScene = (
+			enemy_pool.pick_random()
+		)
+
+		if enemy_scene == null:
+			continue
+
+		var enemy := (
+			enemy_scene.instantiate()
+			as Node2D
+		)
+
+		if enemy == null:
+			push_warning(
+				"Корень сцены врага должен быть Node2D."
+			)
+			continue
+
+		var spawn_position: Vector2 = (
+			_get_enemy_spawn_position(
+				spawned_positions,
+				room_width,
+				room_height
+			)
+		)
+
+		# Позицию задаём ДО add_child().
+		# Так коллизия не появляется сначала
+		# в углу комнаты внутри стены.
+		enemy.position = spawn_position
+
 		add_child(enemy)
-		
-		var x = randf_range(margin, room_width - margin)
-		var y = randf_range(margin, room_height - margin)
-		enemy.position = Vector2(x, y)
-		
+
+		spawned_positions.append(
+			spawn_position
+		)
+
 		if enemy.has_method("set_room_limits"):
-			enemy.set_room_limits(limits)
-		
+			enemy.call(
+				"set_room_limits",
+				safe_global_limits
+			)
+
 		if enemy.has_method("set_active"):
-			enemy.set_active(false)
+			enemy.call(
+				"set_active",
+				false
+			)
 		else:
 			enemy.process_mode = (
 				Node.PROCESS_MODE_DISABLED
 			)
-		
-		print("Создан враг в комнате ", name, " на позиции ", enemy.position)
+
+		print(
+			"Создан враг в комнате ",
+			name,
+			" на позиции ",
+			enemy.position
+		)
+
+func _get_enemy_spawn_position(
+	spawned_positions: Array[Vector2],
+	room_width: float,
+	room_height: float
+) -> Vector2:
+	var minimum_x: float = enemy_wall_margin
+	var maximum_x: float = (
+		room_width - enemy_wall_margin
+	)
+
+	var minimum_y: float = enemy_wall_margin
+	var maximum_y: float = (
+		room_height - enemy_wall_margin
+	)
+
+	# Страховка на случай слишком маленькой комнаты.
+	if (
+		minimum_x >= maximum_x
+		or minimum_y >= maximum_y
+	):
+		return Vector2(
+			room_width * 0.5,
+			room_height * 0.5
+		)
+
+	var last_candidate := Vector2(
+		room_width * 0.5,
+		room_height * 0.5
+	)
+
+	for attempt in range(
+		enemy_spawn_attempts
+	):
+		var candidate := Vector2(
+			randf_range(
+				minimum_x,
+				maximum_x
+			),
+			randf_range(
+				minimum_y,
+				maximum_y
+			)
+		)
+
+		last_candidate = candidate
+
+		var position_is_safe: bool = true
+
+		for existing_position in spawned_positions:
+			if (
+				candidate.distance_to(
+					existing_position
+				)
+				< enemy_spawn_spacing
+			):
+				position_is_safe = false
+				break
+
+		if position_is_safe:
+			return candidate
+
+	# При плотном заполнении комнаты возвращается
+	# последняя найденная позиция, но она всё равно
+	# находится далеко от стен.
+	return last_candidate
 
 func spawn_chest() -> void:
 	if (
