@@ -1,0 +1,198 @@
+[gd_scene format=3 uid="uid://c1c8qo1iqbg5u"]
+
+[ext_resource type="Texture2D" uid="uid://bevayswkwuuw5" path="res://Assets/Art/UI/popup_bg.png" id="1_owj4x"]
+[ext_resource type="Texture2D" uid="uid://dmq2f7i6ckc5c" path="res://Assets/Art/UI/button_close.png" id="2_3hh3s"]
+[ext_resource type="Texture2D" uid="uid://d0t6wp7rxo425" path="res://Assets/Art/UI/button_close_press.png" id="3_83xbh"]
+[ext_resource type="Texture2D" uid="uid://nimdybv21mpl" path="res://Assets/Art/UI/button_close_hover.png" id="4_v1gh5"]
+
+[node name="SettingsMenu" type="Control" unique_id=1734913198]
+process_mode = 3
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="DimBackground" type="Panel" parent="." unique_id=1357967448]
+self_modulate = Color(0, 0, 0, 0.25490198)
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Panel" type="TextureRect" parent="." unique_id=1193734445]
+layout_mode = 0
+offset_left = 138.0
+offset_top = 50.0
+offset_right = 1142.0
+offset_bottom = 974.0
+scale = Vector2(0.6, 0.6)
+pivot_offset = Vector2(502, 462)
+mouse_filter = 0
+texture = ExtResource("1_owj4x")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="CloseButton" type="TextureButton" parent="." unique_id=523184541]
+layout_mode = 0
+offset_left = 857.0
+offset_top = 256.0
+offset_right = 942.0
+offset_bottom = 342.38208
+texture_normal = ExtResource("2_3hh3s")
+texture_pressed = ExtResource("3_83xbh")
+texture_hover = ExtResource("4_v1gh5")
+ignore_texture_size = true
+stretch_mode = 0
+
+[node name="Content" type="MarginContainer" parent="." unique_id=888446821]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -24.5
+offset_top = -156.0
+offset_right = 24.5
+offset_bottom = 156.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/margin_left = 20
+theme_override_constants/margin_top = 10
+theme_override_constants/margin_right = 20
+theme_override_constants/margin_bottom = 10
+
+[node name="SettingsVBox" type="VBoxContainer" parent="Content" unique_id=442514361]
+layout_mode = 2
+theme_override_constants/separation = 12
+
+[node name="Title" type="Label" parent="Content/SettingsVBox" unique_id=43734412]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.8392157, 0.7254902, 0.5411765, 1)
+theme_override_colors/font_outline_color = Color(0.13333334, 0.09019608, 0.043137256, 1)
+theme_override_constants/outline_size = 8
+theme_override_font_sizes/font_size = 40
+text = "Настройки"
+horizontal_alignment = 1
+
+[node name="AudioTitle" type="Label" parent="Content/SettingsVBox" unique_id=27109698]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.8392157, 0.7254902, 0.5411765, 1)
+theme_override_colors/font_outline_color = Color(0.13333334, 0.09019608, 0.043137256, 1)
+theme_override_constants/outline_size = 5
+theme_override_font_sizes/font_size = 20
+text = "Звук"
+
+[node name="MasterRow" type="HBoxContainer" parent="Content/SettingsVBox" unique_id=1145493682]
+layout_mode = 2
+
+[node name="MasterLabel" type="Label" parent="Content/SettingsVBox/MasterRow" unique_id=1483568691]
+custom_minimum_size = Vector2(220, 44)
+layout_mode = 2
+text = "Общая громкость"
+vertical_alignment = 1
+
+[node name="MasterSlider" type="HSlider" parent="Content/SettingsVBox/MasterRow" unique_id=1205868663]
+layout_mode = 2
+size_flags_horizontal = 3
+value = 100.0
+
+[node name="MasterValue" type="Label" parent="Content/SettingsVBox/MasterRow" unique_id=228852339]
+custom_minimum_size = Vector2(70, 44)
+layout_mode = 2
+text = "100%"
+horizontal_alignment = 2
+vertical_alignment = 1
+
+[node name="MusicRow" type="HBoxContainer" parent="Content/SettingsVBox" unique_id=1233348847]
+layout_mode = 2
+
+[node name="MusicLabel" type="Label" parent="Content/SettingsVBox/MusicRow" unique_id=529404467]
+custom_minimum_size = Vector2(220, 44)
+layout_mode = 2
+text = "Музыка"
+vertical_alignment = 1
+
+[node name="MusicSlider" type="HSlider" parent="Content/SettingsVBox/MusicRow" unique_id=595602403]
+layout_mode = 2
+size_flags_horizontal = 3
+value = 100.0
+
+[node name="MusicValue" type="Label" parent="Content/SettingsVBox/MusicRow" unique_id=847661487]
+custom_minimum_size = Vector2(70, 44)
+layout_mode = 2
+text = "100%"
+horizontal_alignment = 2
+vertical_alignment = 1
+
+[node name="EffectsRow" type="HBoxContainer" parent="Content/SettingsVBox" unique_id=511091986]
+layout_mode = 2
+
+[node name="EffectsLabel" type="Label" parent="Content/SettingsVBox/EffectsRow" unique_id=1414762925]
+custom_minimum_size = Vector2(220, 44)
+layout_mode = 2
+text = "Эффекты"
+vertical_alignment = 1
+
+[node name="EffectsSlider" type="HSlider" parent="Content/SettingsVBox/EffectsRow" unique_id=1606086440]
+layout_mode = 2
+size_flags_horizontal = 3
+value = 100.0
+
+[node name="EffectsValue" type="Label" parent="Content/SettingsVBox/EffectsRow" unique_id=1401617986]
+custom_minimum_size = Vector2(70, 44)
+layout_mode = 2
+text = "100%"
+horizontal_alignment = 2
+vertical_alignment = 1
+
+[node name="VideoTitle" type="Label" parent="Content/SettingsVBox" unique_id=130175535]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.8392157, 0.7254902, 0.5411765, 1)
+theme_override_colors/font_outline_color = Color(0.13333334, 0.09019608, 0.043137256, 1)
+theme_override_constants/outline_size = 5
+theme_override_font_sizes/font_size = 20
+text = "Экран"
+
+[node name="FullscreenRow" type="HBoxContainer" parent="Content/SettingsVBox" unique_id=1529619509]
+layout_mode = 2
+
+[node name="FullscreenLabel" type="Label" parent="Content/SettingsVBox/FullscreenRow" unique_id=259281590]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Полноэкранный режим"
+
+[node name="FullscreenCheck" type="CheckButton" parent="Content/SettingsVBox/FullscreenRow" unique_id=1937647812]
+layout_mode = 2
+text = "Включено"
+
+[node name="ResolutionRow" type="HBoxContainer" parent="Content/SettingsVBox" unique_id=1943454391]
+layout_mode = 2
+
+[node name="ResolutionLabel" type="Label" parent="Content/SettingsVBox/ResolutionRow" unique_id=853658029]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Разрешение"
+
+[node name="ResolutionOption" type="OptionButton" parent="Content/SettingsVBox/ResolutionRow" unique_id=679457145]
+custom_minimum_size = Vector2(220, 48)
+layout_mode = 2
+
+[node name="ButtonsRow" type="HBoxContainer" parent="Content/SettingsVBox" unique_id=2052814053]
+layout_mode = 2
+theme_override_constants/separation = 20
+alignment = 1
+
+[node name="ResetButton" type="Button" parent="Content/SettingsVBox/ButtonsRow" unique_id=1001553385]
+custom_minimum_size = Vector2(230, 64)
+layout_mode = 2
+text = "Сбросить"
+
+[node name="BackButton" type="Button" parent="Content/SettingsVBox/ButtonsRow" unique_id=2142679487]
+custom_minimum_size = Vector2(230, 64)
+layout_mode = 2
+text = "Назад"

@@ -9,6 +9,7 @@
 [ext_resource type="Texture2D" uid="uid://bebavxso105y7" path="res://Assets/Art/UI/button_new_game.png" id="6_2tscw"]
 [ext_resource type="Texture2D" uid="uid://cflrib13kjv45" path="res://Assets/Art/UI/button_settings.png" id="7_uhpec"]
 [ext_resource type="Texture2D" uid="uid://bgrxf40uj0lds" path="res://Assets/Art/UI/title_panel.png" id="9_cdexa"]
+[ext_resource type="PackedScene" uid="uid://c1c8qo1iqbg5u" path="res://Scenes/UI/SettingsMenu.tscn" id="10_i4k7f"]
 
 [sub_resource type="StyleBoxTexture" id="StyleBoxTexture_et2pw"]
 content_margin_left = 60.0
@@ -131,6 +132,9 @@ text = "Binding of Dina"
 horizontal_alignment = 1
 vertical_alignment = 1
 autowrap_mode = 3
+
+[node name="SettingsMenu" parent="." unique_id=1734913198 instance=ExtResource("10_i4k7f")]
+visible = false
 
 [connection signal="pressed" from="NewGameButton" to="." method="_on_new_game_button_pressed"]
 [connection signal="pressed" from="SettingsButton" to="." method="_on_settings_button_pressed"]
