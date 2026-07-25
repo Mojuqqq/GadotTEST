@@ -231,23 +231,23 @@ func spawn_chest() -> void:
 
 	add_child(chest)
 
-	var margin: float = 100.0
+	var chest_spawn_point := get_node_or_null(
+		"ChestSpawnPoint"
+	) as Marker2D
 
-	var x: float = randf_range(
-		margin,
-		GameManager.room_width - margin
-	)
-
-	var y: float = randf_range(
-		margin,
-		GameManager.room_height - margin
-	)
-
-	chest.position = Vector2(x, y)
+	if chest_spawn_point != null:
+		chest.position = chest_spawn_point.position
+	else:
+		chest.position = Vector2(
+			GameManager.room_width * 0.5,
+			GameManager.room_height * 0.5
+		)
 
 	print(
 		"Сундук создан в комнате сокровищ: ",
-		name
+		name,
+		" на позиции: ",
+		chest.position
 	)
 	
 func set_room_type(new_type: RoomType) -> void:

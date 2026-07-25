@@ -1,5 +1,6 @@
 extends Node2D
 
+
 @export var duration: float = 1.5          # длительность анимации
 @export var rise_distance: float = 120.0  # высота подъёма
 @export var scale_to: float = 1.8         # максимальный масштаб

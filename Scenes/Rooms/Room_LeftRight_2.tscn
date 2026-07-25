@@ -75,3 +75,6 @@ position = Vector2(131, 509)
 
 [node name="ReturnSpawnPoint" type="Marker2D" parent="." unique_id=944863583]
 position = Vector2(1206, 522)
+
+[node name="ChestSpawnPoint" type="Marker2D" parent="." unique_id=657039543]
+position = Vector2(785, 391)

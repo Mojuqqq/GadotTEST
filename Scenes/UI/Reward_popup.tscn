@@ -1,6 +1,6 @@
 [gd_scene format=3 uid="uid://bj2fd5o8uk871"]
 
-[ext_resource type="Script" uid="uid://cjermsexk71bp" path="res://Scripts/RewardPopup.gd" id="1_pn0ow"]
+[ext_resource type="Script" uid="uid://cjermsexk71bp" path="res://Scripts/UI/RewardPopup.gd" id="1_pn0ow"]
 
 [node name="RewardPopup" type="Node2D" unique_id=1535442634]
 script = ExtResource("1_pn0ow")
@@ -13,7 +13,7 @@ offset_bottom = -40.5
 horizontal_alignment = 1
 
 [node name="Icon" type="Sprite2D" parent="." unique_id=119467427]
-scale = Vector2(0.5, 0.5)
+scale = Vector2(0.4, 0.4)
 
 [node name="DescLabel" type="Label" parent="." unique_id=564771447]
 offset_left = -122.0
