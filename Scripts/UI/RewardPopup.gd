@@ -3,7 +3,7 @@ extends Node2D
 
 @export var appear_duration: float = 0.25
 @export var hold_duration: float = 2.5
-@export var fade_duration: float = 0.4
+@export var fade_duration: float = 0.9
 
 @export var appear_rise_distance: float = 16.0
 @export var fade_rise_distance: float = 24.0
