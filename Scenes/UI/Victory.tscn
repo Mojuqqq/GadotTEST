@@ -1,40 +1,130 @@
 [gd_scene format=3 uid="uid://ccnxwf2kq3e5g"]
 
-[ext_resource type="Script" uid="uid://c2ec0iyfka1mf" path="res://Scripts/Victory.gd" id="1_w158h"]
+[ext_resource type="Script" uid="uid://c2ec0iyfka1mf" path="res://Scripts/UI/Victory.gd" id="1_w158h"]
+[ext_resource type="Texture2D" uid="uid://bevayswkwuuw5" path="res://Assets/Art/UI/popup_bg.png" id="2_5vo0r"]
+[ext_resource type="Texture2D" uid="uid://bi81a3d8rvn5y" path="res://Assets/Art/UI/button_menu.png" id="3_j8jk0"]
+[ext_resource type="Texture2D" uid="uid://c47rd24txaw7x" path="res://Assets/Art/UI/button_menu_press.png" id="4_tsk0s"]
+[ext_resource type="Texture2D" uid="uid://ccy8td0wnwlme" path="res://Assets/Art/UI/button_menu_hover.png" id="5_dc284"]
+[ext_resource type="Texture2D" uid="uid://dvjno2yqygdae" path="res://Assets/Art/UI/button_continue.png" id="6_sh2an"]
+[ext_resource type="Texture2D" uid="uid://gs3itu36ws3a" path="res://Assets/Art/UI/button_menu_disabled.png" id="7_vxxyd"]
+[ext_resource type="Texture2D" uid="uid://dhrsk6u8ygglw" path="res://Assets/Art/UI/button_next_floor.png" id="8_a61uc"]
+[ext_resource type="Texture2D" uid="uid://cbwf6i772s76x" path="res://Assets/Art/UI/button_main_menu.png" id="9_86cbq"]
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_tw72b"]
+content_margin_left = 60.0
+content_margin_top = 18.0
+content_margin_right = 60.0
+content_margin_bottom = 18.0
+texture = ExtResource("3_j8jk0")
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_qs2ja"]
+content_margin_left = 60.0
+content_margin_top = 18.0
+content_margin_right = 60.0
+content_margin_bottom = 18.0
+texture = ExtResource("4_tsk0s")
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_rs6gy"]
+content_margin_left = 60.0
+content_margin_top = 18.0
+content_margin_right = 60.0
+content_margin_bottom = 18.0
+texture = ExtResource("5_dc284")
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_jbbd3"]
+content_margin_left = 60.0
+content_margin_top = 18.0
+content_margin_right = 60.0
+content_margin_bottom = 18.0
+texture = ExtResource("7_vxxyd")
 
 [node name="Victory" type="CanvasLayer" unique_id=1377435284]
-offset = Vector2(640, 512)
-transform = Transform2D(1, 0, 0, 1, 640, 512)
 script = ExtResource("1_w158h")
 
-[node name="Panel" type="Panel" parent="." unique_id=1558507445]
-offset_left = -304.0
-offset_top = -134.0
-offset_right = 310.0
-offset_bottom = 192.0
+[node name="black_bg" type="Panel" parent="." unique_id=689865070]
+modulate = Color(0, 0, 0, 0.5882353)
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
 
-[node name="Label" type="Label" parent="." unique_id=1457287629]
-offset_left = -60.0
-offset_top = -85.0
-offset_right = 59.0
-offset_bottom = -62.0
+[node name="Panel" type="TextureRect" parent="." unique_id=1833589367]
+offset_left = 138.0
+offset_top = 50.0
+offset_right = 1142.0
+offset_bottom = 974.0
+scale = Vector2(0.6, 0.6)
+pivot_offset = Vector2(502, 462)
+mouse_filter = 0
+texture = ExtResource("2_5vo0r")
+
+[node name="Title" type="Label" parent="." unique_id=707808920]
+offset_left = 500.0
+offset_top = 266.0
+offset_right = 772.0
+offset_bottom = 321.0
+theme_override_colors/font_color = Color(0.8392157, 0.7254902, 0.5411765, 1)
+theme_override_colors/font_outline_color = Color(0.13333334, 0.09019608, 0.043137256, 1)
+theme_override_constants/outline_size = 8
+theme_override_font_sizes/font_size = 40
 text = "Победа!"
 horizontal_alignment = 1
+vertical_alignment = 1
 
-[node name="Button" type="Button" parent="." unique_id=1134063829]
-offset_left = -65.0
-offset_top = 43.0
-offset_right = 65.0
-offset_bottom = 66.0
-text = "Переиграть"
+[node name="ContinueButton" type="Button" parent="." unique_id=1541792457]
+offset_left = 425.0
+offset_top = 390.0
+offset_right = 843.0
+offset_bottom = 470.0
+theme_override_colors/font_color = Color(0.8392157, 0.7254902, 0.5411765, 1)
+theme_override_colors/font_pressed_color = Color(0.8392157, 0.7254902, 0.5411765, 1)
+theme_override_colors/font_hover_color = Color(0.8392157, 0.7254902, 0.5411765, 1)
+theme_override_colors/font_outline_color = Color(0.13333334, 0.09019608, 0.043137256, 1)
+theme_override_constants/outline_size = 8
+theme_override_styles/normal = SubResource("StyleBoxTexture_tw72b")
+theme_override_styles/pressed = SubResource("StyleBoxTexture_qs2ja")
+theme_override_styles/hover = SubResource("StyleBoxTexture_rs6gy")
+text = "Продолжить на этом этаже"
+icon = ExtResource("6_sh2an")
+expand_icon = true
 
-[node name="MenuButton" type="Button" parent="." unique_id=1165666248]
-offset_left = -65.0
-offset_top = 84.0
-offset_right = 62.0
-offset_bottom = 115.0
-text = "Главное меню
-"
+[node name="NextFloorButton" type="Button" parent="." unique_id=604211113]
+offset_left = 425.0
+offset_top = 505.0
+offset_right = 843.0
+offset_bottom = 585.0
+theme_override_colors/font_color = Color(0.8392157, 0.7254902, 0.5411765, 1)
+theme_override_colors/font_pressed_color = Color(0.8392157, 0.7254902, 0.5411765, 1)
+theme_override_colors/font_hover_color = Color(0.8392157, 0.7254902, 0.5411765, 1)
+theme_override_colors/font_disabled_color = Color(0.875, 0.875, 0.875, 0.5)
+theme_override_colors/font_outline_color = Color(0.13333334, 0.09019608, 0.043137256, 1)
+theme_override_constants/outline_size = 8
+theme_override_styles/normal = SubResource("StyleBoxTexture_tw72b")
+theme_override_styles/pressed = SubResource("StyleBoxTexture_qs2ja")
+theme_override_styles/hover = SubResource("StyleBoxTexture_rs6gy")
+theme_override_styles/disabled = SubResource("StyleBoxTexture_jbbd3")
+text = "Перейти на следующий этаж"
+icon = ExtResource("8_a61uc")
+expand_icon = true
 
-[connection signal="pressed" from="Button" to="." method="_on_button_pressed"]
+[node name="MenuButton" type="Button" parent="." unique_id=1216081282]
+offset_left = 425.0
+offset_top = 614.0
+offset_right = 843.0
+offset_bottom = 694.0
+theme_override_colors/font_color = Color(0.8392157, 0.7254902, 0.5411765, 1)
+theme_override_colors/font_pressed_color = Color(0.8392157, 0.7254902, 0.5411765, 1)
+theme_override_colors/font_hover_color = Color(0.8392157, 0.7254902, 0.5411765, 1)
+theme_override_colors/font_outline_color = Color(0.13333334, 0.09019608, 0.043137256, 1)
+theme_override_constants/outline_size = 8
+theme_override_styles/normal = SubResource("StyleBoxTexture_tw72b")
+theme_override_styles/pressed = SubResource("StyleBoxTexture_qs2ja")
+theme_override_styles/hover = SubResource("StyleBoxTexture_rs6gy")
+text = "Выйти в главное меню"
+icon = ExtResource("9_86cbq")
+expand_icon = true
+
+[connection signal="pressed" from="ContinueButton" to="." method="_on_continue_button_pressed"]
+[connection signal="pressed" from="NextFloorButton" to="." method="_on_next_floor_button_pressed"]
 [connection signal="pressed" from="MenuButton" to="." method="_on_menu_button_pressed"]

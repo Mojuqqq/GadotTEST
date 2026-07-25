@@ -1,9 +1,13 @@
 extends Area2D
 
+signal collected(
+	item: ItemData,
+	amount: int
+)
 
 @export var item: ItemData
 @export var textures: Array[Texture2D]
-
+@export var requires_key: bool = true
 
 @onready var sprite: Sprite2D = $Sprite2D
 @onready var interaction_label: Label = $InteractionLabel
@@ -83,10 +87,11 @@ func _update_interaction_label() -> void:
 		interaction_label.text = "Сундук пуст"
 	elif not _has_inventory_space_for_item():
 		interaction_label.text = "Стак заполнен"
-	elif GameManager.has_key():
+	elif (
+		not requires_key
+		or GameManager.has_key()
+	):
 		interaction_label.text = "[E] Открыть"
-	else:
-		interaction_label.text = "Нужен ключ"
 
 	interaction_label.visible = true
 
@@ -111,7 +116,10 @@ func _try_open_chest() -> void:
 	if is_opened:
 		return
 
-	if not GameManager.has_key():
+	if (
+		requires_key
+		and not GameManager.has_key()
+	):
 		_show_no_key_feedback()
 		return
 
@@ -158,20 +166,19 @@ func _try_open_chest() -> void:
 		)
 		return
 
-	var key_was_used: bool = (
-		GameManager.use_key()
-	)
-
-	if not key_was_used:
-		GameManager.remove_inventory_item(
-			item.id,
-			added_amount
+	if requires_key:
+		var key_was_used: bool = (
+			GameManager.use_key()
 		)
 
-		_show_no_key_feedback()
-		return
+		if not key_was_used:
+			GameManager.remove_inventory_item(
+				item.id,
+				added_amount
+			)
 
-	open(added_amount)
+			_show_no_key_feedback()
+			return
 
 
 func open(added_amount: int) -> void:
@@ -190,6 +197,11 @@ func open(added_amount: int) -> void:
 	)
 
 	show_reward(added_amount)
+
+	collected.emit(
+		item,
+		added_amount
+	)
 
 	queue_free()
 

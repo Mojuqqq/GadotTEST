@@ -151,14 +151,18 @@ func _on_enemy_died(victim: Node):
 		unlock_doors()
 		print("Комната очищена, двери открыты!")
 
-	# Победа только после очистки конечной комнаты
-		if name == "EndRoom":
+	# В комнате босса сначала появляется
+	# наградной сундук. Этаж завершится
+	# только после получения награды.
+		if is_boss_room():
 			print(
 				"Босс побеждён. "
-				+ "Этаж завершён."
+				+ "Создаём наградной сундук."
 			)
 
-			GameManager.complete_floor()
+			call_deferred(
+				"spawn_chest"
+			)
 
 func spawn_enemies(count: int, enemy_pool: Array):
 	if count <= 0 or enemy_pool.size() == 0:
@@ -192,11 +196,16 @@ func spawn_enemies(count: int, enemy_pool: Array):
 		print("Создан враг в комнате ", name, " на позиции ", enemy.position)
 
 func spawn_chest() -> void:
-	if not is_treasure_room():
+	if (
+		not is_treasure_room()
+		and not is_boss_room()
+	):
 		push_warning(
-			"Попытка создать сундук не в TREASURE-комнате: "
+			"Попытка создать сундук "
+			+ "в неподходящей комнате: "
 			+ name
 		)
+
 		return
 
 	if GameManager.all_items.is_empty():
@@ -229,6 +238,22 @@ func spawn_chest() -> void:
 	chest.name = "GeneratedChest"
 	chest.item = item
 
+	if is_boss_room():
+		chest.set(
+			"requires_key",
+			false
+		)
+
+		if chest.has_signal("collected"):
+			chest.connect(
+				"collected",
+				Callable(
+					self,
+					"_on_boss_reward_collected"
+				),
+				CONNECT_ONE_SHOT
+			)
+
 	add_child(chest)
 
 	var chest_spawn_point := get_node_or_null(
@@ -249,7 +274,26 @@ func spawn_chest() -> void:
 		" на позиции: ",
 		chest.position
 	)
-	
+
+func _on_boss_reward_collected(
+	_item: ItemData,
+	_amount: int
+) -> void:
+	if GameManager.floor_completed:
+		return
+
+	GameManager.complete_floor()
+
+	# Короткая пауза, чтобы игрок увидел
+	# полученный предмет перед ДО победы.
+	await get_tree().create_timer(
+		0.6
+	).timeout
+
+	GameManager.trigger_game_over(
+		true
+	)
+
 func set_room_type(new_type: RoomType) -> void:
 	room_type = new_type
 	

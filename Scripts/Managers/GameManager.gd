@@ -615,6 +615,10 @@ func complete_floor() -> void:
 
 	print("Этаж успешно завершён")
 
+func resume_after_floor_victory() -> void:
+	game_over_started = false
+	state = GameState.PLAYING
+	get_tree().paused = false
 
 func go_to_next_floor() -> void:
 	if not floor_completed:

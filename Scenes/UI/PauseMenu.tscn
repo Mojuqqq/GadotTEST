@@ -54,19 +54,20 @@ grow_horizontal = 2
 grow_vertical = 2
 
 [node name="Panel" type="TextureRect" parent="." unique_id=161957785]
-offset_left = 336.0
-offset_top = 208.0
-offset_right = 1339.0
-offset_bottom = 1131.0
+offset_left = 138.0
+offset_top = 50.0
+offset_right = 1142.0
+offset_bottom = 974.0
 scale = Vector2(0.6, 0.6)
+pivot_offset = Vector2(502, 462)
 mouse_filter = 0
 texture = ExtResource("2_238ko")
 
 [node name="Title" type="Label" parent="." unique_id=1457287629]
-offset_left = 575.0
-offset_top = 239.0
-offset_right = 694.0
-offset_bottom = 294.0
+offset_left = 499.0
+offset_top = 268.0
+offset_right = 770.0
+offset_bottom = 323.0
 theme_override_colors/font_color = Color(0.8392157, 0.7254902, 0.5411765, 1)
 theme_override_colors/font_outline_color = Color(0.13333334, 0.09019608, 0.043137256, 1)
 theme_override_constants/outline_size = 8
@@ -77,9 +78,9 @@ vertical_alignment = 1
 
 [node name="ContinueButton" type="Button" parent="." unique_id=1263184364]
 offset_left = 426.0
-offset_top = 351.0
+offset_top = 380.0
 offset_right = 844.0
-offset_bottom = 431.0
+offset_bottom = 460.0
 theme_override_colors/font_color = Color(0.8392157, 0.7254902, 0.5411765, 1)
 theme_override_colors/font_pressed_color = Color(0.8392157, 0.7254902, 0.5411765, 1)
 theme_override_colors/font_hover_color = Color(0.8392157, 0.7254902, 0.5411765, 1)
@@ -94,9 +95,9 @@ expand_icon = true
 
 [node name="NextFloorButton" type="Button" parent="." unique_id=1134063829]
 offset_left = 426.0
-offset_top = 442.0
+offset_top = 471.0
 offset_right = 844.0
-offset_bottom = 522.0
+offset_bottom = 551.0
 theme_override_colors/font_color = Color(0.8392157, 0.7254902, 0.5411765, 1)
 theme_override_colors/font_pressed_color = Color(0.8392157, 0.7254902, 0.5411765, 1)
 theme_override_colors/font_hover_color = Color(0.8392157, 0.7254902, 0.5411765, 1)
@@ -113,9 +114,9 @@ expand_icon = true
 
 [node name="SettingsButton" type="Button" parent="." unique_id=1967556683]
 offset_left = 426.0
-offset_top = 535.0
+offset_top = 564.0
 offset_right = 844.0
-offset_bottom = 615.0
+offset_bottom = 644.0
 theme_override_colors/font_color = Color(0.8392157, 0.7254902, 0.5411765, 1)
 theme_override_colors/font_pressed_color = Color(0.8392157, 0.7254902, 0.5411765, 1)
 theme_override_colors/font_hover_color = Color(0.8392157, 0.7254902, 0.5411765, 1)
@@ -130,9 +131,9 @@ expand_icon = true
 
 [node name="MenuButton" type="Button" parent="." unique_id=482639398]
 offset_left = 426.0
-offset_top = 623.0
+offset_top = 652.0
 offset_right = 844.0
-offset_bottom = 703.0
+offset_bottom = 732.0
 theme_override_colors/font_color = Color(0.8392157, 0.7254902, 0.5411765, 1)
 theme_override_colors/font_pressed_color = Color(0.8392157, 0.7254902, 0.5411765, 1)
 theme_override_colors/font_hover_color = Color(0.8392157, 0.7254902, 0.5411765, 1)
@@ -147,9 +148,9 @@ expand_icon = true
 
 [node name="CloseButton" type="TextureButton" parent="." unique_id=1922628901]
 offset_left = 857.0
-offset_top = 227.0
+offset_top = 256.0
 offset_right = 942.0
-offset_bottom = 313.38208
+offset_bottom = 342.38208
 texture_normal = ExtResource("11_kpum6")
 texture_pressed = ExtResource("12_e6kvg")
 texture_hover = ExtResource("13_rkfds")
