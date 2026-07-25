@@ -1,5 +1,8 @@
 extends CanvasLayer
 
+const PASSIVE_UPGRADE_CARD_SCENE: PackedScene = preload(
+	"res://Scenes/UI/PassiveUpgradeCard.tscn"
+)
 
 @onready var item_list: VBoxContainer = %ItemList
 @onready var item_icon: TextureRect = %ItemIcon
@@ -7,15 +10,11 @@ extends CanvasLayer
 @onready var item_amount_label: Label = %ItemAmountLabel
 @onready var item_description_label: Label = %ItemDescriptionLabel
 @onready var passive_upgrades_list: VBoxContainer = (%PassiveUpgradesList)
+@onready var passive_empty_state: Control = (%PassiveEmptyState)
 
+@onready var quick_slot_buttons: HBoxContainer = (%QuickSlotButtons)
 
-@onready var quick_slot_buttons: HBoxContainer = (
-	%QuickSlotButtons
-)
-
-@onready var remove_from_quick_bar_button: Button = (
-	%RemoveFromQuickBarButton
-)
+@onready var remove_from_quick_bar_button: Button = (%RemoveFromQuickBarButton)
 
 @onready var status_label: Label = %StatusLabel
 @onready var close_button: Button = %CloseButton
@@ -505,7 +504,13 @@ func close_menu() -> void:
 		GameManager.quick_slots_changed.disconnect(
 			_on_quick_slots_changed
 		)
-
+	if GameManager.passive_upgrades_changed.is_connected(
+		_on_passive_upgrades_changed
+	):
+		GameManager.passive_upgrades_changed.disconnect(
+			_on_passive_upgrades_changed
+		)
+	
 	get_tree().paused = previous_pause_state
 	queue_free()
 
@@ -527,24 +532,31 @@ func _refresh_passive_upgrades() -> void:
 	if passive_upgrades_list == null:
 		return
 
-	for child in passive_upgrades_list.get_children():
-		passive_upgrades_list.remove_child(child)
-		child.queue_free()
+	_clear_container(
+		passive_upgrades_list
+	)
 
 	var entries: Array[Dictionary] = (
 		GameManager.get_passive_upgrade_entries()
 	)
 
-	if entries.is_empty():
-		var empty_label := Label.new()
-		empty_label.text = "Пока нет улучшений"
-		passive_upgrades_list.add_child(
-			empty_label
-		)
-		return
+	entries.sort_custom(
+		_sort_passive_upgrade_entries
+	)
+
+	passive_empty_state.visible = (
+		entries.is_empty()
+	)
+
+	passive_upgrades_list.visible = (
+		not entries.is_empty()
+	)
 
 	for entry in entries:
-		var item := entry.get("item") as ItemData
+		var item := (
+			entry.get("item") as ItemData
+		)
+
 		var count: int = int(
 			entry.get("count", 0)
 		)
@@ -552,13 +564,51 @@ func _refresh_passive_upgrades() -> void:
 		if item == null:
 			continue
 
-		var label := Label.new()
-		label.text = (
-			item.name
-			+ " ×"
-			+ str(count)
+		if count <= 0:
+			continue
+
+		var card := (
+			PASSIVE_UPGRADE_CARD_SCENE.instantiate()
+			as PassiveUpgradeCard
 		)
 
+		if card == null:
+			push_warning(
+				"Не удалось создать карточку "
+				+ "пассивного улучшения."
+			)
+			continue
+
 		passive_upgrades_list.add_child(
-			label
+			card
 		)
+
+		card.setup(
+			item,
+			count
+		)
+
+func _sort_passive_upgrade_entries(
+	first: Dictionary,
+	second: Dictionary
+) -> bool:
+	var first_item := (
+		first.get("item") as ItemData
+	)
+
+	var second_item := (
+		second.get("item") as ItemData
+	)
+
+	if first_item == null:
+		return false
+
+	if second_item == null:
+		return true
+
+	return (
+		first_item.name.naturalnocasecmp_to(
+			second_item.name
+		)
+		< 0
+	)

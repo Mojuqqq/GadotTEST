@@ -1,6 +1,6 @@
 [gd_scene format=3 uid="uid://c7q5kbxlc5eva"]
 
-[ext_resource type="Script" uid="uid://cf2hf8705yld1" path="res://Scripts/UI/InventoryMenu.gd" id="1_8irge"]
+[ext_resource type="Script" uid="uid://cofexpikh87bp" path="res://Scripts/UI/PassiveUpgradeCard.gd" id="1_8irge"]
 
 [node name="InventoryMenu" type="CanvasLayer" unique_id=1808838931]
 layer = 60

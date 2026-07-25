@@ -1,0 +1,61 @@
+[gd_scene format=3 uid="uid://xagb1jhergpv"]
+
+[ext_resource type="Script" uid="uid://cofexpikh87bp" path="res://Scripts/UI/PassiveUpgradeCard.gd" id="1_3rn7p"]
+
+[node name="PassiveUpgradeCard" type="PanelContainer" unique_id=1175387726]
+custom_minimum_size = Vector2(0, 80)
+size_flags_horizontal = 3
+script = ExtResource("1_3rn7p")
+
+[node name="MarginContainer" type="MarginContainer" parent="." unique_id=1303856394]
+layout_mode = 2
+theme_override_constants/margin_left = 12
+theme_override_constants/margin_top = 12
+theme_override_constants/margin_right = 8
+theme_override_constants/margin_bottom = 8
+
+[node name="ContentRow" type="HBoxContainer" parent="MarginContainer" unique_id=1509458885]
+layout_mode = 2
+theme_override_constants/separation = 12
+
+[node name="IconFrame" type="PanelContainer" parent="MarginContainer/ContentRow" unique_id=469299560]
+custom_minimum_size = Vector2(56, 56)
+layout_mode = 2
+
+[node name="ItemIcon" type="TextureRect" parent="MarginContainer/ContentRow/IconFrame" unique_id=623192661]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(56, 56)
+layout_mode = 2
+mouse_filter = 2
+stretch_mode = 5
+
+[node name="TextColumn" type="VBoxContainer" parent="MarginContainer/ContentRow" unique_id=516077583]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_constants/separation = 3
+
+[node name="ItemNameLabel" type="Label" parent="MarginContainer/ContentRow/TextColumn" unique_id=357009869]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_font_sizes/font_size = 18
+text = "Скоростные сапоги"
+
+[node name="ItemDescriptionLabel" type="Label" parent="MarginContainer/ContentRow/TextColumn" unique_id=2014165595]
+unique_name_in_owner = true
+modulate = Color(1, 1, 1, 0.27450982)
+custom_minimum_size = Vector2(20, 0)
+layout_mode = 2
+text = "Увеличивает скорость передвижения"
+autowrap_mode = 3
+
+[node name="StackContainer" type="CenterContainer" parent="MarginContainer/ContentRow" unique_id=1173016579]
+custom_minimum_size = Vector2(64, 0)
+layout_mode = 2
+
+[node name="StackLabel" type="Label" parent="MarginContainer/ContentRow/StackContainer" unique_id=2089917587]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_font_sizes/font_size = 20
+text = "×2"
+horizontal_alignment = 1
+vertical_alignment = 1
