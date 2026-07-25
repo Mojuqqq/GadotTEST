@@ -1,16 +1,25 @@
 extends Node2D
 
 
-@export var duration: float = 1.5          # длительность анимации
-@export var rise_distance: float = 120.0  # высота подъёма
-@export var scale_to: float = 1.8         # максимальный масштаб
+@export var appear_duration: float = 0.25
+@export var hold_duration: float = 2.5
+@export var fade_duration: float = 0.4
 
-@onready var icon = $Icon
-@onready var name_label = $NameLabel
-@onready var desc_label = $DescLabel
+@export var appear_rise_distance: float = 16.0
+@export var fade_rise_distance: float = 24.0
 
-func _ready():
-	z_index = 10  
+@export var start_scale: float = 0.75
+@export var scale_to: float = 1.25
+
+
+@onready var icon: Sprite2D = $Icon
+@onready var name_label: Label = $NameLabel
+@onready var desc_label: Label = $DescLabel
+
+
+func _ready() -> void:
+	z_index = 10
+
 
 func setup(
 	item: ItemData,
@@ -29,6 +38,7 @@ func setup(
 		icon.texture = item.icon
 		icon.visible = true
 	else:
+		icon.texture = null
 		icon.visible = false
 
 	if safe_amount > 1:
@@ -41,26 +51,48 @@ func setup(
 		name_label.text = item.name
 
 	desc_label.text = item.description
+	desc_label.visible = (
+		not item.description.is_empty()
+	)
 
-	# Начальное состояние.
-	scale = Vector2(0.2, 0.2)
+	var start_position: Vector2 = position
+
+	var visible_position: Vector2 = (
+		start_position
+		+ Vector2(
+			0.0,
+			-appear_rise_distance
+		)
+	)
+
+	var end_position: Vector2 = (
+		visible_position
+		+ Vector2(
+			0.0,
+			-fade_rise_distance
+		)
+	)
+
+	scale = Vector2.ONE * start_scale
 	modulate.a = 0.0
 
 	var tween := create_tween()
+
+	# Плавное появление.
 	tween.set_parallel(true)
 
 	tween.tween_property(
 		self,
 		"modulate:a",
 		1.0,
-		0.3
+		appear_duration
 	)
 
 	tween.tween_property(
 		self,
 		"scale",
 		Vector2.ONE * scale_to,
-		0.5
+		appear_duration
 	).set_trans(
 		Tween.TRANS_BACK
 	).set_ease(
@@ -69,24 +101,44 @@ func setup(
 
 	tween.tween_property(
 		self,
-		"position:y",
-		position.y - rise_distance,
-		duration
+		"position",
+		visible_position,
+		appear_duration
 	).set_trans(
 		Tween.TRANS_QUAD
 	).set_ease(
 		Tween.EASE_OUT
 	)
 
+	# Останавливаем уведомление,
+	# чтобы игрок успел прочитать текст.
+	tween.set_parallel(false)
+	tween.tween_interval(
+		hold_duration
+	)
+
+	# Плавное исчезновение.
+	tween.set_parallel(true)
+
 	tween.tween_property(
 		self,
 		"modulate:a",
 		0.0,
-		0.3
-	).set_delay(
-		duration - 0.3
+		fade_duration
 	)
 
+	tween.tween_property(
+		self,
+		"position",
+		end_position,
+		fade_duration
+	).set_trans(
+		Tween.TRANS_QUAD
+	).set_ease(
+		Tween.EASE_IN
+	)
+
+	tween.set_parallel(false)
 	tween.tween_callback(
 		queue_free
-	).set_delay(duration)
+	)

@@ -1,47 +1,159 @@
 [gd_scene format=3 uid="uid://cy8mddadcgpo6"]
 
 [ext_resource type="Script" uid="uid://kufldvcamw52" path="res://Scripts/UI/PauseMenu.gd" id="1_lj4oq"]
+[ext_resource type="Texture2D" uid="uid://bevayswkwuuw5" path="res://Assets/Art/UI/popup_bg.png" id="2_238ko"]
+[ext_resource type="Texture2D" uid="uid://dvjno2yqygdae" path="res://Assets/Art/UI/button_continue.png" id="3_2bpff"]
+[ext_resource type="Texture2D" uid="uid://bi81a3d8rvn5y" path="res://Assets/Art/UI/button_menu.png" id="3_djuuc"]
+[ext_resource type="Texture2D" uid="uid://c47rd24txaw7x" path="res://Assets/Art/UI/button_menu_press.png" id="4_85qas"]
+[ext_resource type="Texture2D" uid="uid://gs3itu36ws3a" path="res://Assets/Art/UI/button_menu_disabled.png" id="5_85qas"]
+[ext_resource type="Texture2D" uid="uid://ccy8td0wnwlme" path="res://Assets/Art/UI/button_menu_hover.png" id="5_qjuxo"]
+[ext_resource type="Texture2D" uid="uid://cbwf6i772s76x" path="res://Assets/Art/UI/button_main_menu.png" id="7_ftuca"]
+[ext_resource type="Texture2D" uid="uid://cflrib13kjv45" path="res://Assets/Art/UI/button_settings.png" id="7_qjuxo"]
+[ext_resource type="Texture2D" uid="uid://dhrsk6u8ygglw" path="res://Assets/Art/UI/button_next_floor.png" id="8_ftuca"]
+[ext_resource type="Texture2D" uid="uid://dmq2f7i6ckc5c" path="res://Assets/Art/UI/button_close.png" id="11_kpum6"]
+[ext_resource type="Texture2D" uid="uid://d0t6wp7rxo425" path="res://Assets/Art/UI/button_close_press.png" id="12_e6kvg"]
+[ext_resource type="Texture2D" uid="uid://nimdybv21mpl" path="res://Assets/Art/UI/button_close_hover.png" id="13_rkfds"]
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_i1ury"]
+content_margin_left = 60.0
+content_margin_top = 18.0
+content_margin_right = 60.0
+content_margin_bottom = 18.0
+texture = ExtResource("3_djuuc")
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_iv6fc"]
+content_margin_left = 60.0
+content_margin_top = 18.0
+content_margin_right = 60.0
+content_margin_bottom = 18.0
+texture = ExtResource("4_85qas")
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_roeo1"]
+content_margin_left = 60.0
+content_margin_top = 18.0
+content_margin_right = 60.0
+content_margin_bottom = 18.0
+texture = ExtResource("5_qjuxo")
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_85qas"]
+content_margin_left = 60.0
+content_margin_top = 18.0
+content_margin_right = 60.0
+content_margin_bottom = 18.0
+texture = ExtResource("5_85qas")
 
 [node name="PauseMenu" type="CanvasLayer" unique_id=1377435284]
-offset = Vector2(640, 512)
-transform = Transform2D(1, 0, 0, 1, 640, 512)
 script = ExtResource("1_lj4oq")
 
-[node name="Panel" type="Panel" parent="." unique_id=1558507445]
-offset_left = -304.0
-offset_top = -134.0
-offset_right = 310.0
-offset_bottom = 192.0
+[node name="black_bg" type="Panel" parent="." unique_id=1429136819]
+modulate = Color(0, 0, 0, 0.5882353)
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
 
-[node name="Label" type="Label" parent="." unique_id=1457287629]
-offset_left = -60.0
-offset_top = -85.0
-offset_right = 59.0
-offset_bottom = -62.0
+[node name="Panel" type="TextureRect" parent="." unique_id=161957785]
+offset_left = 336.0
+offset_top = 208.0
+offset_right = 1339.0
+offset_bottom = 1131.0
+scale = Vector2(0.6, 0.6)
+texture = ExtResource("2_238ko")
+
+[node name="Title" type="Label" parent="." unique_id=1457287629]
+offset_left = 575.0
+offset_top = 239.0
+offset_right = 694.0
+offset_bottom = 294.0
+theme_override_colors/font_color = Color(0.8392157, 0.7254902, 0.5411765, 1)
+theme_override_colors/font_outline_color = Color(0.13333334, 0.09019608, 0.043137256, 1)
+theme_override_constants/outline_size = 8
+theme_override_font_sizes/font_size = 40
 text = "Пауза"
 horizontal_alignment = 1
+vertical_alignment = 1
 
 [node name="ContinueButton" type="Button" parent="." unique_id=1263184364]
-offset_left = -122.0
-offset_top = -24.0
-offset_right = 123.0
-offset_bottom = 7.0
+offset_left = 426.0
+offset_top = 351.0
+offset_right = 844.0
+offset_bottom = 431.0
+theme_override_colors/font_color = Color(0.8392157, 0.7254902, 0.5411765, 1)
+theme_override_colors/font_pressed_color = Color(0.8392157, 0.7254902, 0.5411765, 1)
+theme_override_colors/font_hover_color = Color(0.8392157, 0.7254902, 0.5411765, 1)
+theme_override_colors/font_outline_color = Color(0.13333334, 0.09019608, 0.043137256, 1)
+theme_override_constants/outline_size = 8
+theme_override_styles/normal = SubResource("StyleBoxTexture_i1ury")
+theme_override_styles/pressed = SubResource("StyleBoxTexture_iv6fc")
+theme_override_styles/hover = SubResource("StyleBoxTexture_roeo1")
 text = "Продолжить"
+icon = ExtResource("3_2bpff")
+expand_icon = true
 
 [node name="NextFloorButton" type="Button" parent="." unique_id=1134063829]
-offset_left = -122.0
-offset_top = 17.0
-offset_right = 123.0
-offset_bottom = 48.0
+offset_left = 426.0
+offset_top = 442.0
+offset_right = 844.0
+offset_bottom = 522.0
+theme_override_colors/font_color = Color(0.8392157, 0.7254902, 0.5411765, 1)
+theme_override_colors/font_pressed_color = Color(0.8392157, 0.7254902, 0.5411765, 1)
+theme_override_colors/font_hover_color = Color(0.8392157, 0.7254902, 0.5411765, 1)
+theme_override_colors/font_disabled_color = Color(0.875, 0.875, 0.875, 0.5)
+theme_override_colors/font_outline_color = Color(0.13333334, 0.09019608, 0.043137256, 1)
+theme_override_constants/outline_size = 8
+theme_override_styles/normal = SubResource("StyleBoxTexture_i1ury")
+theme_override_styles/pressed = SubResource("StyleBoxTexture_iv6fc")
+theme_override_styles/hover = SubResource("StyleBoxTexture_roeo1")
+theme_override_styles/disabled = SubResource("StyleBoxTexture_85qas")
 text = "Перейти на следующий этаж"
+icon = ExtResource("8_ftuca")
+expand_icon = true
+
+[node name="SettingsButton" type="Button" parent="." unique_id=1967556683]
+offset_left = 426.0
+offset_top = 535.0
+offset_right = 844.0
+offset_bottom = 615.0
+theme_override_colors/font_color = Color(0.8392157, 0.7254902, 0.5411765, 1)
+theme_override_colors/font_pressed_color = Color(0.8392157, 0.7254902, 0.5411765, 1)
+theme_override_colors/font_hover_color = Color(0.8392157, 0.7254902, 0.5411765, 1)
+theme_override_colors/font_outline_color = Color(0.13333334, 0.09019608, 0.043137256, 1)
+theme_override_constants/outline_size = 8
+theme_override_styles/normal = SubResource("StyleBoxTexture_i1ury")
+theme_override_styles/pressed = SubResource("StyleBoxTexture_iv6fc")
+theme_override_styles/hover = SubResource("StyleBoxTexture_roeo1")
+text = "Настройки"
+icon = ExtResource("7_qjuxo")
+expand_icon = true
 
 [node name="MenuButton" type="Button" parent="." unique_id=482639398]
-offset_left = -122.0
-offset_top = 59.0
-offset_right = 123.0
-offset_bottom = 90.0
-text = "Главное меню
-"
+offset_left = 426.0
+offset_top = 623.0
+offset_right = 844.0
+offset_bottom = 703.0
+theme_override_colors/font_color = Color(0.8392157, 0.7254902, 0.5411765, 1)
+theme_override_colors/font_pressed_color = Color(0.8392157, 0.7254902, 0.5411765, 1)
+theme_override_colors/font_hover_color = Color(0.8392157, 0.7254902, 0.5411765, 1)
+theme_override_colors/font_outline_color = Color(0.13333334, 0.09019608, 0.043137256, 1)
+theme_override_constants/outline_size = 8
+theme_override_styles/normal = SubResource("StyleBoxTexture_i1ury")
+theme_override_styles/pressed = SubResource("StyleBoxTexture_iv6fc")
+theme_override_styles/hover = SubResource("StyleBoxTexture_roeo1")
+text = "Выйти в главное меню"
+icon = ExtResource("7_ftuca")
+expand_icon = true
+
+[node name="CloseButton" type="TextureButton" parent="." unique_id=1922628901]
+offset_left = 857.0
+offset_top = 227.0
+offset_right = 942.0
+offset_bottom = 313.38208
+texture_normal = ExtResource("11_kpum6")
+texture_pressed = ExtResource("12_e6kvg")
+texture_hover = ExtResource("13_rkfds")
+ignore_texture_size = true
+stretch_mode = 0
 
 [node name="NextFloorDialog" type="ConfirmationDialog" parent="." unique_id=843787473]
 oversampling_override = 1.0
