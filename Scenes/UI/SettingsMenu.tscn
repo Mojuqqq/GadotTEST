@@ -1,5 +1,6 @@
 [gd_scene format=3 uid="uid://c1c8qo1iqbg5u"]
 
+[ext_resource type="Script" uid="uid://cjfmsbvc3t6w2" path="res://Scripts/UI/SettingsMenu.gd" id="1_3hh3s"]
 [ext_resource type="Texture2D" uid="uid://bevayswkwuuw5" path="res://Assets/Art/UI/popup_bg.png" id="1_owj4x"]
 [ext_resource type="Texture2D" uid="uid://dmq2f7i6ckc5c" path="res://Assets/Art/UI/button_close.png" id="2_3hh3s"]
 [ext_resource type="Texture2D" uid="uid://d0t6wp7rxo425" path="res://Assets/Art/UI/button_close_press.png" id="3_83xbh"]
@@ -13,6 +14,7 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
+script = ExtResource("1_3hh3s")
 
 [node name="DimBackground" type="Panel" parent="." unique_id=1357967448]
 self_modulate = Color(0, 0, 0, 0.25490198)

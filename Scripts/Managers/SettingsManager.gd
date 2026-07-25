@@ -1,444 +1,575 @@
-extends Control
-class_name SettingsMenu
+extends Node
 
 
-signal opened
-signal closed
+signal settings_loaded
 
-
-@onready var dim_background: Panel = (
-	$DimBackground
+signal master_volume_changed(
+	value: float
 )
 
-@onready var close_button: TextureButton = (
-	$CloseButton
+signal music_volume_changed(
+	value: float
 )
 
-
-# =========================================================
-# ЗВУК
-# =========================================================
-
-@onready var master_slider: HSlider = (
-	$Content/SettingsVBox/MasterRow/MasterSlider
+signal sfx_volume_changed(
+	value: float
 )
 
-@onready var master_value: Label = (
-	$Content/SettingsVBox/MasterRow/MasterValue
+signal fullscreen_changed(
+	enabled: bool
 )
 
-@onready var music_slider: HSlider = (
-	$Content/SettingsVBox/MusicRow/MusicSlider
-)
-
-@onready var music_value: Label = (
-	$Content/SettingsVBox/MusicRow/MusicValue
-)
-
-@onready var effects_slider: HSlider = (
-	$Content/SettingsVBox/EffectsRow/EffectsSlider
-)
-
-@onready var effects_value: Label = (
-	$Content/SettingsVBox/EffectsRow/EffectsValue
+signal resolution_changed(
+	index: int,
+	size: Vector2i
 )
 
 
-# =========================================================
-# ЭКРАН
-# =========================================================
+const SAVE_PATH: String = "user://settings.cfg"
 
-@onready var fullscreen_check: CheckButton = (
-	$Content/SettingsVBox/FullscreenRow/FullscreenCheck
+const MASTER_BUS: StringName = &"Master"
+const MUSIC_BUS: StringName = &"Music"
+const SFX_BUS: StringName = &"SFX"
+
+
+const DEFAULT_MASTER_VOLUME: float = 1.0
+const DEFAULT_MUSIC_VOLUME: float = 1.0
+const DEFAULT_SFX_VOLUME: float = 1.0
+
+const DEFAULT_FULLSCREEN: bool = false
+const DEFAULT_RESOLUTION_INDEX: int = 1
+
+
+const RESOLUTIONS: Array[Vector2i] = [
+	Vector2i(1024, 768),
+	Vector2i(1280, 1024),
+	Vector2i(1600, 1200),
+	Vector2i(1920, 1080)
+]
+
+
+var master_volume: float = (
+	DEFAULT_MASTER_VOLUME
 )
 
-@onready var resolution_option: OptionButton = (
-	$Content/SettingsVBox/ResolutionRow/ResolutionOption
+var music_volume: float = (
+	DEFAULT_MUSIC_VOLUME
 )
 
-
-# =========================================================
-# КНОПКИ
-# =========================================================
-
-@onready var reset_button: Button = (
-	$Content/SettingsVBox/ButtonsRow/ResetButton
+var sfx_volume: float = (
+	DEFAULT_SFX_VOLUME
 )
 
-@onready var back_button: Button = (
-	$Content/SettingsVBox/ButtonsRow/BackButton
+var fullscreen: bool = (
+	DEFAULT_FULLSCREEN
 )
 
-
-var is_updating_ui: bool = false
+var resolution_index: int = (
+	DEFAULT_RESOLUTION_INDEX
+)
 
 
 func _ready() -> void:
 	process_mode = Node.PROCESS_MODE_ALWAYS
-	visible = false
 
-	_connect_signals()
-	_fill_resolution_options()
-	_refresh_from_manager()
+	_ensure_audio_buses()
+	load_settings()
+	apply_all_settings()
+
+	settings_loaded.emit()
 
 
 # =========================================================
-# ОТКРЫТИЕ И ЗАКРЫТИЕ
+# ЗАГРУЗКА И СОХРАНЕНИЕ
 # =========================================================
 
-func open_menu() -> void:
-	if visible:
-		return
+func load_settings() -> void:
+	var config := ConfigFile.new()
 
-	_refresh_from_manager()
-
-	visible = true
-
-	Input.set_mouse_mode(
-		Input.MOUSE_MODE_VISIBLE
+	var error: Error = config.load(
+		SAVE_PATH
 	)
 
-	back_button.grab_focus()
-
-	opened.emit()
-
-
-func close_menu() -> void:
-	if not visible:
+	if error == ERR_FILE_NOT_FOUND:
+		_set_default_values()
+		save_settings()
 		return
 
-	visible = false
-	closed.emit()
-
-
-func is_menu_open() -> bool:
-	return visible
-
-
-# =========================================================
-# ПОДКЛЮЧЕНИЕ СИГНАЛОВ
-# =========================================================
-
-func _connect_signals() -> void:
-	if not close_button.pressed.is_connected(
-		_on_close_button_pressed
-	):
-		close_button.pressed.connect(
-			_on_close_button_pressed
+	if error != OK:
+		push_warning(
+			"Не удалось загрузить настройки. "
+			+ "Код ошибки: "
+			+ str(error)
 		)
 
-	if not back_button.pressed.is_connected(
-		_on_back_button_pressed
-	):
-		back_button.pressed.connect(
-			_on_back_button_pressed
-		)
+		_set_default_values()
+		return
 
-	if not reset_button.pressed.is_connected(
-		_on_reset_button_pressed
-	):
-		reset_button.pressed.connect(
-			_on_reset_button_pressed
-		)
-
-	if not dim_background.gui_input.is_connected(
-		_on_dim_background_gui_input
-	):
-		dim_background.gui_input.connect(
-			_on_dim_background_gui_input
-		)
-
-	if not master_slider.value_changed.is_connected(
-		_on_master_slider_value_changed
-	):
-		master_slider.value_changed.connect(
-			_on_master_slider_value_changed
-		)
-
-	if not music_slider.value_changed.is_connected(
-		_on_music_slider_value_changed
-	):
-		music_slider.value_changed.connect(
-			_on_music_slider_value_changed
-		)
-
-	if not effects_slider.value_changed.is_connected(
-		_on_effects_slider_value_changed
-	):
-		effects_slider.value_changed.connect(
-			_on_effects_slider_value_changed
-		)
-
-	if not fullscreen_check.toggled.is_connected(
-		_on_fullscreen_check_toggled
-	):
-		fullscreen_check.toggled.connect(
-			_on_fullscreen_check_toggled
-		)
-
-	if not resolution_option.item_selected.is_connected(
-		_on_resolution_option_item_selected
-	):
-		resolution_option.item_selected.connect(
-			_on_resolution_option_item_selected
-		)
-
-
-# =========================================================
-# ЗАПОЛНЕНИЕ ИНТЕРФЕЙСА
-# =========================================================
-
-func _fill_resolution_options() -> void:
-	resolution_option.clear()
-
-	for index in range(
-		SettingsManager.get_resolution_count()
-	):
-		var resolution_label: String = (
-			SettingsManager.get_resolution_label(
-				index
+	master_volume = clampf(
+		float(
+			config.get_value(
+				"audio",
+				"master_volume",
+				DEFAULT_MASTER_VOLUME
 			)
+		),
+		0.0,
+		1.0
+	)
+
+	music_volume = clampf(
+		float(
+			config.get_value(
+				"audio",
+				"music_volume",
+				DEFAULT_MUSIC_VOLUME
+			)
+		),
+		0.0,
+		1.0
+	)
+
+	sfx_volume = clampf(
+		float(
+			config.get_value(
+				"audio",
+				"sfx_volume",
+				DEFAULT_SFX_VOLUME
+			)
+		),
+		0.0,
+		1.0
+	)
+
+	fullscreen = bool(
+		config.get_value(
+			"display",
+			"fullscreen",
+			DEFAULT_FULLSCREEN
 		)
-
-		resolution_option.add_item(
-			resolution_label,
-			index
-		)
-
-
-func _refresh_from_manager() -> void:
-	is_updating_ui = true
-
-	var master_percent: float = (
-		SettingsManager.master_volume
-		* 100.0
 	)
 
-	var music_percent: float = (
-		SettingsManager.music_volume
-		* 100.0
-	)
-
-	var effects_percent: float = (
-		SettingsManager.sfx_volume
-		* 100.0
-	)
-
-	master_slider.value = master_percent
-	music_slider.value = music_percent
-	effects_slider.value = effects_percent
-
-	_update_percent_label(
-		master_value,
-		master_percent
-	)
-
-	_update_percent_label(
-		music_value,
-		music_percent
-	)
-
-	_update_percent_label(
-		effects_value,
-		effects_percent
-	)
-
-	fullscreen_check.button_pressed = (
-		SettingsManager.fullscreen
-	)
-
-	_update_fullscreen_control(
-		SettingsManager.fullscreen
-	)
-
-	var resolution_index: int = clampi(
-		SettingsManager.resolution_index,
+	resolution_index = clampi(
+		int(
+			config.get_value(
+				"display",
+				"resolution_index",
+				DEFAULT_RESOLUTION_INDEX
+			)
+		),
 		0,
-		resolution_option.item_count - 1
-	)
-
-	if resolution_option.item_count > 0:
-		resolution_option.select(
-			resolution_index
-		)
-
-	is_updating_ui = false
-
-
-func _update_percent_label(
-	label: Label,
-	value: float
-) -> void:
-	label.text = (
-		str(
-			int(
-				round(value)
-			)
-		)
-		+ "%"
+		RESOLUTIONS.size() - 1
 	)
 
 
-func _update_fullscreen_control(
-	enabled: bool
-) -> void:
-	fullscreen_check.text = (
-		"Включено"
-		if enabled
-		else "Выключено"
+func save_settings() -> void:
+	var config := ConfigFile.new()
+
+	config.set_value(
+		"audio",
+		"master_volume",
+		master_volume
 	)
 
-	# Разрешение окна нельзя изменить,
-	# пока включён полноэкранный режим.
-	resolution_option.disabled = enabled
+	config.set_value(
+		"audio",
+		"music_volume",
+		music_volume
+	)
 
-	if enabled:
-		resolution_option.tooltip_text = (
-			"Разрешение применяется "
-			+ "только в оконном режиме"
+	config.set_value(
+		"audio",
+		"sfx_volume",
+		sfx_volume
+	)
+
+	config.set_value(
+		"display",
+		"fullscreen",
+		fullscreen
+	)
+
+	config.set_value(
+		"display",
+		"resolution_index",
+		resolution_index
+	)
+
+	var error: Error = config.save(
+		SAVE_PATH
+	)
+
+	if error != OK:
+		push_warning(
+			"Не удалось сохранить настройки. "
+			+ "Код ошибки: "
+			+ str(error)
 		)
-	else:
-		resolution_option.tooltip_text = (
-			"Выберите разрешение окна"
-		)
+
+
+func _set_default_values() -> void:
+	master_volume = DEFAULT_MASTER_VOLUME
+	music_volume = DEFAULT_MUSIC_VOLUME
+	sfx_volume = DEFAULT_SFX_VOLUME
+	fullscreen = DEFAULT_FULLSCREEN
+	resolution_index = DEFAULT_RESOLUTION_INDEX
+
+
+# =========================================================
+# ПРИМЕНЕНИЕ ВСЕХ НАСТРОЕК
+# =========================================================
+
+func apply_all_settings() -> void:
+	_apply_bus_volume(
+		MASTER_BUS,
+		master_volume
+	)
+
+	_apply_bus_volume(
+		MUSIC_BUS,
+		music_volume
+	)
+
+	_apply_bus_volume(
+		SFX_BUS,
+		sfx_volume
+	)
+
+	_apply_display_settings()
+
+
+func reset_to_defaults() -> void:
+	set_master_volume(
+		DEFAULT_MASTER_VOLUME,
+		false
+	)
+
+	set_music_volume(
+		DEFAULT_MUSIC_VOLUME,
+		false
+	)
+
+	set_sfx_volume(
+		DEFAULT_SFX_VOLUME,
+		false
+	)
+
+	set_resolution_index(
+		DEFAULT_RESOLUTION_INDEX,
+		false
+	)
+
+	set_fullscreen(
+		DEFAULT_FULLSCREEN,
+		false
+	)
+
+	save_settings()
 
 
 # =========================================================
 # ГРОМКОСТЬ
 # =========================================================
 
-func _on_master_slider_value_changed(
-	value: float
+func set_master_volume(
+	value: float,
+	should_save: bool = true
 ) -> void:
-	_update_percent_label(
-		master_value,
-		value
-	)
-
-	if is_updating_ui:
-		return
-
-	SettingsManager.set_master_volume(
-		_percent_to_linear(value)
-	)
-
-
-func _on_music_slider_value_changed(
-	value: float
-) -> void:
-	_update_percent_label(
-		music_value,
-		value
-	)
-
-	if is_updating_ui:
-		return
-
-	SettingsManager.set_music_volume(
-		_percent_to_linear(value)
-	)
-
-
-func _on_effects_slider_value_changed(
-	value: float
-) -> void:
-	_update_percent_label(
-		effects_value,
-		value
-	)
-
-	if is_updating_ui:
-		return
-
-	SettingsManager.set_sfx_volume(
-		_percent_to_linear(value)
-	)
-
-
-func _percent_to_linear(
-	value: float
-) -> float:
-	return clampf(
-		value / 100.0,
+	master_volume = clampf(
+		value,
 		0.0,
 		1.0
 	)
 
-
-# =========================================================
-# ЭКРАН
-# =========================================================
-
-func _on_fullscreen_check_toggled(
-	enabled: bool
-) -> void:
-	_update_fullscreen_control(
-		enabled
+	_apply_bus_volume(
+		MASTER_BUS,
+		master_volume
 	)
 
-	if is_updating_ui:
+	master_volume_changed.emit(
+		master_volume
+	)
+
+	if should_save:
+		save_settings()
+
+
+func set_music_volume(
+	value: float,
+	should_save: bool = true
+) -> void:
+	music_volume = clampf(
+		value,
+		0.0,
+		1.0
+	)
+
+	_apply_bus_volume(
+		MUSIC_BUS,
+		music_volume
+	)
+
+	music_volume_changed.emit(
+		music_volume
+	)
+
+	if should_save:
+		save_settings()
+
+
+func set_sfx_volume(
+	value: float,
+	should_save: bool = true
+) -> void:
+	sfx_volume = clampf(
+		value,
+		0.0,
+		1.0
+	)
+
+	_apply_bus_volume(
+		SFX_BUS,
+		sfx_volume
+	)
+
+	sfx_volume_changed.emit(
+		sfx_volume
+	)
+
+	if should_save:
+		save_settings()
+
+
+func _apply_bus_volume(
+	bus_name: StringName,
+	linear_value: float
+) -> void:
+	var bus_index: int = (
+		AudioServer.get_bus_index(
+			bus_name
+		)
+	)
+
+	if bus_index == -1:
+		push_warning(
+			"Аудиошина не найдена: "
+			+ String(bus_name)
+		)
 		return
 
-	SettingsManager.set_fullscreen(
-		enabled
+	var safe_value: float = maxf(
+		linear_value,
+		0.0001
+	)
+
+	AudioServer.set_bus_volume_db(
+		bus_index,
+		linear_to_db(safe_value)
+	)
+
+	AudioServer.set_bus_mute(
+		bus_index,
+		linear_value <= 0.0
 	)
 
 
-func _on_resolution_option_item_selected(
+# =========================================================
+# АУДИОШИНЫ
+# =========================================================
+
+func _ensure_audio_buses() -> void:
+	_ensure_audio_bus(
+		MUSIC_BUS
+	)
+
+	_ensure_audio_bus(
+		SFX_BUS
+	)
+
+
+func _ensure_audio_bus(
+	bus_name: StringName
+) -> void:
+	if (
+		AudioServer.get_bus_index(
+			bus_name
+		)
+		!= -1
+	):
+		return
+
+	AudioServer.add_bus()
+
+	var new_bus_index: int = (
+		AudioServer.get_bus_count() - 1
+	)
+
+	AudioServer.set_bus_name(
+		new_bus_index,
+		bus_name
+	)
+
+	AudioServer.set_bus_send(
+		new_bus_index,
+		MASTER_BUS
+	)
+
+
+# =========================================================
+# ПОЛНОЭКРАННЫЙ РЕЖИМ
+# =========================================================
+
+func set_fullscreen(
+	enabled: bool,
+	should_save: bool = true
+) -> void:
+	fullscreen = enabled
+
+	_apply_display_settings()
+
+	fullscreen_changed.emit(
+		fullscreen
+	)
+
+	if should_save:
+		save_settings()
+
+
+func _apply_display_settings() -> void:
+	if fullscreen:
+		DisplayServer.window_set_mode(
+			DisplayServer.WINDOW_MODE_FULLSCREEN
+		)
+		return
+
+	DisplayServer.window_set_mode(
+		DisplayServer.WINDOW_MODE_WINDOWED
+	)
+
+	call_deferred(
+		"_apply_windowed_resolution"
+	)
+
+
+# =========================================================
+# РАЗРЕШЕНИЕ
+# =========================================================
+
+func set_resolution_index(
+	index: int,
+	should_save: bool = true
+) -> void:
+	if (
+		index < 0
+		or index >= RESOLUTIONS.size()
+	):
+		push_warning(
+			"Некорректный индекс разрешения: "
+			+ str(index)
+		)
+		return
+
+	resolution_index = index
+
+	if not fullscreen:
+		call_deferred(
+			"_apply_windowed_resolution"
+		)
+
+	resolution_changed.emit(
+		resolution_index,
+		get_current_resolution()
+	)
+
+	if should_save:
+		save_settings()
+
+
+func _apply_windowed_resolution() -> void:
+	if fullscreen:
+		return
+
+	var resolution: Vector2i = (
+		get_current_resolution()
+	)
+
+	DisplayServer.window_set_size(
+		resolution
+	)
+
+	_center_window_on_screen(
+		resolution
+	)
+
+
+func _center_window_on_screen(
+	window_size: Vector2i
+) -> void:
+	var screen_index: int = (
+		DisplayServer.window_get_current_screen()
+	)
+
+	var usable_rect: Rect2i = (
+		DisplayServer.screen_get_usable_rect(
+			screen_index
+		)
+	)
+
+	var window_position := Vector2i(
+		usable_rect.position.x
+		+ maxi(
+			(
+				usable_rect.size.x
+				- window_size.x
+			) / 2,
+			0
+		),
+		usable_rect.position.y
+		+ maxi(
+			(
+				usable_rect.size.y
+				- window_size.y
+			) / 2,
+			0
+		)
+	)
+
+	DisplayServer.window_set_position(
+		window_position
+	)
+
+
+func get_current_resolution() -> Vector2i:
+	return RESOLUTIONS[
+		resolution_index
+	]
+
+
+func get_resolution_count() -> int:
+	return RESOLUTIONS.size()
+
+
+func get_resolution(
 	index: int
-) -> void:
-	if is_updating_ui:
-		return
+) -> Vector2i:
+	if (
+		index < 0
+		or index >= RESOLUTIONS.size()
+	):
+		return get_current_resolution()
 
-	SettingsManager.set_resolution_index(
-		index
+	return RESOLUTIONS[index]
+
+
+func get_resolution_label(
+	index: int
+) -> String:
+	var resolution: Vector2i = (
+		get_resolution(index)
 	)
 
-
-# =========================================================
-# КНОПКИ
-# =========================================================
-
-func _on_close_button_pressed() -> void:
-	close_menu()
-
-
-func _on_back_button_pressed() -> void:
-	close_menu()
-
-
-func _on_reset_button_pressed() -> void:
-	SettingsManager.reset_to_defaults()
-	_refresh_from_manager()
-
-
-# =========================================================
-# НАЖАТИЕ ВНЕ ОКНА
-# =========================================================
-
-func _on_dim_background_gui_input(
-	event: InputEvent
-) -> void:
-	if event is InputEventMouseButton:
-		var mouse_event: InputEventMouseButton = (
-			event as InputEventMouseButton
-		)
-
-		if (
-			mouse_event.button_index
-			== MOUSE_BUTTON_LEFT
-			and mouse_event.pressed
-		):
-			dim_background.accept_event()
-			close_menu()
-
-		return
-
-	if event is InputEventScreenTouch:
-		var touch_event: InputEventScreenTouch = (
-			event as InputEventScreenTouch
-		)
-
-		if touch_event.pressed:
-			dim_background.accept_event()
-			close_menu()
+	return (
+		str(resolution.x)
+		+ " × "
+		+ str(resolution.y)
+	)
