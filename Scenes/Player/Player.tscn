@@ -3,10 +3,66 @@
 [ext_resource type="Script" uid="uid://cuqn58qi4xxyk" path="res://Scripts/Player/Player.gd" id="1_kyqiw"]
 [ext_resource type="Texture2D" uid="uid://chahr7gd7xrss" path="res://Assets/Art/Characters/Player/Player.png" id="1_rpqav"]
 [ext_resource type="PackedScene" uid="uid://iwr2u5j4pgj4" path="res://Scenes/Projectiles/Egg.tscn" id="2_gntrk"]
+[ext_resource type="Texture2D" uid="uid://ncb6merf0kjh" path="res://Assets/Art/Characters/Player/player_walk_anim.png" id="4_ude3g"]
 
 [sub_resource type="CapsuleShape2D" id="CapsuleShape2D_spwcu"]
 radius = 28.0
 height = 110.0
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_jmcll"]
+atlas = ExtResource("1_rpqav")
+region = Rect2(0, 0, 173, 290)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_4wape"]
+atlas = ExtResource("4_ude3g")
+region = Rect2(0, 0, 168, 290)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_t26db"]
+atlas = ExtResource("4_ude3g")
+region = Rect2(168, 0, 168, 290)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_fk5o5"]
+atlas = ExtResource("4_ude3g")
+region = Rect2(336, 0, 168, 290)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_825xp"]
+atlas = ExtResource("4_ude3g")
+region = Rect2(504, 0, 168, 290)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_ji083"]
+atlas = ExtResource("4_ude3g")
+region = Rect2(672, 0, 168, 290)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_obgpu"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_jmcll")
+}],
+"loop": 1,
+"name": &"idle",
+"speed": 5.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_4wape")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_t26db")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_fk5o5")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_825xp")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_ji083")
+}],
+"loop": 1,
+"name": &"walk",
+"speed": 8.0
+}]
 
 [node name="Player" type="CharacterBody2D" unique_id=1259915293 groups=["Player"]]
 collision_layer = 2
@@ -20,3 +76,8 @@ texture = ExtResource("1_rpqav")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=738740004 groups=["Player"]]
 shape = SubResource("CapsuleShape2D_spwcu")
+
+[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="." unique_id=2037802211]
+sprite_frames = SubResource("SpriteFrames_obgpu")
+animation = &"walk"
+frame_progress = 0.15723526
