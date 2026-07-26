@@ -3,6 +3,7 @@
 [ext_resource type="Texture2D" uid="uid://dgcoahpwyr26p" path="res://Assets/Art/Interectables/Pickups/Gold.png" id="1_3y51h"]
 [ext_resource type="Script" uid="uid://gq11bb3l4h3f" path="res://Scripts/UI/EconomyHUD.gd" id="1_huers"]
 [ext_resource type="Texture2D" uid="uid://t4bq3arn3sr8" path="res://Assets/Art/Interectables/Pickups/Key.png" id="2_huers"]
+[ext_resource type="Texture2D" uid="uid://b3hukkvehjmvr" path="res://Assets/Art/UI/counter_panel.png" id="2_nu5go"]
 
 [node name="EconomyHud" type="CanvasLayer" unique_id=1192681930]
 script = ExtResource("1_huers")
@@ -11,21 +12,50 @@ script = ExtResource("1_huers")
 anchors_preset = 1
 anchor_left = 1.0
 anchor_right = 1.0
-offset_left = -139.0
+offset_left = -283.0
 offset_top = 16.0
-offset_right = -24.0
+offset_right = -33.0
 offset_bottom = 56.0
 grow_horizontal = 0
 
 [node name="HBoxContainer" type="HBoxContainer" parent="MarginContainer" unique_id=30225003]
 layout_mode = 2
 theme_override_constants/separation = 24
+alignment = 1
 
-[node name="GoldContainer" type="HBoxContainer" parent="MarginContainer/HBoxContainer" unique_id=904220706]
+[node name="GoldCounter" type="Control" parent="MarginContainer/HBoxContainer" unique_id=1519670106]
+layout_mode = 2
+
+[node name="Background" type="TextureRect" parent="MarginContainer/HBoxContainer/GoldCounter" unique_id=93369871]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -59.0
+offset_top = -6.5
+offset_right = 59.0
+offset_bottom = 6.5
+grow_horizontal = 2
+grow_vertical = 2
+texture = ExtResource("2_nu5go")
+
+[node name="MarginContainer" type="MarginContainer" parent="MarginContainer/HBoxContainer/GoldCounter/Background" unique_id=462792159]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/margin_left = 12
+theme_override_constants/margin_top = 6
+theme_override_constants/margin_right = 16
+theme_override_constants/margin_bottom = 6
+
+[node name="GoldContainer" type="HBoxContainer" parent="MarginContainer/HBoxContainer/GoldCounter/Background/MarginContainer" unique_id=904220706]
 layout_mode = 2
 theme_override_constants/separation = 6
 
-[node name="GoldIcon" type="TextureRect" parent="MarginContainer/HBoxContainer/GoldContainer" unique_id=322223483]
+[node name="GoldIcon" type="TextureRect" parent="MarginContainer/HBoxContainer/GoldCounter/Background/MarginContainer/GoldContainer" unique_id=322223483]
 custom_minimum_size = Vector2(32, 32)
 layout_mode = 2
 mouse_filter = 2
@@ -33,16 +63,37 @@ texture = ExtResource("1_3y51h")
 expand_mode = 3
 stretch_mode = 5
 
-[node name="GoldLabel" type="Label" parent="MarginContainer/HBoxContainer/GoldContainer" unique_id=660818738]
+[node name="GoldLabel" type="Label" parent="MarginContainer/HBoxContainer/GoldCounter/Background/MarginContainer/GoldContainer" unique_id=660818738]
 unique_name_in_owner = true
 layout_mode = 2
+theme_override_colors/font_color = Color(0.13333334, 0.09019608, 0.043137256, 1)
 text = "0"
 
-[node name="KeyContainer" type="HBoxContainer" parent="MarginContainer/HBoxContainer" unique_id=502087816]
+[node name="KeysCounter" type="Control" parent="MarginContainer/HBoxContainer/GoldCounter" unique_id=677345376]
+anchors_preset = 0
+
+[node name="Background" type="TextureRect" parent="MarginContainer/HBoxContainer/GoldCounter/KeysCounter" unique_id=1642902029]
+layout_mode = 1
+offset_left = -59.0
+offset_top = -6.5
+offset_right = 59.0
+offset_bottom = 46.5
+texture = ExtResource("2_nu5go")
+
+[node name="MarginContainer" type="MarginContainer" parent="MarginContainer/HBoxContainer/GoldCounter/KeysCounter/Background" unique_id=1499404452]
+layout_mode = 1
+offset_right = 118.0
+offset_bottom = 53.0
+theme_override_constants/margin_left = 12
+theme_override_constants/margin_top = 6
+theme_override_constants/margin_right = 16
+theme_override_constants/margin_bottom = 6
+
+[node name="KeyContainer" type="HBoxContainer" parent="MarginContainer/HBoxContainer/GoldCounter/KeysCounter/Background/MarginContainer" unique_id=502087816]
 layout_mode = 2
 theme_override_constants/separation = 6
 
-[node name="KeyIcon" type="TextureRect" parent="MarginContainer/HBoxContainer/KeyContainer" unique_id=642717280]
+[node name="KeyIcon" type="TextureRect" parent="MarginContainer/HBoxContainer/GoldCounter/KeysCounter/Background/MarginContainer/KeyContainer" unique_id=642717280]
 custom_minimum_size = Vector2(32, 32)
 layout_mode = 2
 mouse_filter = 2
@@ -50,7 +101,8 @@ texture = ExtResource("2_huers")
 expand_mode = 3
 stretch_mode = 5
 
-[node name="KeyLabel" type="Label" parent="MarginContainer/HBoxContainer/KeyContainer" unique_id=738058948]
+[node name="KeyLabel" type="Label" parent="MarginContainer/HBoxContainer/GoldCounter/KeysCounter/Background/MarginContainer/KeyContainer" unique_id=738058948]
 unique_name_in_owner = true
 layout_mode = 2
+theme_override_colors/font_color = Color(0.13333334, 0.09019608, 0.043137256, 1)
 text = "0"

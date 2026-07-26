@@ -2,6 +2,7 @@ extends CharacterBody2D
 
 @export var base_speed: float = 300.0
 @export var egg_scene: PackedScene
+@onready var animated_sprite: AnimatedSprite2D = ($AnimatedSprite2D)
 var egg_pool: Array[Node] = []
 const INITIAL_POOL_SIZE := 20
 
@@ -39,6 +40,7 @@ const CHICK_BOMB_SCENE := preload(
 
 func _ready():
 	add_to_group("Player")
+	animated_sprite.play(&"idle")
 	if GameManager.player_stats:
 		current_speed = GameManager.player_stats.speed
 	else:
@@ -91,6 +93,10 @@ func _physics_process(delta):
 	external_force = external_force.lerp(Vector2.ZERO, 0.1)
 	move_and_slide()
 	
+	_update_movement_animation(
+		direction
+	)
+	
 	# === Стрельба ===
 	time_since_last_shot += delta   # время тикает всегда
 	
@@ -100,6 +106,23 @@ func _physics_process(delta):
 	if is_shooting and time_since_last_shot >= fire_rate:
 		shoot()
 		time_since_last_shot = 0.0
+
+func _update_movement_animation(
+	direction: Vector2
+) -> void:
+	if direction == Vector2.ZERO:
+		if animated_sprite.animation != &"idle":
+			animated_sprite.play(&"idle")
+
+		return
+
+	if direction.x < 0.0:
+		animated_sprite.flip_h = true
+	elif direction.x > 0.0:
+		animated_sprite.flip_h = false
+
+	if animated_sprite.animation != &"walk":
+		animated_sprite.play(&"walk")
 
 func update_speed(new_speed: float):
 	current_speed = new_speed
