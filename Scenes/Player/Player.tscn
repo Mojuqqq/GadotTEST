@@ -59,7 +59,7 @@ animations = [{
 "duration": 1.0,
 "texture": SubResource("AtlasTexture_ji083")
 }],
-"loop": 1,
+"loop": 0,
 "name": &"walk",
 "speed": 8.0
 }]
@@ -69,15 +69,10 @@ collision_layer = 2
 script = ExtResource("1_kyqiw")
 egg_scene = ExtResource("2_gntrk")
 
-[node name="Sprite2D" type="Sprite2D" parent="." unique_id=1577028723]
-texture_filter = 1
-scale = Vector2(0.41618496, 0.41618493)
-texture = ExtResource("1_rpqav")
-
 [node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=738740004 groups=["Player"]]
 shape = SubResource("CapsuleShape2D_spwcu")
 
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="." unique_id=2037802211]
+texture_filter = 1
 sprite_frames = SubResource("SpriteFrames_obgpu")
-animation = &"walk"
-frame_progress = 0.15723526
+animation = &"idle"
