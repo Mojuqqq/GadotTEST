@@ -4,26 +4,26 @@
 [ext_resource type="Script" uid="uid://ce2jbsrbm6wei" path="res://Scripts/Interactables/NPC/Merchant.gd" id="1_dmenh"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_63woo"]
-size = Vector2(140.81639, 138.77554)
+size = Vector2(197.95929, 232.65323)
 
 [sub_resource type="CapsuleShape2D" id="CapsuleShape2D_dmenh"]
-radius = 89.79593
-height = 302.04086
+radius = 108.16328
+height = 416.32657
 
 [node name="Merchant" type="Node2D" unique_id=2132409963]
 script = ExtResource("1_dmenh")
 
 [node name="Sprite2D" type="Sprite2D" parent="." unique_id=577416157]
 z_index = 5
-scale = Vector2(0.5465116, 0.5465116)
+scale = Vector2(0.7209302, 0.7209302)
 texture = ExtResource("1_63woo")
 
 [node name="Body" type="StaticBody2D" parent="." unique_id=1465773681]
 scale = Vector2(0.7, 0.7)
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Body" unique_id=1632229027]
-position = Vector2(-0.7142898, 59.99998)
-scale = Vector2(0.6999997, 0.6999997)
+position = Vector2(-0.7142898, 59.99997)
+scale = Vector2(0.69999963, 0.69999963)
 shape = SubResource("RectangleShape2D_63woo")
 
 [node name="InteractionArea" type="Area2D" parent="." unique_id=910699508]
@@ -40,8 +40,8 @@ shape = SubResource("CapsuleShape2D_dmenh")
 visible = false
 z_index = 10
 offset_left = -54.0
-offset_top = -109.0
+offset_top = -134.0
 offset_right = 53.0
-offset_bottom = -86.0
+offset_bottom = -111.0
 text = "[E] Торговать"
 horizontal_alignment = 1
