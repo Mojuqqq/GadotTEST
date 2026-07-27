@@ -9,6 +9,7 @@ const INITIAL_POOL_SIZE := 20
 var external_force: Vector2 = Vector2.ZERO
 var current_speed: float = 300.0
 var time_since_last_shot: float = 0.0
+var is_dead: bool = false
 @export_group("Hot Sauce")
 var hot_sauce_effect_total_duration: float = 0.0
 
@@ -80,6 +81,8 @@ func _on_egg_returned_to_pool(egg):
 		egg_pool.append(egg)
 
 func _physics_process(delta):
+	if is_dead:
+		return
 	# === Движение ===
 	var direction = Vector2.ZERO
 	if Input.is_action_pressed("move_left"):   direction.x -= 1
@@ -96,7 +99,9 @@ func _physics_process(delta):
 	_update_movement_animation(
 		direction
 	)
-	
+	if is_dead:
+		return
+		
 	# === Стрельба ===
 	time_since_last_shot += delta   # время тикает всегда
 	
@@ -377,12 +382,29 @@ func _on_tear_effect_end():
 func take_damage(damage: int):
 	GameManager.take_damage(damage)
 
-func die():
+func die() -> void:
+	if is_dead:
+		return
+
+	is_dead = true
+
 	print("Игрок умер!")
+
+	velocity = Vector2.ZERO
+	external_force = Vector2.ZERO
+
+	set_physics_process(false)
+
+	collision_layer = 0
+	collision_mask = 0
 
 	remove_companions()
 
-	call_deferred("queue_free")
+	animated_sprite.play(&"die")
+
+	await animated_sprite.animation_finished
+
+	queue_free()
 	
 func spawn_companion(
 	companion_type: String

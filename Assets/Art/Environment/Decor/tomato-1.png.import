@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://qa1y7wtan5wg"
-path="res://.godot/imported/ferm_decor.png-8ff15555d829389bc442d61243004beb.ctex"
+uid="uid://ds73osg6xkrrh"
+path="res://.godot/imported/tomato-1.png-adde9dbccd119da4ad0c87e2afff84c2.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://Assets/Art/Environment/Decor/ferm_decor.png"
-dest_files=["res://.godot/imported/ferm_decor.png-8ff15555d829389bc442d61243004beb.ctex"]
+source_file="res://Assets/Art/Environment/Decor/tomato-1.png"
+dest_files=["res://.godot/imported/tomato-1.png-adde9dbccd119da4ad0c87e2afff84c2.ctex"]
 
 [params]
 

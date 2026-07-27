@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://csajd5ec3e2iu"
-path="res://.godot/imported/ferm_decor_2.png-cf578774d5e565c4237db7ad44549b52.ctex"
+uid="uid://b1w5e2g161534"
+path="res://.godot/imported/latuc_bed.png-000202810d8316d6d396227228048665.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://Assets/Art/Environment/Decor/ferm_decor_2.png"
-dest_files=["res://.godot/imported/ferm_decor_2.png-cf578774d5e565c4237db7ad44549b52.ctex"]
+source_file="res://Assets/Art/Environment/Decor/latuc_bed.png"
+dest_files=["res://.godot/imported/latuc_bed.png-000202810d8316d6d396227228048665.ctex"]
 
 [params]
 

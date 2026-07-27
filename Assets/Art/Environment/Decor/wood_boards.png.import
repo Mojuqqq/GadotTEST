@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://c1nstb8icfjcs"
-path="res://.godot/imported/RottenEgg_Sheet.png-3d982aeca8f9badefee47a35d1543987.ctex"
+uid="uid://b10yecmff1x2s"
+path="res://.godot/imported/wood_boards.png-8c31fc2c882984323b1bdfacf36641ad.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://Assets/Art/Effects/RottenEgg_Sheet.png"
-dest_files=["res://.godot/imported/RottenEgg_Sheet.png-3d982aeca8f9badefee47a35d1543987.ctex"]
+source_file="res://Assets/Art/Environment/Decor/wood_boards.png"
+dest_files=["res://.godot/imported/wood_boards.png-8c31fc2c882984323b1bdfacf36641ad.ctex"]
 
 [params]
 

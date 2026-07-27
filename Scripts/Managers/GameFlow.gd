@@ -39,7 +39,10 @@ func start_game(reset_callback: Callable):
 # ПОБЕДА И ПОРАЖЕНИЕ
 # =========================================================
 
-func trigger_game_over (victory: bool, player: Node2D):
+func trigger_game_over(
+	victory: bool,
+	player: Node2D
+) -> void:
 	if game_over_started:
 		return
 
@@ -50,40 +53,56 @@ func trigger_game_over (victory: bool, player: Node2D):
 	else:
 		state = GameState.GAME_OVER
 
-	# При поражении вызываем смерть игрока.
-	# При победе игрока убивать не нужно.
+	# При поражении сначала полностью проигрываем
+	# анимацию смерти персонажа.
 	if not victory:
-		_kill_player(player)
+		await _kill_player(
+			player
+		)
 
-	var overlay_path := (
+	var overlay_path: String = (
 		VICTORY_SCENE_PATH
 		if victory
 		else GAME_OVER_SCENE_PATH
 	)
 
-	var overlay_scene := load(overlay_path) as PackedScene
+	var overlay_scene := (
+		load(overlay_path) as PackedScene
+	)
 
 	if overlay_scene == null:
-		push_error("Не удалось загрузить финальную сцену: " + overlay_path)
+		push_error(
+			"Не удалось загрузить финальную сцену: "
+			+ overlay_path
+		)
 
 		game_over_started = false
 		return
 
-	var current_scene := get_tree().current_scene
+	var current_scene := (
+		get_tree().current_scene
+	)
 
 	if current_scene == null:
-		push_error("Нельзя показать финальный экран: "+ "текущая сцена отсутствует.")
+		push_error(
+			"Нельзя показать финальный экран: "
+			+ "текущая сцена отсутствует."
+		)
 
 		game_over_started = false
 		return
 
 	var overlay := overlay_scene.instantiate()
 
-	current_scene.add_child(overlay)
+	current_scene.add_child(
+		overlay
+	)
 
 	get_tree().paused = true
 
-	game_over.emit(victory)
+	game_over.emit(
+		victory
+	)
 
 
 # =========================================================
@@ -129,15 +148,21 @@ func reset():
 # ВНУТРЕННИЕ МЕТОДЫ
 # =========================================================
 
-func _kill_player(player: Node2D):
+func _kill_player(
+	player: Node2D
+) -> void:
 	if not is_instance_valid(player):
 		return
 
 	if player.is_queued_for_deletion():
 		return
 
-	if player.has_method("die"):
-		player.die()
+	if not player.has_method(
+		"die"
+	):
+		return
+
+	await player.die()
 
 
 func _call_reset(reset_callback: Callable):
