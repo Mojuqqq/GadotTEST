@@ -3,11 +3,32 @@
 [ext_resource type="Script" uid="uid://cuqn58qi4xxyk" path="res://Scripts/Player/Player.gd" id="1_kyqiw"]
 [ext_resource type="Texture2D" uid="uid://chahr7gd7xrss" path="res://Assets/Art/Characters/Player/Player.png" id="1_rpqav"]
 [ext_resource type="PackedScene" uid="uid://iwr2u5j4pgj4" path="res://Scenes/Projectiles/Egg.tscn" id="2_gntrk"]
+[ext_resource type="Texture2D" uid="uid://fuip5dh2fien" path="res://Assets/Art/Characters/Player/player_died_anim.png" id="3_jmcll"]
 [ext_resource type="Texture2D" uid="uid://ncb6merf0kjh" path="res://Assets/Art/Characters/Player/player_walk_anim.png" id="4_ude3g"]
 
 [sub_resource type="CapsuleShape2D" id="CapsuleShape2D_spwcu"]
 radius = 28.0
 height = 110.0
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_0kmp4"]
+atlas = ExtResource("3_jmcll")
+region = Rect2(0, 0, 269, 290)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_i5acl"]
+atlas = ExtResource("3_jmcll")
+region = Rect2(269, 0, 269, 290)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_epg6k"]
+atlas = ExtResource("3_jmcll")
+region = Rect2(538, 0, 269, 290)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_0u84n"]
+atlas = ExtResource("3_jmcll")
+region = Rect2(807, 0, 269, 290)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_esmjy"]
+atlas = ExtResource("3_jmcll")
+region = Rect2(1076, 0, 269, 290)
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_jmcll"]
 atlas = ExtResource("1_rpqav")
@@ -35,6 +56,26 @@ region = Rect2(672, 0, 168, 290)
 
 [sub_resource type="SpriteFrames" id="SpriteFrames_obgpu"]
 animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_0kmp4")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_i5acl")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_epg6k")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_0u84n")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_esmjy")
+}],
+"loop": 0,
+"name": &"die",
+"speed": 5.0
+}, {
 "frames": [{
 "duration": 1.0,
 "texture": SubResource("AtlasTexture_jmcll")
@@ -76,4 +117,6 @@ shape = SubResource("CapsuleShape2D_spwcu")
 texture_filter = 1
 scale = Vector2(0.5, 0.5)
 sprite_frames = SubResource("SpriteFrames_obgpu")
-animation = &"idle"
+animation = &"die"
+frame = 4
+frame_progress = 1.0
