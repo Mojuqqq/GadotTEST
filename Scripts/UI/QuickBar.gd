@@ -2,13 +2,13 @@ extends CanvasLayer
 
 
 const QUICK_SLOT_ACTION_PREFIX: String = "quick_slot_"
-
+const QUICK_SLOT_SCENE: PackedScene = preload("res://Scenes/UI/QuickSlot.tscn")
 
 @onready var slots_container: HBoxContainer = (%SlotsContainer)
 @onready var active_effects_container: HBoxContainer = (%ActiveEffectsContainer)
 
 
-var slot_buttons: Array[Button] = []
+var quick_slots: Array[QuickSlot] = []
 var active_effect_cards: Dictionary = {}
 
 var effect_refresh_accumulator: float = 0.0
@@ -52,54 +52,34 @@ func _create_slot_buttons() -> void:
 		slots_container
 	)
 
-	slot_buttons.clear()
+	quick_slots.clear()
 
 	var slot_count: int = (
 		GameManager.get_quick_slot_count()
 	)
 
 	for slot_index in range(slot_count):
-		var button := Button.new()
-
-		button.name = (
-			"QuickSlot"
-			+ str(slot_index + 1)
+		var quick_slot := (
+			QUICK_SLOT_SCENE.instantiate()
+			as QuickSlot
 		)
 
-		button.custom_minimum_size = Vector2(
-			80.0,
-			72.0
-		)
-		button.add_theme_constant_override("icon_max_width",32)
-
-		button.expand_icon = false
-
-		button.text = str(
-			slot_index + 1
-		)
-
-		button.toggle_mode = true
-
-		# Панель пока управляется только клавиатурой.
-		button.mouse_filter = (
-			Control.MOUSE_FILTER_IGNORE
-		)
-
-		button.focus_mode = (
-			Control.FOCUS_NONE
-		)
-
-		# Для пиксельных иконок.
-		button.texture_filter = (
-			CanvasItem.TEXTURE_FILTER_NEAREST
-		)
+		if quick_slot == null:
+			push_warning(
+				"Не удалось создать быстрый слот."
+			)
+			continue
 
 		slots_container.add_child(
-			button
+			quick_slot
 		)
 
-		slot_buttons.append(
-			button
+		quick_slot.setup_slot(
+			slot_index
+		)
+
+		quick_slots.append(
+			quick_slot
 		)
 
 
@@ -126,7 +106,7 @@ func _unhandled_input(
 		return
 
 	for slot_index in range(
-		slot_buttons.size()
+		quick_slots.size()
 	):
 		var action_name: String = (
 			QUICK_SLOT_ACTION_PREFIX
@@ -150,6 +130,19 @@ func _unhandled_input(
 func _activate_quick_slot(
 	slot_index: int
 ) -> void:
+	if (
+		slot_index < 0
+		or slot_index >= quick_slots.size()
+	):
+		return
+
+	var quick_slot: QuickSlot = (
+		quick_slots[slot_index]
+	)
+
+	if quick_slot.is_locked:
+		return
+		
 	var result: Dictionary = (
 		GameManager.use_quick_slot(
 			slot_index
@@ -191,17 +184,14 @@ func _refresh_quick_bar() -> void:
 	)
 
 	for slot_index in range(
-		slot_buttons.size()
+		quick_slots.size()
 	):
-		var button: Button = (
-			slot_buttons[slot_index]
+		var quick_slot: QuickSlot = (
+			quick_slots[slot_index]
 		)
 
 		if slot_index >= entries.size():
-			_clear_button(
-				button,
-				slot_index
-			)
+			quick_slot.show_locked()
 			continue
 
 		var entry: Dictionary = (
@@ -227,28 +217,14 @@ func _refresh_quick_bar() -> void:
 		)
 
 		if item == null or amount <= 0:
-			_clear_button(
-				button,
-				slot_index
-			)
+			quick_slot.show_locked()
 			continue
 
-		button.text = (
-			str(slot_index + 1)
-			+ "\n×"
-			+ str(amount)
+		quick_slot.show_item(
+			item,
+			amount,
+			selected
 		)
-
-		button.icon = item.icon
-
-		button.tooltip_text = (
-			item.name
-			+ " ×"
-			+ str(amount)
-		)
-
-		button.button_pressed = selected
-		button.modulate = Color.WHITE
 
 
 func _clear_button(
