@@ -4,7 +4,7 @@ class_name RewardPopup
 signal animation_finished
 
 @export var appear_duration: float = 0.25
-@export var hold_duration: float = 1.8
+@export var hold_duration: float = 0.8
 @export var fade_duration: float = 0.7
 
 @export var appear_rise_distance: float = 16.0
@@ -23,12 +23,31 @@ func _ready() -> void:
 	process_mode = Node.PROCESS_MODE_ALWAYS
 	z_index = 10
 
+func _debug_fade_started() -> void:
+	print(
+		"[VICTORY_TIMING] fade started: ",
+		Time.get_ticks_msec(),
+		" ms"
+	)
+
+
+func _debug_fade_finished() -> void:
+	print(
+		"[VICTORY_TIMING] fade finished: ",
+		Time.get_ticks_msec(),
+		" ms"
+	)
 
 func setup(
 	item: ItemData,
 	amount: int = 1
 ) -> void:
 	if item == null:
+		print(
+			"[VICTORY_TIMING] popup setup: ",
+			Time.get_ticks_msec(),
+			" ms"
+		)
 		queue_free()
 		return
 
@@ -120,21 +139,34 @@ func setup(
 		hold_duration
 	)
 
-	# Плавное исчезновение.
+	tween.tween_callback(
+		_debug_fade_started
+	)
+
+	# Основная видимая часть исчезновения.
+	# К её концу награда уже практически не видна.
+	var visible_fade_duration: float = (
+		fade_duration * 0.8
+	)
+
+	var fade_tail_duration: float = (
+		fade_duration - visible_fade_duration
+	)
+
 	tween.set_parallel(true)
 
 	tween.tween_property(
 		self,
 		"modulate:a",
-		0.0,
-		fade_duration
+		0.05,
+		visible_fade_duration
 	)
 
 	tween.tween_property(
 		self,
 		"position",
 		end_position,
-		fade_duration
+		visible_fade_duration
 	).set_trans(
 		Tween.TRANS_QUAD
 	).set_ease(
@@ -143,13 +175,21 @@ func setup(
 
 	tween.set_parallel(false)
 
-	# Сначала сообщаем, что вся анимация,
-	# включая плавное исчезновение, завершена.
+	# Визуально награда уже исчезла —
+	# сразу разрешаем показ ДО победы.
 	tween.tween_callback(
 		animation_finished.emit
 	)
 
-	# Затем удаляем уведомление.
+	# Завершаем последние почти невидимые
+	# 5% прозрачности уже под окном победы.
+	tween.tween_property(
+		self,
+		"modulate:a",
+		0.0,
+		fade_tail_duration
+	)
+
 	tween.tween_callback(
 		queue_free
 	)

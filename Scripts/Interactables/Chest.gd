@@ -214,10 +214,26 @@ func open(added_amount: int) -> void:
 		reward_popup != null
 		and is_instance_valid(reward_popup)
 	):
+		print(
+			"[VICTORY_TIMING] chest begins await: ",
+			Time.get_ticks_msec(),
+			" ms"
+		)
+
 		await reward_popup.animation_finished
 
-	# Только после окончания анимации сообщаем
-	# комнате босса, что награда полностью собрана.
+		print(
+			"[VICTORY_TIMING] chest received animation_finished: ",
+			Time.get_ticks_msec(),
+			" ms"
+		)
+
+	print(
+		"[VICTORY_TIMING] chest emits collected: ",
+		Time.get_ticks_msec(),
+		" ms"
+	)
+
 	collected.emit(
 		item,
 		added_amount

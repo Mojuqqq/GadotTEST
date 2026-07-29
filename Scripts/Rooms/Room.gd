@@ -424,10 +424,20 @@ func _on_boss_reward_collected(
 	_item: ItemData,
 	_amount: int
 ) -> void:
+	print(
+		"[VICTORY_TIMING] room received collected: ",
+		Time.get_ticks_msec(),
+		" ms"
+	)
 	if GameManager.floor_completed:
 		return
 
 	GameManager.complete_floor()
+	print(
+		"[VICTORY_TIMING] room calls trigger_game_over: ",
+		Time.get_ticks_msec(),
+		" ms"
+	)
 
 	GameManager.trigger_game_over(
 		true
