@@ -4,6 +4,7 @@
 [ext_resource type="Script" uid="uid://gq11bb3l4h3f" path="res://Scripts/UI/EconomyHUD.gd" id="1_huers"]
 [ext_resource type="Texture2D" uid="uid://t4bq3arn3sr8" path="res://Assets/Art/Interectables/Pickups/Key.png" id="2_huers"]
 [ext_resource type="Texture2D" uid="uid://b3hukkvehjmvr" path="res://Assets/Art/UI/counter_panel.png" id="2_nu5go"]
+[ext_resource type="Texture2D" uid="uid://1uqstco5br2n" path="res://Assets/Art/Interectables/Pickups/Heart.png" id="3_5gttj"]
 
 [node name="EconomyHud" type="CanvasLayer" unique_id=1192681930]
 script = ExtResource("1_huers")
@@ -22,6 +23,51 @@ grow_horizontal = 0
 layout_mode = 2
 theme_override_constants/separation = 24
 alignment = 1
+
+[node name="HealthCounter" type="Control" parent="MarginContainer/HBoxContainer" unique_id=2041582964]
+custom_minimum_size = Vector2(118, 53)
+layout_mode = 2
+
+[node name="Background" type="TextureRect" parent="MarginContainer/HBoxContainer/HealthCounter" unique_id=1548835562]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+texture = ExtResource("2_nu5go")
+
+[node name="MarginContainer" type="MarginContainer" parent="MarginContainer/HBoxContainer/HealthCounter/Background" unique_id=1761557021]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_top = -1.5
+offset_bottom = 1.5
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/margin_left = 16
+theme_override_constants/margin_top = 12
+theme_override_constants/margin_right = 16
+theme_override_constants/margin_bottom = 12
+
+[node name="HealthContainer" type="HBoxContainer" parent="MarginContainer/HBoxContainer/HealthCounter/Background/MarginContainer" unique_id=1542692646]
+layout_mode = 2
+theme_override_constants/separation = 6
+
+[node name="HealthIcon" type="TextureRect" parent="MarginContainer/HBoxContainer/HealthCounter/Background/MarginContainer/HealthContainer" unique_id=1048867130]
+custom_minimum_size = Vector2(32, 32)
+layout_mode = 2
+mouse_filter = 2
+texture = ExtResource("3_5gttj")
+expand_mode = 3
+stretch_mode = 5
+
+[node name="HealthLabel" type="Label" parent="MarginContainer/HBoxContainer/HealthCounter/Background/MarginContainer/HealthContainer" unique_id=720976415]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_colors/font_color = Color(0.13333334, 0.09019608, 0.043137256, 1)
+text = "5/5"
 
 [node name="GoldCounter" type="Control" parent="MarginContainer/HBoxContainer" unique_id=1519670106]
 custom_minimum_size = Vector2(118, 53)

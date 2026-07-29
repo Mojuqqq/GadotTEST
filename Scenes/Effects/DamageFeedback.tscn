@@ -1,0 +1,30 @@
+[gd_scene format=3 uid="uid://cw754ljrsk1t3"]
+
+[ext_resource type="Texture2D" uid="uid://1uqstco5br2n" path="res://Assets/Art/Interectables/Pickups/Heart.png" id="1_8xtcd"]
+[ext_resource type="Script" uid="uid://bgtudxe1tv4ue" path="res://Scripts/Effects/DamageFeedback.gd" id="1_txg4u"]
+
+[node name="DamageFeedback" type="Node2D" unique_id=321715150]
+z_index = 100
+script = ExtResource("1_txg4u")
+
+[node name="DamageRow" type="HBoxContainer" parent="." unique_id=86074341]
+offset_right = 40.0
+offset_bottom = 40.0
+theme_override_constants/separation = 4
+
+[node name="HeartIcon" type="TextureRect" parent="DamageRow" unique_id=498137089]
+custom_minimum_size = Vector2(30, 30)
+layout_mode = 2
+mouse_filter = 2
+texture = ExtResource("1_8xtcd")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="DamageLabel" type="Label" parent="DamageRow" unique_id=1181301235]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 0.5766771, 0.53013307, 1)
+theme_override_colors/font_outline_color = Color(0.15607548, 0.045894057, 0, 1)
+theme_override_constants/outline_size = 5
+theme_override_font_sizes/font_size = 24
+text = "-3"
