@@ -2,6 +2,19 @@ extends CharacterBody2D
 
 @export var base_speed: float = 300.0
 @export var egg_scene: PackedScene
+@export_group("Damage Feedback")
+
+@export var damage_feedback_scene: PackedScene
+
+@export var damage_tint: Color = Color(
+	1.0,
+	0.2,
+	0.2,
+	1.0
+)
+
+@export_range(0.0, 32.0, 1.0)
+var damage_bounce_height: float = 12.0
 @onready var animated_sprite: AnimatedSprite2D = ($AnimatedSprite2D)
 var egg_pool: Array[Node] = []
 const INITIAL_POOL_SIZE := 20
@@ -13,6 +26,11 @@ var push_decay_rate: float = 6.3
 var current_speed: float = 300.0
 var time_since_last_shot: float = 0.0
 var is_dead: bool = false
+var damage_feedback_tween: Tween = null
+
+var visual_base_scale: Vector2 = Vector2.ONE
+var visual_base_position: Vector2 = Vector2.ZERO
+var visual_base_modulate: Color = Color.WHITE
 @export_group("Hot Sauce")
 var hot_sauce_effect_total_duration: float = 0.0
 
@@ -45,6 +63,9 @@ const CHICK_BOMB_SCENE := preload(
 func _ready():
 	add_to_group("Player")
 	animated_sprite.play(&"idle")
+	visual_base_scale = animated_sprite.scale
+	visual_base_position = animated_sprite.position
+	visual_base_modulate = animated_sprite.modulate
 	if GameManager.player_stats:
 		current_speed = GameManager.player_stats.speed
 	else:
@@ -474,8 +495,203 @@ func _on_tear_effect_end():
 	is_crying = false
 	modulate = Color.WHITE
 
-func take_damage(damage: int):
-	GameManager.take_damage(damage)
+func take_damage(
+	damage: int
+) -> void:
+	if damage <= 0:
+		return
+
+	if is_dead:
+		return
+
+	var current_hp: int = maxi(
+		GameManager.player_hp,
+		0
+	)
+
+	var actual_damage: int = mini(
+		damage,
+		current_hp
+	)
+
+	if actual_damage <= 0:
+		return
+
+	_spawn_damage_feedback(
+		actual_damage
+	)
+
+	_play_damage_visual_response()
+
+	GameManager.take_damage(
+		actual_damage
+	)
+
+func _spawn_damage_feedback(
+	amount: int
+) -> void:
+	if damage_feedback_scene == null:
+		push_warning(
+			"Player: не назначена сцена "
+			+ "DamageFeedback."
+		)
+		return
+
+	var current_scene: Node = (
+		get_tree().current_scene
+	)
+
+	if current_scene == null:
+		return
+
+	var feedback: Node2D = (
+		damage_feedback_scene.instantiate()
+		as Node2D
+	)
+
+	if feedback == null:
+		push_warning(
+			"Корень DamageFeedback "
+			+ "должен быть Node2D."
+		)
+		return
+
+	current_scene.add_child(
+		feedback
+	)
+
+	feedback.global_position = (
+		global_position
+		+ Vector2(
+			0.0,
+			-75.0
+		)
+	)
+
+	if feedback.has_method(
+		"show_damage"
+	):
+		feedback.call(
+			"show_damage",
+			amount
+		)
+	else:
+		push_warning(
+			"В DamageFeedback отсутствует "
+			+ "метод show_damage()."
+		)
+
+		feedback.queue_free()
+
+func _play_damage_visual_response() -> void:
+	if (
+		damage_feedback_tween != null
+		and damage_feedback_tween.is_valid()
+	):
+		damage_feedback_tween.kill()
+
+	animated_sprite.scale = visual_base_scale
+	animated_sprite.position = visual_base_position
+	animated_sprite.modulate = damage_tint
+
+	var squash_scale: Vector2 = (
+		visual_base_scale
+		* Vector2(
+			1.2,
+			0.78
+		)
+	)
+
+	var stretch_scale: Vector2 = (
+		visual_base_scale
+		* Vector2(
+			0.88,
+			1.18
+		)
+	)
+
+	var impact_position: Vector2 = (
+		visual_base_position
+		+ Vector2(
+			0.0,
+			4.0
+		)
+	)
+
+	var bounce_position: Vector2 = (
+		visual_base_position
+		+ Vector2(
+			0.0,
+			-damage_bounce_height
+		)
+	)
+
+	damage_feedback_tween = create_tween()
+
+	# Короткое сжатие от удара.
+	damage_feedback_tween.tween_property(
+		animated_sprite,
+		"scale",
+		squash_scale,
+		0.06
+	).set_trans(
+		Tween.TRANS_QUAD
+	).set_ease(
+		Tween.EASE_OUT
+	)
+
+	damage_feedback_tween.parallel().tween_property(
+		animated_sprite,
+		"position",
+		impact_position,
+		0.06
+	)
+
+	# Подпрыгивание и растяжение.
+	damage_feedback_tween.tween_property(
+		animated_sprite,
+		"scale",
+		stretch_scale,
+		0.10
+	).set_trans(
+		Tween.TRANS_BACK
+	).set_ease(
+		Tween.EASE_OUT
+	)
+
+	damage_feedback_tween.parallel().tween_property(
+		animated_sprite,
+		"position",
+		bounce_position,
+		0.10
+	)
+
+	# Красный оттенок постепенно исчезает.
+	damage_feedback_tween.parallel().tween_property(
+		animated_sprite,
+		"modulate",
+		visual_base_modulate,
+		0.18
+	)
+
+	# Возвращение к обычному состоянию.
+	damage_feedback_tween.tween_property(
+		animated_sprite,
+		"scale",
+		visual_base_scale,
+		0.12
+	).set_trans(
+		Tween.TRANS_BOUNCE
+	).set_ease(
+		Tween.EASE_OUT
+	)
+
+	damage_feedback_tween.parallel().tween_property(
+		animated_sprite,
+		"position",
+		visual_base_position,
+		0.12
+	)
 
 func die() -> void:
 	if is_dead:

@@ -2,6 +2,7 @@
 
 [ext_resource type="Script" uid="uid://cuqn58qi4xxyk" path="res://Scripts/Player/Player.gd" id="1_kyqiw"]
 [ext_resource type="PackedScene" uid="uid://iwr2u5j4pgj4" path="res://Scenes/Projectiles/Egg.tscn" id="2_gntrk"]
+[ext_resource type="PackedScene" uid="uid://cw754ljrsk1t3" path="res://Scenes/Effects/DamageFeedback.tscn" id="3_fk5o5"]
 [ext_resource type="Texture2D" uid="uid://fuip5dh2fien" path="res://Assets/Art/Characters/Player/player_died_anim.png" id="3_jmcll"]
 [ext_resource type="Texture2D" uid="uid://dg2f2uxsqr35c" path="res://Assets/Art/Characters/Player/player_idle_anim.png" id="4_jmcll"]
 [ext_resource type="Texture2D" uid="uid://ncb6merf0kjh" path="res://Assets/Art/Characters/Player/player_walk_anim.png" id="4_ude3g"]
@@ -154,6 +155,7 @@ animations = [{
 collision_layer = 2
 script = ExtResource("1_kyqiw")
 egg_scene = ExtResource("2_gntrk")
+damage_feedback_scene = ExtResource("3_fk5o5")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=738740004 groups=["Player"]]
 shape = SubResource("CapsuleShape2D_spwcu")
