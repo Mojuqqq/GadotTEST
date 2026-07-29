@@ -320,7 +320,6 @@ func start_game() -> void:
 	last_lost_keys = 0
 
 	_economy.start_new_run()
-	_inventory.start_new_run()
 
 	_flow.start_game(
 		Callable(self, "reset_game_state")
