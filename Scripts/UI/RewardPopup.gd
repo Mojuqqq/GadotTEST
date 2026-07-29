@@ -1,11 +1,11 @@
 extends Node2D
 class_name RewardPopup
 
-signal fade_started
+signal animation_finished
 
 @export var appear_duration: float = 0.25
 @export var hold_duration: float = 1.8
-@export var fade_duration: float = 0.6
+@export var fade_duration: float = 1.0
 
 @export var appear_rise_distance: float = 16.0
 @export var fade_rise_distance: float = 24.0
@@ -120,12 +120,6 @@ func setup(
 		hold_duration
 	)
 
-	# Сообщаем сундуку, что уведомление
-	# закончило основной показ и начинает исчезать.
-	tween.tween_callback(
-		fade_started.emit
-	)
-
 	# Плавное исчезновение.
 	tween.set_parallel(true)
 
@@ -148,6 +142,14 @@ func setup(
 	)
 
 	tween.set_parallel(false)
+
+	# Сначала сообщаем, что вся анимация,
+	# включая плавное исчезновение, завершена.
+	tween.tween_callback(
+		animation_finished.emit
+	)
+
+	# Затем удаляем уведомление.
 	tween.tween_callback(
 		queue_free
 	)

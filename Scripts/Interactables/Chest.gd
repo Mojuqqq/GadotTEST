@@ -214,7 +214,7 @@ func open(added_amount: int) -> void:
 		reward_popup != null
 		and is_instance_valid(reward_popup)
 	):
-		await reward_popup.fade_started
+		await reward_popup.animation_finished
 
 	# Только после окончания анимации сообщаем
 	# комнате босса, что награда полностью собрана.
