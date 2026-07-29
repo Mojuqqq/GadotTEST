@@ -1,0 +1,20 @@
+[gd_scene format=3 uid="uid://daili7udbv6ll"]
+
+[ext_resource type="Script" uid="uid://b0wi6mebjgjkx" path="res://Scripts/Enemies/Enemy_poultry.gd" id="1_aa3hi"]
+[ext_resource type="Texture2D" uid="uid://8rbg6b8psfgi" path="res://Assets/Art/Characters/Enemies/Enemy_boss_laying_hen.png" id="2_e2lmb"]
+
+[sub_resource type="CapsuleShape2D" id="CapsuleShape2D_q8716"]
+radius = 101.0
+height = 202.0
+
+[node name="Enemy_cock" type="CharacterBody2D" unique_id=240231144]
+collision_layer = 4
+script = ExtResource("1_aa3hi")
+
+[node name="Sprite2D" type="Sprite2D" parent="." unique_id=1048545208]
+scale = Vector2(1.0718765, 0.9509423)
+texture = ExtResource("2_e2lmb")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=731214316]
+position = Vector2(3, 0)
+shape = SubResource("CapsuleShape2D_q8716")

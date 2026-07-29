@@ -14,7 +14,7 @@
 [ext_resource type="PackedScene" uid="uid://cqtvq0voq4fph" path="res://Scenes/Enemies/Enemy_carrot.tscn" id="10_frkhe"]
 [ext_resource type="PackedScene" uid="uid://c2n4eww25erye" path="res://Scenes/Enemies/Enemy_corn.tscn" id="11_1p5hy"]
 [ext_resource type="PackedScene" uid="uid://m4leu411eb0" path="res://Scenes/Enemies/Enemy_onion.tscn" id="12_h1m7h"]
-[ext_resource type="PackedScene" uid="uid://cai6g7bruh7sj" path="res://Scenes/Enemies/Enemy_cock.tscn" id="13_erwvk"]
+[ext_resource type="PackedScene" uid="uid://daili7udbv6ll" path="res://Scenes/Enemies/Enemy_poultry.tscn" id="13_lijq2"]
 [ext_resource type="PackedScene" uid="uid://cy8mddadcgpo6" path="res://Scenes/UI/PauseMenu.tscn" id="17_2w5on"]
 [ext_resource type="Script" uid="uid://b4wp3f70s1114" path="res://Scripts/Debug/Debug.gd" id="17_346fj"]
 [ext_resource type="PackedScene" uid="uid://bbrstd1ll3ice" path="res://Scenes/UI/EconomyHUD.tscn" id="17_e8w2b"]
@@ -26,7 +26,7 @@ start_room_scene = ExtResource("1_pbw6q")
 end_room_scene = ExtResource("2_v1gob")
 room_pool = Array[PackedScene]([ExtResource("3_50glp"), ExtResource("4_vy5pj"), ExtResource("5_bmxlf")])
 enemy_pool = Array[PackedScene]([ExtResource("10_frkhe"), ExtResource("4_rgh2o"), ExtResource("11_1p5hy"), ExtResource("8_bmxlf"), ExtResource("9_grg3l"), ExtResource("12_h1m7h")])
-boss_scene = ExtResource("13_erwvk")
+boss_scene = ExtResource("13_lijq2")
 
 [node name="Rooms" type="Node2D" parent="." unique_id=742137853]
 z_index = -1
