@@ -5,7 +5,7 @@ signal animation_finished
 
 @export var appear_duration: float = 0.25
 @export var hold_duration: float = 1.8
-@export var fade_duration: float = 1.0
+@export var fade_duration: float = 0.7
 
 @export var appear_rise_distance: float = 16.0
 @export var fade_rise_distance: float = 24.0
