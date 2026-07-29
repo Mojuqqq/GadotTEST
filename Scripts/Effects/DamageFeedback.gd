@@ -3,7 +3,8 @@ class_name DamageFeedback
 
 
 @onready var damage_label: Label = %DamageLabel
-
+func _ready() -> void:
+	process_mode = Node.PROCESS_MODE_ALWAYS
 
 @export_group("Animation")
 
