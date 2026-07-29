@@ -8,8 +8,8 @@ enum GameState {MENU,PLAYING,GAME_OVER,VICTORY}
 
 const MAIN_SCENE_PATH := "res://Scenes/Core/Main.tscn"
 const MENU_SCENE_PATH := "res://Scenes/UI/Main_menu.tscn"
-const VICTORY_SCENE_PATH := "res://Scenes/UI/Victory.tscn"
-const GAME_OVER_SCENE_PATH := "res://Scenes/UI/Game_over.tscn"
+const VICTORY_SCENE: PackedScene = preload("res://Scenes/UI/Victory.tscn")
+const GAME_OVER_SCENE: PackedScene = preload("res://Scenes/UI/Game_over.tscn")
 
 
 var state: int = GameState.MENU
@@ -53,33 +53,29 @@ func trigger_game_over(
 	else:
 		state = GameState.GAME_OVER
 
-	# При поражении сначала полностью проигрываем
-	# анимацию смерти персонажа.
+	# При поражении сначала полностью
+	# проигрываем анимацию смерти персонажа.
 	if not victory:
 		await _kill_player(
 			player
 		)
 
-	var overlay_path: String = (
-		VICTORY_SCENE_PATH
-		if victory
-		else GAME_OVER_SCENE_PATH
-	)
+	var overlay_scene: PackedScene
 
-	var overlay_scene := (
-		load(overlay_path) as PackedScene
-	)
+	if victory:
+		overlay_scene = VICTORY_SCENE
+	else:
+		overlay_scene = GAME_OVER_SCENE
 
 	if overlay_scene == null:
 		push_error(
-			"Не удалось загрузить финальную сцену: "
-			+ overlay_path
+			"Не удалось получить финальную сцену."
 		)
 
 		game_over_started = false
 		return
 
-	var current_scene := (
+	var current_scene: Node = (
 		get_tree().current_scene
 	)
 
@@ -92,7 +88,17 @@ func trigger_game_over(
 		game_over_started = false
 		return
 
-	var overlay := overlay_scene.instantiate()
+	var overlay: Node = (
+		overlay_scene.instantiate()
+	)
+
+	if overlay == null:
+		push_error(
+			"Не удалось создать финальный экран."
+		)
+
+		game_over_started = false
+		return
 
 	current_scene.add_child(
 		overlay

@@ -3,6 +3,8 @@ extends CanvasLayer
 
 const QUICK_SLOT_ACTION_PREFIX: String = "quick_slot_"
 const QUICK_SLOT_SCENE: PackedScene = preload("res://Scenes/UI/QuickSlot.tscn")
+const DISPLAY_SLOT_COUNT: int = 9
+const AVAILABLE_SLOT_COUNT: int = 5
 
 @onready var slots_container: HBoxContainer = (%SlotsContainer)
 @onready var active_effects_container: HBoxContainer = (%ActiveEffectsContainer)
@@ -54,11 +56,9 @@ func _create_slot_buttons() -> void:
 
 	quick_slots.clear()
 
-	var slot_count: int = (
-		GameManager.get_quick_slot_count()
-	)
-
-	for slot_index in range(slot_count):
+	for slot_index in range(
+		DISPLAY_SLOT_COUNT
+	):
 		var quick_slot := (
 			QUICK_SLOT_SCENE.instantiate()
 			as QuickSlot
@@ -74,8 +74,13 @@ func _create_slot_buttons() -> void:
 			quick_slot
 		)
 
+		var locked_state: bool = (
+			slot_index >= AVAILABLE_SLOT_COUNT
+		)
+
 		quick_slot.setup_slot(
-			slot_index
+			slot_index,
+			locked_state
 		)
 
 		quick_slots.append(
@@ -105,8 +110,13 @@ func _unhandled_input(
 	):
 		return
 
-	for slot_index in range(
+	var input_slot_count: int = mini(
+		AVAILABLE_SLOT_COUNT,
 		quick_slots.size()
+	)
+
+	for slot_index in range(
+		input_slot_count
 	):
 		var action_name: String = (
 			QUICK_SLOT_ACTION_PREFIX
@@ -140,7 +150,10 @@ func _activate_quick_slot(
 		quick_slots[slot_index]
 	)
 
-	if quick_slot.is_locked:
+	if (
+		quick_slot.is_locked
+		or not quick_slot.has_item_content
+	):
 		return
 		
 	var result: Dictionary = (
@@ -190,8 +203,16 @@ func _refresh_quick_bar() -> void:
 			quick_slots[slot_index]
 		)
 
-		if slot_index >= entries.size():
+		# Слоты 6–9 всегда остаются
+		# визуально заблокированными.
+		if slot_index >= AVAILABLE_SLOT_COUNT:
 			quick_slot.show_locked()
+			continue
+
+		# Первые пять слотов доступны,
+		# даже когда в них нет предмета.
+		if slot_index >= entries.size():
+			quick_slot.show_empty()
 			continue
 
 		var entry: Dictionary = (
@@ -217,7 +238,7 @@ func _refresh_quick_bar() -> void:
 		)
 
 		if item == null or amount <= 0:
-			quick_slot.show_locked()
+			quick_slot.show_empty()
 			continue
 
 		quick_slot.show_item(
@@ -226,32 +247,6 @@ func _refresh_quick_bar() -> void:
 			selected
 		)
 
-
-func _clear_button(
-	button: Button,
-	slot_index: int
-) -> void:
-	button.text = (
-		str(slot_index + 1)
-		+ "\n—"
-	)
-
-	button.icon = null
-
-	button.tooltip_text = (
-		"Слот "
-		+ str(slot_index + 1)
-		+ " пуст"
-	)
-
-	button.button_pressed = false
-
-	button.modulate = Color(
-		1.0,
-		1.0,
-		1.0,
-		0.55
-	)
 
 # =========================================================
 # АКТИВНЫЕ ВРЕМЕННЫЕ ЭФФЕКТЫ

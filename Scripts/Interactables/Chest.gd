@@ -205,17 +205,16 @@ func open(added_amount: int) -> void:
 		added_amount
 	)
 
-	var reward_popup: Node = (
+	var reward_popup: RewardPopup = (
 		show_reward(added_amount)
+		as RewardPopup
 	)
 
-	# Ждём, пока RewardPopup завершит Tween
-	# и удалится из дерева сцены.
 	if (
 		reward_popup != null
 		and is_instance_valid(reward_popup)
 	):
-		await reward_popup.tree_exited
+		await reward_popup.fade_started
 
 	# Только после окончания анимации сообщаем
 	# комнате босса, что награда полностью собрана.

@@ -429,12 +429,6 @@ func _on_boss_reward_collected(
 
 	GameManager.complete_floor()
 
-	# Короткая пауза, чтобы игрок увидел
-	# полученный предмет перед ДО победы.
-	await get_tree().create_timer(
-		0.6
-	).timeout
-
 	GameManager.trigger_game_over(
 		true
 	)
