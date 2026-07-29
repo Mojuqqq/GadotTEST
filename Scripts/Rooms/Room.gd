@@ -217,9 +217,6 @@ func _on_enemy_died(
 	# только после полной очистки комнаты.
 	if not is_boss_room():
 		return
-
-	GameManager.add_keys(1)
-
 	print(
 		"Комната босса полностью очищена. "
 		+ "Получен гарантированный ключ. "

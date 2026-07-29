@@ -213,7 +213,8 @@ func _drop_loot() -> void:
 func _spawn_pickup(
 	pickup_scene: PackedScene,
 	amount: int,
-	loot_name: String
+	loot_name: String,
+	local_offset: Vector2 = Vector2.ZERO
 ) -> void:
 	if pickup_scene == null:
 		push_warning(
@@ -228,7 +229,9 @@ func _spawn_pickup(
 		get_parent() as Node2D
 	)
 
-	if not is_instance_valid(pickup_parent):
+	if not is_instance_valid(
+		pickup_parent
+	):
 		push_warning(
 			"Не найден родитель для добычи врага"
 		)
@@ -245,17 +248,22 @@ func _spawn_pickup(
 		)
 		return
 
-	# Позицию задаём до добавления в дерево,
-	# чтобы анимация предмета стартовала правильно.
-	pickup.position = pickup_parent.to_local(
-		global_position
+	# Позицию задаём до добавления в дерево.
+	# Смещение позволяет разбрасывать несколько наград.
+	pickup.position = (
+		pickup_parent.to_local(
+			global_position
+		)
+		+ local_offset
 	)
 
-	if pickup.has_method("setup"):
-		pickup.setup(amount)
+	if pickup.has_method(
+		"setup"
+	):
+		pickup.setup(
+			amount
+		)
 
-	# Отложенное добавление защищает от ошибки
-	# flushing queries при смерти от столкновения.
 	pickup_parent.call_deferred(
 		"add_child",
 		pickup
