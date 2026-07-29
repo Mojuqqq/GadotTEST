@@ -214,25 +214,9 @@ func open(added_amount: int) -> void:
 		reward_popup != null
 		and is_instance_valid(reward_popup)
 	):
-		print(
-			"[VICTORY_TIMING] chest begins await: ",
-			Time.get_ticks_msec(),
-			" ms"
-		)
 
-		await reward_popup.animation_finished
+		await reward_popup.visually_hidden
 
-		print(
-			"[VICTORY_TIMING] chest received animation_finished: ",
-			Time.get_ticks_msec(),
-			" ms"
-		)
-
-	print(
-		"[VICTORY_TIMING] chest emits collected: ",
-		Time.get_ticks_msec(),
-		" ms"
-	)
 
 	collected.emit(
 		item,

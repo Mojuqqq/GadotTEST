@@ -42,16 +42,7 @@ var floor_completed: bool = false
 var last_lost_gold: int = 0
 var last_lost_keys: int = 0
 var _inventory = InventoryService.new()
-var passive_run_upgrades: Dictionary = {
-	"speed_boots": {
-		"item": ItemData,
-		"count": 2
-	},
-	"new_glasses": {
-		"item": ItemData,
-		"count": 1
-	}
-}
+var passive_run_upgrades: Dictionary = {}
 
 # Состояние игры
 
@@ -330,7 +321,6 @@ func start_game() -> void:
 
 	_economy.start_new_run()
 	_inventory.start_new_run()
-	_clear_passive_run_upgrades()
 
 	_flow.start_game(
 		Callable(self, "reset_game_state")
@@ -505,10 +495,13 @@ func reset_game_state() -> void:
 	_run_state.reset()
 	_dungeon.reset()
 	_inventory.reset()
+	_clear_passive_run_upgrades()
 	_flow.reset()
-	floor_completed = false
-	floor_completed_changed.emit(false)
 
+	floor_completed = false
+	floor_completed_changed.emit(
+		false
+	)
 
 # =========================================================
 # ПЕРЕДАЧА СИГНАЛОВ НАРУЖУ
@@ -523,10 +516,8 @@ func _on_player_hp_changed(
 		max_hp
 	)
 
-
 func _on_stats_changed(stats) -> void:
 	stats_changed.emit(stats)
-
 
 func _on_room_changed(
 	room_name: StringName,
@@ -537,12 +528,10 @@ func _on_room_changed(
 		room_index
 	)
 
-
 func _on_enemies_changed(
 	count: int
 ) -> void:
 	enemies_changed.emit(count)
-
 
 func _on_game_over(
 	victory: bool
@@ -555,34 +544,26 @@ func start_new_run_economy() -> void:
 func add_gold(amount: int) -> void:
 	_economy.add_gold(amount)
 
-
 func add_keys(amount: int = 1) -> void:
 	_economy.add_keys(amount)
-
 
 func can_afford(amount: int) -> bool:
 	return _economy.can_afford(amount)
 
-
 func spend_gold(amount: int) -> bool:
 	return _economy.spend_gold(amount)
-
 
 func has_key() -> bool:
 	return _economy.has_key()
 
-
 func use_key() -> bool:
 	return _economy.use_key()
-
 
 func leave_floor_economy() -> int:
 	return _economy.leave_floor()
 
-
 func finish_run_voluntarily() -> int:
 	return _economy.finish_run_voluntarily()
-
 
 func lose_run_rewards() -> Dictionary:
 	return _economy.lose_run_rewards()
@@ -591,7 +572,6 @@ func _on_banked_gold_changed(
 	value: int
 ) -> void:
 	banked_gold_changed.emit(value)
-
 
 func _on_run_gold_changed(
 	value: int

@@ -43,12 +43,7 @@ func trigger_game_over(
 	victory: bool,
 	player: Node2D
 ) -> void:
-	print(
-		"[VICTORY_TIMING] GameFlow trigger entered: ",
-		Time.get_ticks_msec(),
-		" ms, victory=",
-		victory
-	)
+	
 	if game_over_started:
 		return
 
@@ -97,11 +92,7 @@ func trigger_game_over(
 	var overlay: Node = (
 		overlay_scene.instantiate()
 	)
-	print(
-		"[VICTORY_TIMING] overlay instantiated: ",
-		Time.get_ticks_msec(),
-		" ms"
-	)
+	
 
 	if overlay == null:
 		push_error(
@@ -114,11 +105,7 @@ func trigger_game_over(
 	current_scene.add_child(
 		overlay
 	)
-	print(
-		"[VICTORY_TIMING] overlay added to scene: ",
-		Time.get_ticks_msec(),
-		" ms"
-	)
+	
 
 	get_tree().paused = true
 

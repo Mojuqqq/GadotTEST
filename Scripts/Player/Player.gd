@@ -7,6 +7,9 @@ var egg_pool: Array[Node] = []
 const INITIAL_POOL_SIZE := 20
 
 var external_force: Vector2 = Vector2.ZERO
+@export_group("Knockback")
+@export_range(0.1, 20.0, 0.1)
+var push_decay_rate: float = 6.3
 var current_speed: float = 300.0
 var time_since_last_shot: float = 0.0
 var is_dead: bool = false
@@ -64,17 +67,82 @@ func _ready():
 	
 	call_deferred("_create_egg_pool")
 	
-func _create_egg_pool():
-	for i in INITIAL_POOL_SIZE:
-		var egg = egg_scene.instantiate()
-		get_tree().current_scene.add_child(egg)
+func _create_egg_pool() -> void:
+	if egg_scene == null:
+		push_error(
+			"Player: не назначена сцена яйца. "
+			+ "Пул снарядов не создан."
+		)
+		return
 
-		egg.returned_to_pool.connect(_on_egg_returned_to_pool)
-		egg.deactivate()
+	var current_scene: Node = (
+		get_tree().current_scene
+	)
 
-		# deactivate() отправляет сигнал, поэтому убираем возможный дубль
-		if not egg_pool.has(egg):
-			egg_pool.append(egg)
+	if current_scene == null:
+		push_error(
+			"Player: не найдена текущая сцена. "
+			+ "Пул снарядов не создан."
+		)
+		return
+
+	for _index in range(
+		INITIAL_POOL_SIZE
+	):
+		var egg: Node = (
+			egg_scene.instantiate()
+		)
+
+		if egg == null:
+			push_error(
+				"Player: не удалось создать яйцо "
+				+ "для пула."
+			)
+			continue
+
+		current_scene.add_child(
+			egg
+		)
+
+		if not egg.has_signal(
+			&"returned_to_pool"
+		):
+			push_error(
+				"Сцена яйца не содержит сигнал "
+				+ "returned_to_pool."
+			)
+
+			egg.queue_free()
+			continue
+
+		if not egg.has_method(
+			&"deactivate"
+		):
+			push_error(
+				"Сцена яйца не содержит метод "
+				+ "deactivate()."
+			)
+
+			egg.queue_free()
+			continue
+
+		egg.connect(
+			&"returned_to_pool",
+			_on_egg_returned_to_pool
+		)
+
+		egg.call(
+			&"deactivate"
+		)
+
+		# deactivate() испускает сигнал,
+		# поэтому защищаемся от дубля.
+		if not egg_pool.has(
+			egg
+		):
+			egg_pool.append(
+				egg
+			)
 
 func _on_egg_returned_to_pool(egg):
 	if not egg_pool.has(egg):
@@ -93,7 +161,21 @@ func _physics_process(delta):
 	
 	var desired_velocity = direction * current_speed
 	velocity = desired_velocity + external_force
-	external_force = external_force.lerp(Vector2.ZERO, 0.1)
+	var push_decay_weight: float = (
+		1.0
+		- exp(
+			-push_decay_rate
+			* delta
+		)
+	)
+
+	external_force = external_force.lerp(
+		Vector2.ZERO,
+		push_decay_weight
+	)
+
+	if external_force.length_squared() < 1.0:
+		external_force = Vector2.ZERO
 	move_and_slide()
 	
 	_update_movement_animation(
@@ -103,12 +185,25 @@ func _physics_process(delta):
 		return
 		
 	# === Стрельба ===
-	time_since_last_shot += delta   # время тикает всегда
-	
-	var is_shooting = Input.is_mouse_button_pressed(MOUSE_BUTTON_LEFT)
-	var fire_rate = GameManager.player_stats.fire_rate if GameManager.player_stats else 0.3
-	
-	if is_shooting and time_since_last_shot >= fire_rate:
+	time_since_last_shot += delta
+
+	var is_shooting: bool = (
+		Input.is_action_pressed(
+			&"shoot"
+		)
+	)
+
+	var fire_rate: float = 0.3
+
+	if GameManager.player_stats != null:
+		fire_rate = (
+			GameManager.player_stats.fire_rate
+		)
+
+	if (
+		is_shooting
+		and time_since_last_shot >= fire_rate
+	):
 		shoot()
 		time_since_last_shot = 0.0
 

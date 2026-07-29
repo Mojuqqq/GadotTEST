@@ -90,8 +90,32 @@ func update_enemies_list():
 			enemy.died.connect(_on_enemy_died)
 			print("Подключён сигнал died к врагу: ", enemy.name)
 
-	GameManager.enemies_changed.emit(enemies.size())
-	print("Обновлён список врагов: ", enemies.size())
+	_request_enemy_counter_refresh()
+
+	print(
+		"Обновлён список врагов: ",
+		enemies.size()
+	)
+
+func _request_enemy_counter_refresh() -> void:
+	# Неактивная комната не должна
+	# менять данные текущего HUD.
+	if not is_active:
+		return
+
+	var current_room: Node2D = (
+		GameManager.get_current_room()
+	)
+
+	if current_room != self:
+		return
+
+	# Обновляем на следующем кадре.
+	# Это важно при смерти врага:
+	# сигнал died испускается раньше queue_free().
+	GameManager.call_deferred(
+		&"update_enemy_count"
+	)
 
 func on_room_entered() -> void:
 	print(
@@ -144,38 +168,67 @@ func unlock_doors():
 		if door.has_method("set_open"):
 			door.set_open(true)
 
-func _on_enemy_died(victim: Node):
-	print("Враг умер: ", victim.name)
-	var idx = enemies.find(victim)
-	if idx != -1:
-		enemies.remove_at(idx)
-		print("Враг удалён из списка, осталось: ", enemies.size())
-	else:
-		print("Враг не найден в списке! Текущий список: ", enemies)
-	
-	GameManager.enemies_changed.emit(enemies.size())
-	
-	# Только если врагов не осталось и комната ещё не очищена
-	if enemies.size() == 0 and not is_cleared:
-		is_cleared = true
-		unlock_doors()
-		print("Комната очищена, двери открыты!")
+func _on_enemy_died(
+	victim: Node
+) -> void:
+	print(
+		"Враг умер: ",
+		victim.name
+	)
 
-	# В комнате босса сначала появляется
-	# наградной сундук. Этаж завершится
-	# только после получения награды.
-	if is_boss_room():
-		GameManager.add_keys(1)
+	var enemy_index: int = enemies.find(
+		victim
+	)
+
+	if enemy_index != -1:
+		enemies.remove_at(
+			enemy_index
+		)
 
 		print(
-			"Босс побеждён. "
-			+ "Получен гарантированный ключ. "
-			+ "Создаём наградной сундук."
+			"Враг удалён из списка, осталось: ",
+			enemies.size()
+		)
+	else:
+		print(
+			"Враг не найден в списке! "
+			+ "Текущий список: ",
+			enemies
 		)
 
-		call_deferred(
-			"spawn_chest"
-		)
+	_request_enemy_counter_refresh()
+
+	# Награда и открытие дверей происходят
+	# только после смерти последнего врага.
+	if (
+		not enemies.is_empty()
+		or is_cleared
+	):
+		return
+
+	is_cleared = true
+	unlock_doors()
+
+	print(
+		"Комната очищена, двери открыты!"
+	)
+
+	# В комнате босса награда появляется
+	# только после полной очистки комнаты.
+	if not is_boss_room():
+		return
+
+	GameManager.add_keys(1)
+
+	print(
+		"Комната босса полностью очищена. "
+		+ "Получен гарантированный ключ. "
+		+ "Создаём наградной сундук."
+	)
+
+	call_deferred(
+		"spawn_chest"
+	)
 
 func spawn_enemies(
 	count: int,
@@ -424,20 +477,12 @@ func _on_boss_reward_collected(
 	_item: ItemData,
 	_amount: int
 ) -> void:
-	print(
-		"[VICTORY_TIMING] room received collected: ",
-		Time.get_ticks_msec(),
-		" ms"
-	)
+	
 	if GameManager.floor_completed:
 		return
 
 	GameManager.complete_floor()
-	print(
-		"[VICTORY_TIMING] room calls trigger_game_over: ",
-		Time.get_ticks_msec(),
-		" ms"
-	)
+	
 
 	GameManager.trigger_game_over(
 		true

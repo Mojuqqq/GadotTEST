@@ -14,6 +14,9 @@ var is_closing: bool = false
 
 func _ready() -> void:
 	process_mode = Node.PROCESS_MODE_ALWAYS
+	add_to_group(
+		"ShopMenu"
+	)
 
 	if not close_button.pressed.is_connected(
 		close_menu

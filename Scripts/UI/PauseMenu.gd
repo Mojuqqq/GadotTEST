@@ -71,7 +71,83 @@ func _input(
 	):
 		return
 
+	# Удерживание ESC не должно несколько раз
+	# открывать и закрывать меню.
+	if (
+		event is InputEventKey
+		and event.echo
+	):
+		return
+
+	# Магазин имеет приоритет над паузой.
+	# ESC закрывает магазин и не открывает PauseMenu.
+	var shop_menu: Node = (
+		get_tree().get_first_node_in_group(
+			"ShopMenu"
+		)
+	)
+
+	if is_instance_valid(
+		shop_menu
+	):
+		get_viewport().set_input_as_handled()
+
+		if shop_menu.has_method(
+			"close_menu"
+		):
+			shop_menu.call(
+				"close_menu"
+			)
+		else:
+			shop_menu.queue_free()
+
+		return
+
+	# Инвентарь имеет приоритет над паузой.
+	# При ESC закрываем его и не открываем PauseMenu.
+	var inventory_menu: Node = (
+		get_tree().get_first_node_in_group(
+			"InventoryMenu"
+		)
+	)
+
+	if is_instance_valid(
+		inventory_menu
+	):
+		get_viewport().set_input_as_handled()
+
+		if inventory_menu.has_method(
+			"close_menu"
+		):
+			inventory_menu.call(
+				"close_menu"
+			)
+		else:
+			inventory_menu.queue_free()
+
+		return
+
+	# На экранах победы и поражения ESC
+	# не должен открывать меню паузы
+	# и снимать игру с паузы.
+	if (
+		GameManager.state
+		!= GameManager.GameState.PLAYING
+	):
+		get_viewport().set_input_as_handled()
+		return
+
 	get_viewport().set_input_as_handled()
+
+	# ESC закрывает только верхнее открытое окно,
+	# а не всё меню паузы сразу.
+	if next_floor_dialog.visible:
+		next_floor_dialog.hide()
+		return
+
+	if exit_run_dialog.visible:
+		exit_run_dialog.hide()
+		return
 
 	if settings_menu.is_menu_open():
 		settings_menu.close_menu()
