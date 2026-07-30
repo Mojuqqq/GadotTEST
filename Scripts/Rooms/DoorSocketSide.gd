@@ -17,17 +17,37 @@ enum DoorSide {
 
 @export_group("Direction")
 
+var _side: int = DoorSide.RIGHT
+
+
 @export_enum("LEFT", "RIGHT")
-var side: int = DoorSide.RIGHT:
+var side: int:
+	get:
+		return _side
+
 	set(value):
-		side = value
-		_refresh_direction()
+		_side = value
+
+		if is_inside_tree():
+			call_deferred(
+				&"_refresh_direction"
+			)
 
 
-@export var arrival_offset: float = 70.0:
+var _arrival_offset: float = 70.0
+
+
+@export var arrival_offset: float:
+	get:
+		return _arrival_offset
+
 	set(value):
-		arrival_offset = value
-		_refresh_direction()
+		_arrival_offset = value
+
+		if is_inside_tree():
+			call_deferred(
+				&"_refresh_direction"
+			)
 
 
 @export_group("Graphics")
@@ -72,7 +92,9 @@ var is_open: bool = true
 
 
 func _ready() -> void:
-	_refresh_direction()
+	call_deferred(
+		&"_refresh_direction"
+	)
 
 	if Engine.is_editor_hint():
 		return
@@ -96,13 +118,16 @@ func _refresh_direction() -> void:
 		"ArrivalPoint"
 	) as Marker2D
 
-	if sprite == null or arrival == null:
+	if sprite == null:
 		return
 
-	match side:
+	if arrival == null:
+		return
+
+	match _side:
 		DoorSide.LEFT:
 			arrival.position = Vector2(
-				arrival_offset,
+				_arrival_offset,
 				0.0
 			)
 
@@ -115,7 +140,7 @@ func _refresh_direction() -> void:
 
 		DoorSide.RIGHT:
 			arrival.position = Vector2(
-				-arrival_offset,
+				-_arrival_offset,
 				0.0
 			)
 
