@@ -38,6 +38,13 @@ content_margin_right = 50.0
 content_margin_bottom = 18.0
 texture = ExtResource("7_vxxyd")
 
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_85qas"]
+content_margin_left = 60.0
+content_margin_top = 18.0
+content_margin_right = 60.0
+content_margin_bottom = 18.0
+texture = ExtResource("7_vxxyd")
+
 [sub_resource type="StyleBoxTexture" id="StyleBoxTexture_tsk0s"]
 content_margin_left = 60.0
 content_margin_top = 18.0
@@ -125,6 +132,7 @@ theme_override_constants/outline_size = 8
 theme_override_styles/normal = SubResource("StyleBoxTexture_tw72b")
 theme_override_styles/pressed = SubResource("StyleBoxTexture_qs2ja")
 theme_override_styles/hover = SubResource("StyleBoxTexture_rs6gy")
+theme_override_styles/disabled = SubResource("StyleBoxTexture_85qas")
 text = "Продолжить на этом этаже"
 icon = ExtResource("8_j8jk0")
 expand_icon = true

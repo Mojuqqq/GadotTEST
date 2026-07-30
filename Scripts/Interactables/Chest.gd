@@ -16,8 +16,14 @@ signal collected(
 var is_opened: bool = false
 var player_near: bool = false
 
+func has_uncollected_reward() -> bool:
+	return (
+		not is_opened
+		and item != null
+	)
 
 func _ready() -> void:
+	add_to_group(&"FloorChests")
 	# Выбираем случайную текстуру сундука.
 	if textures.size() > 0:
 		var random_texture: Texture2D = textures[

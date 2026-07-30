@@ -18,7 +18,7 @@ var damage_bounce_height: float = 12.0
 @export_group("Completed Floor Boost")
 
 @export_range(1.0, 2.0, 0.05)
-var completed_floor_speed_multiplier: float = 1.25
+var completed_floor_speed_multiplier: float = 3.0
 @onready var animated_sprite: AnimatedSprite2D = ($AnimatedSprite2D)
 var egg_pool: Array[Node] = []
 const INITIAL_POOL_SIZE := 20
@@ -265,6 +265,13 @@ func update_speed(
 		)
 
 	current_speed = final_speed
+	
+	GameManager.notify_player_speed_changed(
+		current_speed
+	)
+
+func get_current_speed() -> float:
+	return current_speed
 
 func activate_completed_floor_speed_boost() -> void:
 	if completed_floor_speed_boost_active:

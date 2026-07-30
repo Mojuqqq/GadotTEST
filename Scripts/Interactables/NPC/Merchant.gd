@@ -144,6 +144,20 @@ func _generate_offers() -> void:
 func get_offers() -> Array[Dictionary]:
 	return offers
 
+func has_unsold_offers() -> bool:
+	for offer in offers:
+		var sold: bool = bool(
+			offer.get(
+				"sold",
+				false
+			)
+		)
+
+		if not sold:
+			return true
+
+	return false
+
 func _has_inventory_space(
 	item: ItemData,
 	amount: int

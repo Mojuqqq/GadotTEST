@@ -1,6 +1,7 @@
 extends Node
 
 signal player_hp_changed(hp: int, max_hp: int)
+signal player_speed_changed(value: float)
 signal room_changed(room_name: StringName, room_index: int)
 signal enemies_changed(count: int)
 signal game_over(victory: bool)
@@ -380,7 +381,25 @@ func return_to_menu() -> void:
 func set_player(
 	player_node: Node2D
 ) -> void:
-	_run_state.set_player(player_node)
+	_run_state.set_player(
+		player_node
+	)
+
+	if not is_instance_valid(
+		player_node
+	):
+		return
+
+	if player_node.has_method(
+		&"get_current_speed"
+	):
+		notify_player_speed_changed(
+			float(
+				player_node.call(
+					&"get_current_speed"
+				)
+			)
+		)
 
 
 func unregister_player(
@@ -402,6 +421,12 @@ func upgrade_stat(
 		amount
 	)
 
+func notify_player_speed_changed(
+	value: float
+) -> void:
+	player_speed_changed.emit(
+		maxf(value, 0.0)
+	)
 
 func take_damage(amount: int) -> void:
 	if _flow.game_over_started:
@@ -594,6 +619,65 @@ func complete_floor() -> void:
 
 	print("Этаж успешно завершён")
 
+func can_stay_on_completed_floor() -> bool:
+	if not floor_completed:
+		return false
+
+	# Сначала ищем несобранные сундуки.
+	for chest_node in get_tree().get_nodes_in_group(
+		&"FloorChests"
+	):
+		if not is_instance_valid(
+			chest_node
+		):
+			continue
+
+		if chest_node.is_queued_for_deletion():
+			continue
+
+		if not chest_node.has_method(
+			&"has_uncollected_reward"
+		):
+			continue
+
+		var has_reward: bool = bool(
+			chest_node.call(
+				&"has_uncollected_reward"
+			)
+		)
+
+		if has_reward:
+			return true
+
+	# Затем ищем непроданные товары.
+	for merchant_node in get_tree().get_nodes_in_group(
+		&"Merchants"
+	):
+		if not is_instance_valid(
+			merchant_node
+		):
+			continue
+
+		if merchant_node.is_queued_for_deletion():
+			continue
+
+		if not merchant_node.has_method(
+			&"has_unsold_offers"
+		):
+			continue
+
+		var has_unsold_offers: bool = bool(
+			merchant_node.call(
+				&"has_unsold_offers"
+			)
+		)
+
+		if has_unsold_offers:
+			return true
+
+	# Ни сундуков, ни товаров больше не осталось.
+	return false
+
 func resume_after_floor_victory() -> void:
 	if not floor_completed:
 		push_warning(
@@ -602,6 +686,14 @@ func resume_after_floor_victory() -> void:
 		)
 		return
 
+	if not can_stay_on_completed_floor():
+		push_warning(
+			"Нельзя остаться на этаже: "
+			+ "все сундуки собраны "
+			+ "и все товары куплены."
+		)
+		return
+		
 	var current_player: Node2D = (
 		_run_state.player
 	)
