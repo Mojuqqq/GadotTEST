@@ -35,8 +35,7 @@ var is_active: bool = false
 func _ready():
 	find_doors_recursive(self)
 	_apply_right_connection_state()
-	update_enemies_list()   # <-- теперь функция существует
-	# create_bounce_walls()  # удалено (масло убрано)
+	update_enemies_list()  
 	set_active(false)
 
 func _apply_right_connection_state() -> void:
@@ -214,7 +213,8 @@ func _on_enemy_died(
 	var enemy_index: int = enemies.find(
 		victim
 	)
-
+	if enemy_index >= 0:
+		enemies.remove_at(enemy_index)
 
 	_request_enemy_counter_refresh()
 
@@ -334,12 +334,6 @@ func spawn_enemies(
 				Node.PROCESS_MODE_DISABLED
 			)
 
-		print(
-			"Создан враг в комнате ",
-			name,
-			" на позиции ",
-			enemy.position
-		)
 
 func _get_enemy_spawn_position(
 	spawned_positions: Array[Vector2],
@@ -474,13 +468,6 @@ func spawn_chest() -> void:
 			GameManager.room_width * 0.5,
 			GameManager.room_height * 0.5
 		)
-
-	print(
-		"Сундук создан в комнате сокровищ: ",
-		name,
-		" на позиции: ",
-		chest.position
-	)
 
 func _on_boss_reward_collected(
 	_item: ItemData,

@@ -161,14 +161,6 @@ func _activate_quick_slot(
 			slot_index
 		)
 	)
-
-	var message: String = str(
-		result.get(
-			"message",
-			"Не удалось использовать слот."
-		)
-	)
-
 	_refresh_quick_bar()
 
 

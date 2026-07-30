@@ -26,6 +26,20 @@ var damage_bounce_height: float = 10.0
 @export_range(0.1, 0.5, 0.01)
 var damage_feedback_duration: float = 0.24
 
+@export_group("Facing")
+
+# Нужно ли отражать врага по направлению движения.
+@export var turn_with_movement: bool = true
+
+# В какую сторону смотрит исходная картинка.
+# Включено — исходный спрайт смотрит вправо.
+# Выключено — исходный спрайт смотрит влево.
+@export var visual_faces_right: bool = true
+
+# Защита от дрожания при очень маленькой скорости.
+@export_range(0.0, 100.0, 1.0)
+var facing_velocity_threshold: float = 1.0
+
 # === Состояние ===
 var is_dead: bool = false
 var room_limits: Rect2
@@ -86,6 +100,9 @@ func _ready():
 	hp_bar.visible = false  # скрыт, пока комната не активируется
 	_initialize_damage_visual()
 
+func _process(_delta: float) -> void:
+	_update_facing_from_velocity()
+
 func set_room_limits(limits: Rect2):
 	room_limits = limits
 
@@ -117,6 +134,51 @@ func set_active(active: bool) -> void:
 
 	if hp_bar != null:
 		hp_bar.visible = active
+
+func _update_facing_from_velocity() -> void:
+	if not turn_with_movement:
+		return
+
+	if is_dead:
+		return
+
+	if not is_instance_valid(
+		damage_visual
+	):
+		return
+
+	# Вертикальное движение не меняет сторону.
+	# Враг сохраняет последнее направление.
+	if absf(velocity.x) <= facing_velocity_threshold:
+		return
+
+	var moving_right: bool = (
+		velocity.x > 0.0
+	)
+
+	# Если исходная картинка смотрит вправо:
+	# вправо — без отражения, влево — flip_h.
+	#
+	# Если исходная картинка смотрит влево:
+	# логика автоматически становится обратной.
+	var should_flip: bool = (
+		moving_right
+		!= visual_faces_right
+	)
+
+	if damage_visual is Sprite2D:
+		var sprite := (
+			damage_visual as Sprite2D
+		)
+
+		sprite.flip_h = should_flip
+
+	elif damage_visual is AnimatedSprite2D:
+		var animated_sprite := (
+			damage_visual as AnimatedSprite2D
+		)
+
+		animated_sprite.flip_h = should_flip
 
 func take_damage(
 	amount: int

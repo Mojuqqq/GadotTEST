@@ -341,14 +341,6 @@ func _assign_guaranteed_key_carrier() -> void:
 
 	carrier.call("assign_guaranteed_key")
 
-	var carrier_room: Node = carrier.get_parent()
-
-	var room_name: String = "неизвестная комната"
-
-	if is_instance_valid(carrier_room):
-		room_name = carrier_room.name
-
-
 
 func _collect_key_carrier_candidates() -> Array[Node]:
 	var candidates: Array[Node] = []
@@ -555,13 +547,6 @@ func connect_rooms() -> void:
 		left_door.target_room_node = right_room
 		right_door.target_room_node = left_room
 
-		print(
-			"Связаны комнаты ",
-			index,
-			" и ",
-			index + 1
-		)
-
 
 # =========================================================
 # ОТКЛЮЧЕНИЕ ДВЕРЕЙ БЕЗ СОЕДИНЕНИЙ
@@ -654,11 +639,6 @@ func enter_room(index: int) -> void:
 			+ room.name
 		)
 
-	print(
-		"Вошли в комнату ",
-		index
-	)
-
 	update_enemy_count()
 
 
@@ -667,8 +647,7 @@ func enter_room(index: int) -> void:
 # =========================================================
 
 func move_player_to_room(
-	target_room_node: Node2D,
-	_door_position: Vector2
+	target_room_node: Node2D
 ) -> int:
 	var target_index := room_instances.find(
 		target_room_node

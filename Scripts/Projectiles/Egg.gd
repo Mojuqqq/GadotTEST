@@ -301,7 +301,3 @@ func _deactivate_now() -> void:
 	creates_poison_cloud = false
 
 	returned_to_pool.emit(self)
-
-
-func _on_visible_on_screen_notifier_2d_screen_exited() -> void:
-	pass

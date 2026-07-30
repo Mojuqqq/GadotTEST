@@ -919,9 +919,6 @@ func _has_active_chick_bomb() -> bool:
 
 func _spawn_chick_bomb() -> Node2D:
 	if _has_active_chick_bomb():
-		print(
-			"Цыплёнок уже существует."
-		)
 		return null
 
 	if CHICK_BOMB_SCENE == null:

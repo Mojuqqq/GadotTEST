@@ -22,7 +22,6 @@ func _ready():
 	# Обновляем статы при старте
 	if GameManager.player_stats:
 		_on_stats_changed(GameManager.player_stats)
-		
 	pass
 
 func _on_room_changed(room_name, _index):
