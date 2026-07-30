@@ -5,7 +5,7 @@ var linked_door: Area2D = null
 var target_room_node: Node2D = null
 
 var is_open: bool = false
-
+var connection_enabled: bool = true
 
 var blocker_body: StaticBody2D = null
 var blocker_shape: CollisionShape2D = null
@@ -79,6 +79,8 @@ func _create_physical_blocker() -> void:
 # =========================================================
 
 func _on_body_entered(body: Node2D) -> void:
+	if not connection_enabled:
+		return
 	if not body.is_in_group("Player"):
 		return
 
@@ -119,8 +121,54 @@ func _on_body_entered(body: Node2D) -> void:
 # =========================================================
 # ОТКРЫТИЕ И ЗАКРЫТИЕ
 # =========================================================
+func set_connection_enabled(
+	enabled: bool
+) -> void:
+	connection_enabled = enabled
+	visible = enabled
+
+	set_deferred(
+		&"monitoring",
+		enabled
+	)
+
+	set_deferred(
+		&"monitorable",
+		enabled
+	)
+
+	# Когда соседней комнаты нет,
+	# дверной блокиратор тоже не нужен:
+	# проход уже закрыт тайлами стены.
+	if not enabled:
+		is_open = false
+
+		if is_instance_valid(
+			blocker_shape
+		):
+			blocker_shape.set_deferred(
+				&"disabled",
+				true
+			)
+
+		return
+
+	# При повторном включении дверь сначала закрыта.
+	set_open(false)
 
 func set_open(open: bool) -> void:
+	if not connection_enabled:
+		is_open = false
+
+		if is_instance_valid(
+			blocker_shape
+		):
+			blocker_shape.set_deferred(
+				&"disabled",
+				true
+			)
+
+		return
 	is_open = open
 
 	# Открытая дверь:

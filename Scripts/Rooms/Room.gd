@@ -14,6 +14,9 @@ enum RoomType {
 @export_group("Room Settings")
 var room_type: RoomType = RoomType.COMBAT
 @export_group("Enemy Spawn")
+@export_group("Door Socket Test")
+
+@export var right_connection_enabled: bool = true
 
 @export_range(80.0, 250.0, 10.0)
 var enemy_wall_margin: float = 140.0
@@ -32,11 +35,81 @@ var is_active: bool = false
 func _ready():
 	print("Room._ready: начинаю поиск дверей и врагов")
 	find_doors_recursive(self)
+	_apply_right_connection_state()
 	update_enemies_list()   # <-- теперь функция существует
 	print("Найдено дверей: ", doors.size())
 	print("Найдено врагов: ", enemies.size())
 	# create_bounce_walls()  # удалено (масло убрано)
 	set_active(false)
+
+func _apply_right_connection_state() -> void:
+	var closed_socket := (
+		get_node_or_null(
+			"DoorSocketRightClosed"
+		) as TileMapLayer
+	)
+
+	var open_socket := (
+		get_node_or_null(
+			"DoorSocketRightOpen"
+		) as TileMapLayer
+	)
+
+	# У старых комнат пока нет новых слоёв.
+	# Для них функция просто ничего не делает.
+	if (
+		closed_socket == null
+		and open_socket == null
+	):
+		return
+
+	if (
+		closed_socket == null
+		or open_socket == null
+	):
+		push_warning(
+			"В комнате "
+			+ name
+			+ " правый дверной сокет настроен не полностью."
+		)
+
+		return
+
+	closed_socket.enabled = (
+		not right_connection_enabled
+	)
+
+	open_socket.enabled = (
+		right_connection_enabled
+	)
+
+	var door_graphics := (
+		get_node_or_null(
+			"Doors"
+		) as TileMapLayer
+	)
+
+	if door_graphics != null:
+		door_graphics.enabled = (
+			right_connection_enabled
+		)
+
+	var right_door := (
+		get_node_or_null(
+			"DoorRight"
+		) as Area2D
+	)
+
+	if right_door == null:
+		return
+
+	if right_door.has_method(
+		&"set_connection_enabled"
+	):
+		right_door.call(
+			&"set_connection_enabled",
+			right_connection_enabled
+		)
 
 func set_active(active: bool) -> void:
 	is_active = active

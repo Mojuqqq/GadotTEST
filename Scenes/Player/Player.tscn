@@ -8,6 +8,11 @@
 [ext_resource type="Texture2D" uid="uid://ncb6merf0kjh" path="res://Assets/Art/Characters/Player/player_walk_anim.png" id="4_ude3g"]
 [ext_resource type="Texture2D" uid="uid://dgbfodiw8e4hk" path="res://Assets/Art/Characters/Player/player_idle_frame_1_2.png" id="5_4wape"]
 [ext_resource type="Texture2D" uid="uid://d4gf5bllp7uwb" path="res://Assets/Art/Characters/Player/player_idle_frame_2.png" id="6_t26db"]
+[ext_resource type="Texture2D" uid="uid://bre821b7ggrw1" path="res://Assets/Art/Characters/Player/player_shoot_frame_1.png" id="8_epg6k"]
+[ext_resource type="Texture2D" uid="uid://cyb0qqibco122" path="res://Assets/Art/Characters/Player/player_shoot_frame_2.png" id="9_0u84n"]
+[ext_resource type="Texture2D" uid="uid://dch3haou7fcj5" path="res://Assets/Art/Characters/Player/player_shoot_frame_3.png" id="10_esmjy"]
+[ext_resource type="Texture2D" uid="uid://bteux7vpsx73y" path="res://Assets/Art/Characters/Player/player_shoot_frame_4.png" id="11_6tu5v"]
+[ext_resource type="Texture2D" uid="uid://b8hfgpbr0s3hx" path="res://Assets/Art/Characters/Player/player_shoot_frame_5.png" id="12_spxdj"]
 
 [sub_resource type="CapsuleShape2D" id="CapsuleShape2D_spwcu"]
 radius = 31.0
@@ -125,8 +130,29 @@ animations = [{
 "name": &"idle",
 "speed": 5.0
 }, {
-"frames": [],
-"loop": 1,
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_6tu5v")
+}, {
+"duration": 1.0,
+"texture": ExtResource("8_epg6k")
+}, {
+"duration": 1.0,
+"texture": ExtResource("9_0u84n")
+}, {
+"duration": 1.0,
+"texture": ExtResource("10_esmjy")
+}, {
+"duration": 1.0,
+"texture": ExtResource("11_6tu5v")
+}, {
+"duration": 1.0,
+"texture": ExtResource("12_spxdj")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_6tu5v")
+}],
+"loop": 0,
 "name": &"shoot",
 "speed": 5.0
 }, {
@@ -164,5 +190,6 @@ shape = SubResource("CapsuleShape2D_spwcu")
 texture_filter = 1
 scale = Vector2(0.5, 0.5)
 sprite_frames = SubResource("SpriteFrames_obgpu")
-animation = &"idle"
-frame_progress = 0.6141787
+animation = &"shoot"
+frame = 6
+frame_progress = 1.0

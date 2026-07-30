@@ -1,0 +1,22 @@
+[gd_scene format=3 uid="uid://brl45hnxy74g5"]
+
+[ext_resource type="Texture2D" uid="uid://dt8kitn3r6r07" path="res://Assets/Art/Environment/Doors/Doors_right.png" id="1_uoogr"]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_yf5fn"]
+atlas = ExtResource("1_uoogr")
+region = Rect2(0, 0, 50, 224)
+
+[node name="DoorSocketSide" type="Node2D" unique_id=760714407]
+
+[node name="DoorSprite" type="Sprite2D" parent="." unique_id=1124883201]
+texture = SubResource("AtlasTexture_yf5fn")
+
+[node name="TransitionArea" type="Area2D" parent="." unique_id=395567423]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="TransitionArea" unique_id=2070050839]
+
+[node name="Blocker" type="StaticBody2D" parent="." unique_id=2096702023]
+
+[node name="CollisionShape2D2" type="CollisionShape2D" parent="Blocker" unique_id=612010213]
+
+[node name="ArrivalPoint" type="Marker2D" parent="." unique_id=485608281]
