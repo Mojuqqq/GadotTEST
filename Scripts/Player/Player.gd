@@ -236,6 +236,14 @@ func _physics_process(delta):
 func _update_movement_animation(
 	direction: Vector2
 ) -> void:
+	# Пока проигрывается бросок яйца,
+	# ходьба и idle не должны его перебивать.
+	if (
+		animated_sprite.animation == &"shoot"
+		and animated_sprite.is_playing()
+	):
+		return
+
 	if direction == Vector2.ZERO:
 		if animated_sprite.animation != &"idle":
 			animated_sprite.play(&"idle")
@@ -326,6 +334,10 @@ func shoot() -> void:
 	if is_crying:
 		dir = -dir
 
+	_play_shoot_animation(
+		dir
+	)
+
 	var use_rotten_egg: bool = (
 		_should_use_rotten_egg()
 	)
@@ -380,6 +392,21 @@ func shoot() -> void:
 			push_warning(
 				"Не удалось списать тухлое яйцо."
 			)
+
+func _play_shoot_animation(
+	shoot_direction: Vector2
+) -> void:
+	# Поворачиваем персонажа в сторону броска.
+	if shoot_direction.x < -0.01:
+		animated_sprite.flip_h = true
+	elif shoot_direction.x > 0.01:
+		animated_sprite.flip_h = false
+
+	# stop() сбрасывает текущую анимацию
+	# на первый кадр. Это позволяет корректно
+	# перезапускать бросок при каждом выстреле.
+	animated_sprite.stop()
+	animated_sprite.play(&"shoot")
 
 func _should_use_rotten_egg() -> bool:
 	var selected_slot: int = (
