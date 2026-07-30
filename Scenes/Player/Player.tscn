@@ -210,15 +210,8 @@ animations = [{
 [node name="Player" type="CharacterBody2D" unique_id=1259915293 groups=["Player"]]
 collision_layer = 2
 script = ExtResource("1_kyqiw")
-base_speed = null
 egg_scene = ExtResource("2_gntrk")
 damage_feedback_scene = ExtResource("3_fk5o5")
-damage_tint = null
-damage_bounce_height = null
-completed_floor_speed_multiplier = null
-push_decay_rate = null
-hot_sauce_duration = null
-hot_sauce_egg_speed_multiplier = null
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=738740004 groups=["Player"]]
 shape = SubResource("CapsuleShape2D_spwcu")
@@ -227,6 +220,4 @@ shape = SubResource("CapsuleShape2D_spwcu")
 texture_filter = 1
 scale = Vector2(0.5, 0.5)
 sprite_frames = SubResource("SpriteFrames_obgpu")
-animation = &"heal"
-frame = 4
-frame_progress = 1.0
+animation = &"idle"

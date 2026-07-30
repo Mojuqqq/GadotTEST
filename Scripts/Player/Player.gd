@@ -281,33 +281,6 @@ func update_speed(
 		current_speed
 	)
 
-func heal(amount: int) -> int:
-	if amount <= 0:
-		return 0
-
-	if GameManager.player_stats == null:
-		return 0
-
-	var old_hp: int = GameManager.player_stats.hp
-
-	GameManager.player_stats.hp = min(
-		GameManager.player_stats.hp + amount,
-		GameManager.player_stats.max_hp
-	)
-
-	var healed_amount: int = (
-		GameManager.player_stats.hp - old_hp
-	)
-
-	if healed_amount <= 0:
-		return 0
-
-	_play_heal_animation()
-	_show_heal_feedback(healed_amount)
-	_update_health_ui_if_needed()
-
-	return healed_amount
-
 func _play_heal_animation() -> void:
 	if animated_sprite == null:
 		return
@@ -511,7 +484,26 @@ func _use_omelet() -> Dictionary:
 			)
 		}
 
-	GameManager.increase_max_hp(2)
+	var hp_before: int = (
+		GameManager.player_hp
+	)
+
+	GameManager.increase_max_hp(
+		2
+	)
+
+	var added_hp: int = maxi(
+		GameManager.player_hp - hp_before,
+		0
+	)
+
+	if added_hp > 0:
+		_play_heal_animation()
+
+		_spawn_health_feedback(
+			added_hp,
+			true
+		)
 
 	return {
 		"success": true,
@@ -614,8 +606,9 @@ func take_damage(
 	if actual_damage <= 0:
 		return
 
-	_spawn_damage_feedback(
-		actual_damage
+	_spawn_health_feedback(
+		actual_damage,
+		false
 	)
 
 	_play_damage_visual_response()
@@ -624,9 +617,13 @@ func take_damage(
 		actual_damage
 	)
 
-func _spawn_damage_feedback(
-	amount: int
+func _spawn_health_feedback(
+	amount: int,
+	is_heal: bool
 ) -> void:
+	if amount <= 0:
+		return
+
 	if damage_feedback_scene == null:
 		push_warning(
 			"Player: не назначена сцена "
@@ -665,17 +662,24 @@ func _spawn_damage_feedback(
 		)
 	)
 
+	var display_method: StringName = (
+		&"show_heal"
+		if is_heal
+		else &"show_damage"
+	)
+
 	if feedback.has_method(
-		"show_damage"
+		display_method
 	):
 		feedback.call(
-			"show_damage",
+			display_method,
 			amount
 		)
 	else:
 		push_warning(
-			"В DamageFeedback отсутствует "
-			+ "метод show_damage()."
+			"В DamageFeedback отсутствует метод "
+			+ str(display_method)
+			+ "()."
 		)
 
 		feedback.queue_free()

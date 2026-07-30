@@ -3,8 +3,7 @@ class_name DamageFeedback
 
 
 @onready var damage_label: Label = %DamageLabel
-func _ready() -> void:
-	process_mode = Node.PROCESS_MODE_ALWAYS
+
 
 @export_group("Animation")
 
@@ -24,16 +23,60 @@ var start_scale: float = 0.65
 var peak_scale: float = 1.15
 
 
+func _ready() -> void:
+	process_mode = Node.PROCESS_MODE_ALWAYS
+
+
 func show_damage(
 	amount: int
+) -> void:
+	_show_feedback(
+		amount,
+		false
+	)
+
+
+func show_heal(
+	amount: int
+) -> void:
+	_show_feedback(
+		amount,
+		true
+	)
+
+
+func _show_feedback(
+	amount: int,
+	is_heal: bool
 ) -> void:
 	if amount <= 0:
 		queue_free()
 		return
 
 	damage_label.text = (
-		"-"
+		("+" if is_heal else "-")
 		+ str(amount)
+	)
+
+	var feedback_color: Color = (
+		Color(
+			0.45,
+			1.0,
+			0.45,
+			1.0
+		)
+		if is_heal
+		else Color(
+			1.0,
+			0.5766771,
+			0.53013307,
+			1.0
+		)
+	)
+
+	damage_label.add_theme_color_override(
+		&"font_color",
+		feedback_color
 	)
 
 	var start_position: Vector2 = (
