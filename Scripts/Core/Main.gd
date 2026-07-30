@@ -9,7 +9,6 @@ extends Node2D
 @export var room_pool: Array[PackedScene] = []
 
 @export var enemy_pool: Array[PackedScene] = []
-@export var boss_scene: PackedScene
 
 # Параметры комнат (дублируем для доступа в Main)
 @export var room_width: int = 1280
@@ -18,6 +17,12 @@ extends Node2D
 @export var min_rooms: int = 2
 @export var max_rooms: int = 4
 
+@export_group("Bosses")
+
+@export var boss_pool: Array[PackedScene] = []
+# Оставляем старое поле скрытым, чтобы текущая сцена
+# Main.tscn не сломалась во время перехода на пул.
+@export_storage var boss_scene: PackedScene
 	
 func _ready() -> void:
 	get_tree().paused = false
@@ -58,10 +63,59 @@ func _ready() -> void:
 	GameManager.end_room_scene = end_room_scene
 	GameManager.room_pool = room_pool
 	GameManager.enemy_pool = enemy_pool
-	GameManager.boss_scene = boss_scene
+	GameManager.boss_scene = (
+		_select_random_boss_scene()
+	)
 
 	GameManager.generate_dungeon(self)
 		
+		
+# =========================================================
+# ВЫБОР БОССА
+# =========================================================
+
+func _select_random_boss_scene() -> PackedScene:
+	var valid_bosses: Array[PackedScene] = []
+
+	# Защищаемся от пустых элементов массива.
+	for candidate in boss_pool:
+		if candidate == null:
+			continue
+
+		valid_bosses.append(
+			candidate
+		)
+
+	if not valid_bosses.is_empty():
+		var selected_boss: PackedScene = (
+			valid_bosses.pick_random()
+		)
+
+		print(
+			"Для этажа выбран случайный босс: ",
+			selected_boss.resource_path
+		)
+
+		return selected_boss
+
+	# Временная обратная совместимость:
+	# пока пул не заполнен, используется старый босс.
+	if boss_scene != null:
+		push_warning(
+			"Пул боссов пуст. "
+			+ "Используется прежний boss_scene: "
+			+ boss_scene.resource_path
+		)
+
+		return boss_scene
+
+	push_error(
+		"Не удалось выбрать босса: "
+		+ "Boss Pool пуст."
+	)
+
+	return null
+
 # Вызывается из Door.gd
 func move_player_to_room(
 	target_room_node: Node2D,

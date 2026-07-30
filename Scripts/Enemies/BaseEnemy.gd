@@ -50,8 +50,8 @@ var damage_visual_base_modulate: Color = (
 @export_group("Loot")
 @export var gold_pickup_scene: PackedScene = preload("res://Scenes/Interactables/Pickups/GoldPickup.tscn")
 
-@export_range(0, 100, 1)
-var gold_drop_chance: float = 100.0
+@export_range(0.0, 100.0, 1.0)
+var gold_drop_chance: float = 35.0
 
 @export var min_gold_drop: int = 1
 @export var max_gold_drop: int = 3

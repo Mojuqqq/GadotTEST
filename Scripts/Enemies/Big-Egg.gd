@@ -20,19 +20,27 @@ func _on_visible_on_screen_notifier_2d_screen_exited():
 func _on_body_entered(
 	body: Node
 ) -> void:
-	if body.is_in_group("Enemies"):
+	if not is_instance_valid(body):
+		return
+
+	# Снаряд не должен уничтожаться
+	# при контакте с самим боссом или другими врагами.
+	if body.is_in_group(&"Enemies"):
 		return
 
 	var is_valid_damage_target: bool = (
-		body.is_in_group("Player")
-		or body.is_in_group("Companions")
+		body.is_in_group(&"Player")
+		or body.is_in_group(&"Companions")
 	)
 
 	if (
 		is_valid_damage_target
-		and body.has_method("take_damage")
+		and body.has_method(&"take_damage")
 	):
-		body.take_damage(damage)
+		body.call(
+			&"take_damage",
+			damage
+		)
 
 		print(
 			"Снаряд босса попал в ",
@@ -44,9 +52,6 @@ func _on_body_entered(
 		queue_free()
 		return
 
-	if (
-		body is StaticBody2D
-		or body is TileMap
-		or body.is_in_group("Walls")
-	):
-		queue_free()
+	# Любое другое физическое тело из collision_mask —
+	# стена, дверь или другое препятствие.
+	queue_free()
