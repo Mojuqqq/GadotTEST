@@ -185,14 +185,6 @@ func add_item(
 		- added_amount
 	)
 
-	print(
-		"В инвентарь добавлен предмет: ",
-		item.name,
-		" ×",
-		added_amount,
-		". Всего: ",
-		new_amount
-	)
 
 	return {
 		"success": true,
@@ -432,12 +424,6 @@ func assign_item_to_quick_slot(
 			_selected_quick_slot
 		)
 
-	print(
-		"Предмет ",
-		item.name,
-		" назначен в быстрый слот ",
-		slot_index + 1
-	)
 
 	return {
 		"success": true,

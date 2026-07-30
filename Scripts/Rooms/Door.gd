@@ -85,7 +85,6 @@ func _on_body_entered(body: Node2D) -> void:
 		return
 
 	if not is_open:
-		print("Дверь закрыта")
 		return
 
 	if target_room_node == null:
@@ -95,11 +94,6 @@ func _on_body_entered(body: Node2D) -> void:
 			+ " не назначена целевая комната"
 		)
 		return
-
-	print(
-		"Дверь открыта, переходим в ",
-		target_room_node.name
-	)
 
 	var main := get_tree().current_scene
 
@@ -186,11 +180,4 @@ func set_open(open: bool) -> void:
 		Color.GREEN
 		if is_open
 		else Color.RED
-	)
-
-	print(
-		"Дверь ",
-		name,
-		" установлена в состояние: ",
-		"открыта" if is_open else "закрыта"
 	)

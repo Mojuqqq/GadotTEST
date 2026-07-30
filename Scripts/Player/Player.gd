@@ -298,11 +298,6 @@ func activate_completed_floor_speed_boost() -> void:
 		base_current_speed
 	)
 
-	print(
-		"Активировано ускорение завершённого этажа. "
-		+ "Текущая скорость: "
-		+ str(current_speed)
-	)
 
 func apply_push(force: Vector2):
 	external_force += force
@@ -343,15 +338,15 @@ func shoot() -> void:
 	)
 
 	var use_golden_egg: bool = false
+	var base_egg_speed: float = 700.0
 
-	if GameManager.player_stats:
+	if GameManager.player_stats != null:
 		egg.damage = (
 			GameManager.player_stats.damage
 		)
 
-		egg.speed = (
+		base_egg_speed = (
 			GameManager.player_stats.egg_speed
-			* current_egg_speed_multiplier
 		)
 
 		egg.max_range = (
@@ -363,6 +358,13 @@ func shoot() -> void:
 			GameManager.player_stats.has_golden_egg
 		)
 
+	# Множитель соуса применяем независимо
+	# от наличия PlayerStats.
+	egg.speed = (
+		base_egg_speed
+		* current_egg_speed_multiplier
+	)
+	
 	egg.activate(
 		global_position,
 		dir,
@@ -381,17 +383,6 @@ func shoot() -> void:
 			)
 		)
 
-		if removed:
-			print(
-				"Использовано тухлое яйцо. Осталось: ",
-				GameManager.get_inventory_item_amount(
-					"rotten_egg"
-				)
-			)
-		else:
-			push_warning(
-				"Не удалось списать тухлое яйцо."
-			)
 
 func _play_shoot_animation(
 	shoot_direction: Vector2
@@ -521,13 +512,6 @@ func _use_hot_sauce() -> Dictionary:
 		new_duration
 	)
 
-	print(
-		"Острый соус активирован. ",
-		"Множитель скорости яиц: ",
-		current_egg_speed_multiplier,
-		". Осталось секунд: ",
-		new_duration
-	)
 
 	return {
 		"success": true,
@@ -554,10 +538,6 @@ func _use_hot_sauce() -> Dictionary:
 func _on_hot_sauce_effect_ended() -> void:
 	current_egg_speed_multiplier = 1.0
 	hot_sauce_effect_total_duration = 0.0
-
-	print(
-		"Действие острого соуса закончилось."
-	)
 
 func apply_tear_effect(duration: float):
 	is_crying = true
@@ -774,7 +754,6 @@ func die() -> void:
 
 	is_dead = true
 
-	print("Игрок умер!")
 
 	velocity = Vector2.ZERO
 	external_force = Vector2.ZERO
@@ -856,9 +835,6 @@ func _has_active_rooster() -> bool:
 
 func _spawn_rooster() -> Node2D:
 	if _has_active_rooster():
-		print(
-			"Боевой петух уже существует."
-		)
 		return null
 
 	if ROOSTER_SCENE == null:
@@ -903,10 +879,6 @@ func _spawn_rooster() -> Node2D:
 	instance.tree_exited.connect(
 		_on_rooster_removed.bind(instance),
 		CONNECT_ONE_SHOT
-	)
-
-	print(
-		"Создан боевой петух."
 	)
 
 	return instance
@@ -994,10 +966,6 @@ func _spawn_chick_bomb() -> Node2D:
 	instance.tree_exited.connect(
 		_on_chick_bomb_removed.bind(instance),
 		CONNECT_ONE_SHOT
-	)
-
-	print(
-		"Создан цыплёнок."
 	)
 
 	return instance

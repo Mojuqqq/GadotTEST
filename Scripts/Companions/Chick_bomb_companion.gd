@@ -117,11 +117,6 @@ func _start_hatching() -> void:
 	hatch_started = true
 	hatch_timer.start()
 
-	print(
-		"Яйцо обнаружило врага. "
-		+ "Начинается вылупление"
-	)
-
 func _hatch() -> void:
 	if is_exploding:
 		return
@@ -159,7 +154,6 @@ func _hatch() -> void:
 
 	call_deferred("_find_nearest_enemy")
 
-	print("Цыплёнок вылупился")
 
 
 # =========================================================
@@ -313,12 +307,6 @@ func _explode() -> void:
 		enemy.take_damage(damage)
 		damaged_enemies += 1
 
-	print(
-		"Цыплёнок взорвался. Задето врагов: ",
-		damaged_enemies,
-		". Урон: ",
-		damage
-	)
 
 	var tween := create_tween()
 

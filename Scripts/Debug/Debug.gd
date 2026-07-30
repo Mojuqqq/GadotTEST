@@ -29,8 +29,6 @@ func _ready() -> void:
 		set_process_input(false)
 		return
 
-	print("Debug: F1 — открыть дебаг-меню")
-
 
 func _input(event: InputEvent) -> void:
 	if not OS.is_debug_build():
@@ -346,12 +344,6 @@ func give_item(
 		)
 		return
 
-	print(
-		"Debug: в инвентарь добавлен предмет: ",
-		item.name,
-		" ×",
-		added_amount
-	)
 
 func _get_item_display_name(
 	item: ItemData
@@ -501,11 +493,6 @@ func _spawn_enemy(
 
 	_set_status(
 		"Создан моб: " + enemy_name
-	)
-
-	print(
-		"Дебаг: создан моб: ",
-		enemy_name
 	)
 
 

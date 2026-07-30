@@ -234,10 +234,6 @@ func _on_detection_area_body_entered(
 
 	explosion_timer.start()
 
-	print(
-		"Вражеское яйцо готовится взорваться рядом с ",
-		body.name
-	)
 
 
 func _on_explosion_timer_timeout() -> void:
@@ -306,12 +302,6 @@ func explode() -> void:
 	velocity = Vector2.ZERO
 	set_physics_process(false)
 
-	print(
-		"ВЗРЫВ! Урон: ",
-		damage,
-		", радиус: ",
-		explosion_radius
-	)
 
 	var space_state := (
 		get_world_2d().direct_space_state
@@ -349,10 +339,6 @@ func explode() -> void:
 		if not _is_valid_target(body):
 			continue
 
-		print(
-			"Взрыв нанёс урон: ",
-			body.name
-		)
 
 		body.take_damage(damage)
 

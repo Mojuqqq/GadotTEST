@@ -603,14 +603,6 @@ func _spawn_pickup(
 		pickup
 	)
 
-	print(
-		"Враг ",
-		name,
-		" выбросил ",
-		loot_name,
-		": ",
-		amount
-	)
 
 func can_receive_guaranteed_key() -> bool:
 	return (
@@ -621,8 +613,3 @@ func can_receive_guaranteed_key() -> bool:
 
 func assign_guaranteed_key() -> void:
 	guaranteed_key_drop = true
-
-	print(
-		"Врагу назначен гарантированный ключ: ",
-		name
-	)

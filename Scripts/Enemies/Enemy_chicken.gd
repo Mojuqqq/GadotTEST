@@ -33,13 +33,6 @@ func _ready() -> void:
 
 	add_to_group("Enemies")
 
-	print(
-		"Курица создана! HP = ",
-		hp,
-		", позиция: ",
-		global_position
-	)
-
 	attack_timer = Timer.new()
 	attack_timer.name = "AttackTimer"
 	attack_timer.wait_time = attack_cooldown
@@ -192,10 +185,6 @@ func _on_attack_area_body_entered(
 	if attack_timer.is_stopped():
 		attack_timer.start()
 
-	print(
-		"Цель вошла в зону атаки курицы: ",
-		target.name
-	)
 
 
 func _on_attack_area_body_exited(
@@ -211,10 +200,6 @@ func _on_attack_area_body_exited(
 	if attack_targets.is_empty():
 		attack_timer.stop()
 
-	print(
-		"Цель вышла из зоны атаки курицы: ",
-		target.name
-	)
 
 
 # =========================================================
@@ -232,12 +217,6 @@ func _on_attack_timer_timeout() -> void:
 
 	target.take_damage(damage)
 
-	print(
-		"Курица атакует ",
-		target.name,
-		". Урон: ",
-		damage
-	)
 
 
 func _find_nearest_attack_target() -> Node2D:

@@ -15,7 +15,6 @@ func _ready():
 	super()  # создаёт HP bar
 	
 	add_to_group("Enemies")
-	print("Корова создана! HP = ", hp, ", позиция: ", global_position)
 	find_player()
 	
 	# Создаём зону обнаружения
@@ -36,9 +35,8 @@ func find_player():
 	var nodes = get_tree().get_nodes_in_group("Player")
 	if nodes.size() > 0:
 		player = nodes[0]
-	else:
-		print("Корова не нашла игрока")
-
+		
+		
 func _physics_process(_delta):
 	if player == null:
 		find_player()
@@ -70,9 +68,7 @@ func _physics_process(_delta):
 func _on_attack_area_body_entered(body):
 	if body.is_in_group("Player"):
 		is_player_in_range = true
-		print("Игрок вошёл в зону толчка коровы")
 
 func _on_attack_area_body_exited(body):
 	if body.is_in_group("Player"):
 		is_player_in_range = false
-		print("Игрок вышел из зоны толчка коровы")

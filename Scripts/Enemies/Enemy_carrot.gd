@@ -205,12 +205,6 @@ func _on_attack_timer_timeout() -> void:
 
 	target.take_damage(damage)
 
-	print(
-		"Морковь атакует ",
-		target.name,
-		". Урон: ",
-		damage
-	)
 
 func _find_nearest_attack_target() -> Node2D:
 	var nearest_target: Node2D = null

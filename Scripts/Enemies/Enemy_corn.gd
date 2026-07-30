@@ -498,8 +498,3 @@ func _shoot_at_target(
 		bullet_speed,
 		damage
 	)
-
-	print(
-		"Кукуруза стреляет в ",
-		target.name
-	)

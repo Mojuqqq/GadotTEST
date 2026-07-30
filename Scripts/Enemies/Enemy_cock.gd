@@ -63,7 +63,6 @@ func _ready() -> void:
 
 	add_child(attack_timer)
 
-	print("Босс создан.")
 
 
 # =========================================================
@@ -263,12 +262,6 @@ func melee_attack(
 
 	target.take_damage(melee_damage)
 
-	print(
-		"Босс ударил ",
-		target.name,
-		". Урон: ",
-		melee_damage
-	)
 
 
 func ranged_attack(
@@ -318,8 +311,3 @@ func ranged_attack(
 			bullet_speed,
 			ranged_damage
 		)
-
-	print(
-		"Босс выстрелил в ",
-		target.name
-	)

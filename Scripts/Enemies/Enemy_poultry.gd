@@ -191,7 +191,6 @@ func _ready() -> void:
 		_on_flight_timer_timeout
 	)
 
-	print("Босс-курица создана.")
 
 
 func _create_timer(
@@ -408,10 +407,6 @@ func _start_flight() -> void:
 
 	velocity = Vector2.ZERO
 
-	print(
-		"Босс-курица начинает полёт в направлении ",
-		flight_direction
-	)
 
 
 func _begin_landing() -> void:
@@ -492,12 +487,6 @@ func _on_attack_timer_timeout() -> void:
 	if distance <= melee_range:
 		current_target.take_damage(melee_damage)
 
-		print(
-			"Босс-курица ударила ",
-			current_target.name,
-			". Урон: ",
-			melee_damage
-		)
 
 	attack_timer.start(melee_cooldown)
 
@@ -562,12 +551,6 @@ func _summon_chickens() -> void:
 	)
 
 	if spawn_count <= 0:
-		print(
-			"Призыв пропущен. Уже живо куриц: ",
-			alive_chickens,
-			" из ",
-			max_alive_chickens
-		)
 		return
 
 	var room_node := get_parent() as Node2D
@@ -660,15 +643,6 @@ func _summon_chickens() -> void:
 					death_callback
 				)
 
-		print(
-			"Босс-курица призвала ",
-			chicken.name,
-			". Сейчас живо: ",
-			summoned_chickens.size(),
-			" из ",
-			max_alive_chickens
-		)
-
 	# Обновляем список комнаты, чтобы новые курицы
 	# учитывались при подсчёте оставшихся врагов.
 	if room_node.has_method("update_enemies_list"):
@@ -690,14 +664,6 @@ func _on_summoned_chicken_died(
 		return
 
 	summoned_chickens.erase(chicken)
-
-	print(
-		"Призванная курица погибла. "
-		+ "Осталось живых: ",
-		summoned_chickens.size(),
-		" из ",
-		max_alive_chickens
-	)
 
 func _cleanup_summoned_chickens() -> void:
 	for index in range(

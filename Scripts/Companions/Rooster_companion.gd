@@ -134,13 +134,6 @@ func _attack_target() -> void:
 
 	target_enemy.take_damage(damage)
 
-	print(
-		"Петух атакует ",
-		target_enemy.name,
-		". Урон: ",
-		damage
-	)
-
 	can_attack = false
 	attack_timer.start()
 
@@ -246,15 +239,6 @@ func take_damage(
 		max_health
 	)
 
-	print(
-		"Боевой петух получил урон: ",
-		amount,
-		". Осталось здоровья: ",
-		current_health,
-		"/",
-		max_health
-	)
-
 	if current_health <= 0:
 		die()
 
@@ -278,10 +262,6 @@ func die() -> void:
 	set_physics_process(false)
 
 	died.emit()
-
-	print(
-		"Боевой петух погиб."
-	)
 
 	call_deferred(
 		"queue_free"

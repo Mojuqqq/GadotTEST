@@ -307,14 +307,6 @@ func purchase_offer(index: int) -> Dictionary:
 
 	var item_name: String = _get_item_name(item)
 
-	print(
-		"Куплен предмет в инвентарь: ",
-		item_name,
-		" ×",
-		amount,
-		", цена: ",
-		price
-	)
 
 	var purchase_message: String = (
 		"Куплено: "

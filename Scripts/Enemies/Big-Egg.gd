@@ -42,12 +42,6 @@ func _on_body_entered(
 			damage
 		)
 
-		print(
-			"Снаряд босса попал в ",
-			body.name,
-			". Урон: ",
-			damage
-		)
 
 		queue_free()
 		return

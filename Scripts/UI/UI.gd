@@ -33,7 +33,6 @@ func _on_enemies_changed(count):
 
 func _on_game_over(victory: bool):
 	var text = "ПОБЕДА!" if victory else "ПОРАЖЕНИЕ!"
-	print(text)
 
 func _on_player_speed_changed(
 	value: float

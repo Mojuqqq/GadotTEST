@@ -99,22 +99,6 @@ func generate_dungeon(root_node: Node) -> void:
 		if not available_indices.is_empty():
 			shop_room_index = available_indices.pick_random()
 
-	print(
-		"Генерация: ",
-		intermediate_count,
-		" промежуточных комнат"
-	)
-
-	print(
-		"Индекс комнаты сокровищ: ",
-		treasure_room_index
-	)
-	
-	print(
-	"Индекс комнаты магазина: ",
-	shop_room_index
-	)
-
 	var start_room := _create_room(
 		start_room_scene,
 		"StartRoom",
@@ -179,20 +163,12 @@ func generate_dungeon(root_node: Node) -> void:
 		if generated_room_type == Room.RoomType.TREASURE:
 			room.call_deferred("spawn_chest")
 
-			print(
-				"Создана комната сокровищ: ",
-				room.name
-			)
 
 		elif generated_room_type == Room.RoomType.SHOP:
 			room.call_deferred(
 				"spawn_merchant"
 			)
 
-			print(
-				"Создана комната магазина: ",
-				room.name
-			)
 
 		else:
 			spawn_enemies_for_room(
@@ -274,13 +250,6 @@ func _create_room(
 
 	root_node.add_child(room)
 	room.global_position = room_position
-
-	print(
-		"Создана комната ",
-		room_name,
-		", тип: ",
-		generated_room_type
-	)
 
 	return room
 
@@ -379,12 +348,6 @@ func _assign_guaranteed_key_carrier() -> void:
 	if is_instance_valid(carrier_room):
 		room_name = carrier_room.name
 
-	print(
-		"Гарантированный ключ назначен мобу ",
-		carrier.name,
-		" в комнате ",
-		room_name
-	)
 
 
 func _collect_key_carrier_candidates() -> Array[Node]:
@@ -530,12 +493,6 @@ func _spawn_fallback_key_carrier() -> Node:
 			continue
 
 		if _can_enemy_carry_key(enemy):
-			print(
-				"Создан дополнительный моб "
-				+ "для гарантированного ключа: ",
-				enemy.name
-			)
-
 			return enemy
 
 	return null
@@ -624,14 +581,7 @@ func disable_unconnected_doors() -> void:
 				continue
 
 			if door.target_room_node != null:
-				print(
-					"Дверь ",
-					door.name,
-					" в комнате ",
-					room.name,
-					" ведёт в ",
-					door.target_room_node.name
-				)
+				
 
 				continue
 
@@ -647,12 +597,7 @@ func disable_unconnected_doors() -> void:
 				false
 			)
 
-			print(
-				"Отключена дверь: ",
-				door.name,
-				" в комнате ",
-				room.name
-			)
+			
 
 
 # =========================================================
@@ -693,12 +638,7 @@ func enter_room(index: int) -> void:
 	room.visible = true
 	current_room_index = index
 
-	print(
-		"Комната ",
-		room.name,
-		" visible = ",
-		room.visible
-	)
+	
 
 	room_changed.emit(
 		room.name,

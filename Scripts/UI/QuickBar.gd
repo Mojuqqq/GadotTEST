@@ -169,21 +169,6 @@ func _activate_quick_slot(
 		)
 	)
 
-	if bool(
-		result.get(
-			"success",
-			false
-		)
-	):
-		print(message)
-	else:
-		print(
-			"Быстрый слот ",
-			slot_index + 1,
-			": ",
-			message
-		)
-
 	_refresh_quick_bar()
 
 

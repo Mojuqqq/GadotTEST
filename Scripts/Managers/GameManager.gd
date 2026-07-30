@@ -349,12 +349,6 @@ func trigger_game_over(
 			lost_rewards.get("keys", 0)
 		)
 
-		print(
-			"Игрок погиб. Потеряно золота: ",
-			last_lost_gold,
-			", ключей: ",
-			last_lost_keys
-		)
 
 	_flow.trigger_game_over(
 		victory,
@@ -617,7 +611,6 @@ func complete_floor() -> void:
 	floor_completed = true
 	floor_completed_changed.emit(true)
 
-	print("Этаж успешно завершён")
 
 func can_stay_on_completed_floor() -> bool:
 	if not floor_completed:
@@ -730,11 +723,6 @@ func go_to_next_floor() -> void:
 		_economy.leave_floor()
 	)
 
-	print(
-		"Переход на следующий этаж. "
-		+ "Потеряно ключей: "
-		+ str(lost_keys)
-	)
 
 	floor_completed = false
 	floor_completed_changed.emit(false)
@@ -757,11 +745,6 @@ func finish_run_and_return_to_menu() -> void:
 		_economy.finish_run_voluntarily()
 	)
 
-	print(
-		"Забег завершён успешно. "
-		+ "Сохранено золота: "
-		+ str(deposited_gold)
-	)
 
 	floor_completed = false
 	floor_completed_changed.emit(false)
@@ -777,12 +760,7 @@ func abandon_run_and_return_to_menu() -> void:
 		_economy.lose_run_rewards()
 	)
 
-	print(
-		"Забег прерван. Потеряно золота: ",
-		lost_rewards.get("gold", 0),
-		", ключей: ",
-		lost_rewards.get("keys", 0)
-	)
+
 
 	floor_completed = false
 	floor_completed_changed.emit(false)
@@ -909,12 +887,6 @@ func _apply_passive_reward(
 			self
 		)
 
-	print(
-		"Применена пассивная награда: ",
-		item.name,
-		". Стаков получено: ",
-		amount
-	)
 	_register_passive_upgrade(
 		item,
 		amount
@@ -1220,33 +1192,16 @@ func _input(
 	):
 		return
 
-	print(
-		"Нажата кнопка inventory. state=",
-		state,
-		", paused=",
-		get_tree().paused
-	)
 
 	if state != GameState.PLAYING:
-		print(
-			"Инвентарь не открыт: "
-			+ "состояние игры не PLAYING."
-		)
 		return
 
 	if get_tree().paused:
-		print(
-			"Инвентарь не открыт: "
-			+ "игра уже на паузе."
-		)
 		return
 
 	if get_tree().get_first_node_in_group(
 		"InventoryMenu"
 	) != null:
-		print(
-			"Инвентарь уже открыт."
-		)
 		return
 
 	get_viewport().set_input_as_handled()

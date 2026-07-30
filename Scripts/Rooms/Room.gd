@@ -33,12 +33,9 @@ var is_cleared: bool = false
 var is_active: bool = false
 
 func _ready():
-	print("Room._ready: начинаю поиск дверей и врагов")
 	find_doors_recursive(self)
 	_apply_right_connection_state()
 	update_enemies_list()   # <-- теперь функция существует
-	print("Найдено дверей: ", doors.size())
-	print("Найдено врагов: ", enemies.size())
 	# create_bounce_walls()  # удалено (масло убрано)
 	set_active(false)
 
@@ -135,18 +132,11 @@ func set_active(active: bool) -> void:
 				+ " отсутствует set_active()"
 			)
 
-	print(
-		"Комната ",
-		name,
-		" активность: ",
-		active
-	)
 
 func find_doors_recursive(node: Node):
 	for child in node.get_children():
 		if child is Area2D and (child.name == "DoorLeft" or child.name == "DoorRight"):
 			doors.append(child)
-			print("Найдена дверь: ", child.name)
 		else:
 			find_doors_recursive(child)
 
@@ -161,14 +151,8 @@ func update_enemies_list():
 		enemies.append(enemy)
 		if enemy.has_signal("died") and not enemy.died.is_connected(_on_enemy_died):
 			enemy.died.connect(_on_enemy_died)
-			print("Подключён сигнал died к врагу: ", enemy.name)
-
 	_request_enemy_counter_refresh()
 
-	print(
-		"Обновлён список врагов: ",
-		enemies.size()
-	)
 
 func _request_enemy_counter_refresh() -> void:
 	# Неактивная комната не должна
@@ -191,12 +175,6 @@ func _request_enemy_counter_refresh() -> void:
 	)
 
 func on_room_entered() -> void:
-	print(
-		"Room.on_room_entered вызван: ",
-		name,
-		", тип: ",
-		room_type
-	)
 
 	update_enemies_list()
 
@@ -213,30 +191,18 @@ func on_room_entered() -> void:
 
 	# Боевые комнаты и комната босса.
 	if enemies.is_empty():
-		print(
-			"Нет живых врагов, открываем двери"
-		)
-
 		unlock_doors()
 	else:
-		print(
-			"Есть живые враги: ",
-			enemies.size(),
-			". Закрываем двери"
-		)
-
 		lock_doors()
 
 	set_active(true)
 
 func lock_doors():
-	print("Блокируем двери")
 	for door in doors:
 		if door.has_method("set_open"):
 			door.set_open(false)
 
 func unlock_doors():
-	print("Открываем двери")
 	for door in doors:
 		if door.has_method("set_open"):
 			door.set_open(true)
@@ -244,30 +210,11 @@ func unlock_doors():
 func _on_enemy_died(
 	victim: Node
 ) -> void:
-	print(
-		"Враг умер: ",
-		victim.name
-	)
 
 	var enemy_index: int = enemies.find(
 		victim
 	)
 
-	if enemy_index != -1:
-		enemies.remove_at(
-			enemy_index
-		)
-
-		print(
-			"Враг удалён из списка, осталось: ",
-			enemies.size()
-		)
-	else:
-		print(
-			"Враг не найден в списке! "
-			+ "Текущий список: ",
-			enemies
-		)
 
 	_request_enemy_counter_refresh()
 
@@ -282,19 +229,11 @@ func _on_enemy_died(
 	is_cleared = true
 	unlock_doors()
 
-	print(
-		"Комната очищена, двери открыты!"
-	)
 
 	# В комнате босса награда появляется
 	# только после полной очистки комнаты.
 	if not is_boss_room():
 		return
-	print(
-		"Комната босса полностью очищена. "
-		+ "Получен гарантированный ключ. "
-		+ "Создаём наградной сундук."
-	)
 
 	call_deferred(
 		"spawn_chest"
@@ -629,8 +568,3 @@ func spawn_merchant() -> void:
 			GameManager.room_width * 0.5,
 			GameManager.room_height * 0.5
 		)
-
-	print(
-		"Торговец создан в комнате магазина: ",
-		name
-	)

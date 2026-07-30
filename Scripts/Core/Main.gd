@@ -91,11 +91,6 @@ func _select_random_boss_scene() -> PackedScene:
 			valid_bosses.pick_random()
 		)
 
-		print(
-			"Для этажа выбран случайный босс: ",
-			selected_boss.resource_path
-		)
-
 		return selected_boss
 
 	# Временная обратная совместимость:
@@ -198,14 +193,6 @@ func move_player_to_room(
 			)
 		)
 
-		print(
-			"Переход из комнаты ",
-			previous_index,
-			" в ",
-			target_index,
-			". Точка появления: ",
-			spawn_name
-		)
 
 	await get_tree().create_timer(0.3).timeout
 

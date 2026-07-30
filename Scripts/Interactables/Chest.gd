@@ -204,12 +204,6 @@ func open(added_amount: int) -> void:
 		false
 	)
 
-	print(
-		"Получен предмет в инвентарь: ",
-		item.name,
-		" ×",
-		added_amount
-	)
 
 	var reward_popup: RewardPopup = (
 		show_reward(added_amount)
@@ -295,12 +289,7 @@ func _show_feedback(
 	interaction_label.text = message
 	interaction_label.visible = true
 
-	print(message)
 
 func _show_no_key_feedback() -> void:
 	interaction_label.text = "Нужен ключ!"
 	interaction_label.visible = true
-
-	print(
-		"Для открытия сундука нужен ключ"
-	)
