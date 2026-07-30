@@ -719,9 +719,7 @@ func go_to_next_floor() -> void:
 		)
 		return
 
-	var lost_keys: int = (
-		_economy.leave_floor()
-	)
+	_economy.leave_floor()
 
 
 	floor_completed = false
@@ -741,9 +739,7 @@ func finish_run_and_return_to_menu() -> void:
 		)
 		return
 
-	var deposited_gold: int = (
-		_economy.finish_run_voluntarily()
-	)
+	_economy.finish_run_voluntarily()
 
 
 	floor_completed = false
@@ -756,10 +752,7 @@ func finish_run_and_return_to_menu() -> void:
 	)
 
 func abandon_run_and_return_to_menu() -> void:
-	var lost_rewards: Dictionary = (
-		_economy.lose_run_rewards()
-	)
-
+	_economy.lose_run_rewards()
 
 
 	floor_completed = false

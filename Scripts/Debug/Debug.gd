@@ -325,13 +325,6 @@ func give_item(
 		)
 	)
 
-	var added_amount: int = int(
-		result.get(
-			"added_amount",
-			0
-		)
-	)
-
 	if not success:
 		push_warning(
 			"Debug: предмет не добавлен. "

@@ -283,7 +283,6 @@ func _explode() -> void:
 	var current_room: Node2D = (
 	GameManager.get_current_room() as Node2D
 )
-	var damaged_enemies := 0
 
 	for enemy in get_tree().get_nodes_in_group(
 		"Enemies"
@@ -305,7 +304,6 @@ func _explode() -> void:
 			continue
 
 		enemy.take_damage(damage)
-		damaged_enemies += 1
 
 
 	var tween := create_tween()

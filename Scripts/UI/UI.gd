@@ -30,8 +30,10 @@ func _on_room_changed(room_name, _index):
 func _on_enemies_changed(count):
 	enemy_counter.text = "Врагов: " + str(count)
 
-func _on_game_over(victory: bool):
-	var text = "ПОБЕДА!" if victory else "ПОРАЖЕНИЕ!"
+func _on_game_over(
+	_victory: bool
+) -> void:
+	pass
 
 func _on_player_speed_changed(
 	value: float

@@ -156,11 +156,10 @@ func _activate_quick_slot(
 	):
 		return
 		
-	var result: Dictionary = (
-		GameManager.use_quick_slot(
-			slot_index
-		)
+	GameManager.use_quick_slot(
+		slot_index
 	)
+
 	_refresh_quick_bar()
 
 

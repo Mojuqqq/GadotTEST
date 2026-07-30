@@ -383,6 +383,11 @@ func shoot() -> void:
 			)
 		)
 
+		if not removed:
+			push_warning(
+				"Не удалось списать тухлое яйцо."
+			)
+
 
 func _play_shoot_animation(
 	shoot_direction: Vector2

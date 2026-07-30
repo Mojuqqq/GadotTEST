@@ -1,61 +1,309 @@
 extends BaseEnemy
 
-@export var speed: float = 200.0
-@export var tear_duration: float = 3.0
+
+# =========================================================
+# ПАРАМЕТРЫ
+# =========================================================
+
+@export_group("Movement")
+
+@export_range(0.0, 1000.0, 5.0)
+var speed: float = 200.0
+
+@export_range(0.05, 10.0, 0.05)
+var min_walk_duration: float = 0.5
+
+@export_range(0.05, 10.0, 0.05)
+var max_walk_duration: float = 1.5
+
+@export_range(0.0, 100.0, 1.0)
+var room_margin: float = 10.0
+
+
+@export_group("Tear Effect")
+
+@export_range(0.1, 30.0, 0.1)
+var tear_duration: float = 3.0
+
+
+# =========================================================
+# СОСТОЯНИЕ
+# =========================================================
 
 var player: Node2D = null
+
 var direction: Vector2 = Vector2.RIGHT
+
 var walk_timer: Timer = null
 
-func _ready():
-	# Устанавливаем HP
+
+# =========================================================
+# ИНИЦИАЛИЗАЦИЯ
+# =========================================================
+
+func _ready() -> void:
 	hp = 2
 	max_hp = 2
-	super()  # создаёт HP bar
-	
-	add_to_group("Enemies")
-	find_player()
-	
+
+	super()
+
+	add_to_group(&"Enemies")
+
+	_create_walk_timer()
+	_find_player()
+
+
+func _create_walk_timer() -> void:
 	walk_timer = Timer.new()
-	walk_timer.wait_time = randf_range(0.5, 1.5)
+
+	walk_timer.name = &"WalkTimer"
 	walk_timer.one_shot = true
-	walk_timer.timeout.connect(_on_walk_timer_timeout)
+	walk_timer.process_callback = (
+		Timer.TIMER_PROCESS_PHYSICS
+	)
+
+	walk_timer.timeout.connect(
+		_on_walk_timer_timeout
+	)
+
 	add_child(walk_timer)
-	walk_timer.start()
 
-func find_player():
-	var nodes = get_tree().get_nodes_in_group("Player")
-	if nodes.size() > 0:
-		player = nodes[0]
 
-func _physics_process(_delta):
-	if player == null:
-		find_player()
+# =========================================================
+# АКТИВАЦИЯ КОМНАТЫ
+# =========================================================
+
+func set_active(
+	active: bool
+) -> void:
+	if is_dead:
 		return
+
+	# Останавливаем таймер до отключения обработки узла.
+	if not active:
+		if is_instance_valid(walk_timer):
+			walk_timer.stop()
+
+	super(active)
+
+	if not active:
+		return
+
+	_find_player()
+	_choose_new_direction()
+	_restart_walk_timer()
+
+
+# =========================================================
+# ДВИЖЕНИЕ
+# =========================================================
+
+func _physics_process(
+	_delta: float
+) -> void:
 	if is_dead:
 		velocity = Vector2.ZERO
-		move_and_slide()
 		return
-	
+
+	if not is_active:
+		velocity = Vector2.ZERO
+		return
+
 	velocity = direction * speed
+
 	move_and_slide()
-	
-	if room_limits != Rect2():
-		global_position.x = clamp(global_position.x, room_limits.position.x + 10, room_limits.position.x + room_limits.size.x - 10)
-		global_position.y = clamp(global_position.y, room_limits.position.y + 10, room_limits.position.y + room_limits.size.y - 10)
 
-func _on_walk_timer_timeout():
-	var angle = randf_range(0, 2 * PI)
-	direction = Vector2(cos(angle), sin(angle))
-	walk_timer.wait_time = randf_range(0.5, 1.5)
-	walk_timer.start()
+	# Если лук столкнулся со стеной или другим препятствием,
+	# сразу выбираем новое направление.
+	if get_slide_collision_count() > 0:
+		_choose_new_direction()
+		_restart_walk_timer()
 
-# Переопределяем die, чтобы применить эффект слёз перед смертью
-func die():
+	_clamp_to_room()
+
+
+func _choose_new_direction() -> void:
+	var angle: float = randf_range(
+		0.0,
+		TAU
+	)
+
+	direction = Vector2.RIGHT.rotated(
+		angle
+	)
+
+
+func _clamp_to_room() -> void:
+	if room_limits == Rect2():
+		return
+
+	var minimum_x: float = (
+		room_limits.position.x
+		+ room_margin
+	)
+
+	var maximum_x: float = (
+		room_limits.end.x
+		- room_margin
+	)
+
+	var minimum_y: float = (
+		room_limits.position.y
+		+ room_margin
+	)
+
+	var maximum_y: float = (
+		room_limits.end.y
+		- room_margin
+	)
+
+	# Страховка для слишком маленькой комнаты.
+	if minimum_x > maximum_x:
+		global_position.x = (
+			room_limits.get_center().x
+		)
+	else:
+		global_position.x = clampf(
+			global_position.x,
+			minimum_x,
+			maximum_x
+		)
+
+	if minimum_y > maximum_y:
+		global_position.y = (
+			room_limits.get_center().y
+		)
+	else:
+		global_position.y = clampf(
+			global_position.y,
+			minimum_y,
+			maximum_y
+		)
+
+
+# =========================================================
+# ТАЙМЕР ДВИЖЕНИЯ
+# =========================================================
+
+func _on_walk_timer_timeout() -> void:
 	if is_dead:
 		return
-	# Применяем эффект слёз к игроку
-	if player != null and player.has_method("apply_tear_effect"):
-		player.apply_tear_effect(tear_duration)
-	# Вызываем базовый die() для эмиссии сигнала и удаления
-	super.die()
+
+	if not is_active:
+		return
+
+	_choose_new_direction()
+	_restart_walk_timer()
+
+
+func _restart_walk_timer() -> void:
+	if not is_instance_valid(walk_timer):
+		return
+
+	if is_dead or not is_active:
+		return
+
+	var minimum_duration: float = maxf(
+		minf(
+			min_walk_duration,
+			max_walk_duration
+		),
+		0.05
+	)
+
+	var maximum_duration: float = maxf(
+		maxf(
+			min_walk_duration,
+			max_walk_duration
+		),
+		minimum_duration
+	)
+
+	var next_duration: float = randf_range(
+		minimum_duration,
+		maximum_duration
+	)
+
+	walk_timer.start(
+		next_duration
+	)
+
+
+# =========================================================
+# ПОИСК ИГРОКА
+# =========================================================
+
+func _find_player() -> void:
+	player = null
+
+	var candidate: Node2D = (
+		get_tree().get_first_node_in_group(
+			&"Player"
+		) as Node2D
+	)
+
+	if not is_instance_valid(candidate):
+		return
+
+	if candidate.is_queued_for_deletion():
+		return
+
+	player = candidate
+
+
+func _get_valid_player() -> Node2D:
+	if not is_instance_valid(player):
+		_find_player()
+
+	elif player.is_queued_for_deletion():
+		_find_player()
+
+	if not is_instance_valid(player):
+		return null
+
+	if player.is_queued_for_deletion():
+		return null
+
+	return player
+
+
+# =========================================================
+# СМЕРТЬ И ЭФФЕКТ СЛЁЗ
+# =========================================================
+
+func die() -> void:
+	if is_dead:
+		return
+
+	if is_instance_valid(walk_timer):
+		walk_timer.stop()
+
+	_apply_tear_effect_to_player()
+
+	super()
+
+
+func _apply_tear_effect_to_player() -> void:
+	if tear_duration <= 0.0:
+		return
+
+	var current_player: Node2D = (
+		_get_valid_player()
+	)
+
+	if current_player == null:
+		return
+
+	if not current_player.has_method(
+		&"apply_tear_effect"
+	):
+		push_warning(
+			"Enemy_onion: у игрока отсутствует "
+			+ "метод apply_tear_effect()."
+		)
+		return
+
+	current_player.call(
+		&"apply_tear_effect",
+		tear_duration
+	)

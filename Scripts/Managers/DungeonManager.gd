@@ -647,7 +647,8 @@ func enter_room(index: int) -> void:
 # =========================================================
 
 func move_player_to_room(
-	target_room_node: Node2D
+	target_room_node: Node2D,
+	_door_position: Vector2
 ) -> int:
 	var target_index := room_instances.find(
 		target_room_node
