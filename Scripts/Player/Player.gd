@@ -15,6 +15,10 @@ extends CharacterBody2D
 
 @export_range(0.0, 32.0, 1.0)
 var damage_bounce_height: float = 12.0
+@export_group("Completed Floor Boost")
+
+@export_range(1.0, 2.0, 0.05)
+var completed_floor_speed_multiplier: float = 1.25
 @onready var animated_sprite: AnimatedSprite2D = ($AnimatedSprite2D)
 var egg_pool: Array[Node] = []
 const INITIAL_POOL_SIZE := 20
@@ -24,6 +28,7 @@ var external_force: Vector2 = Vector2.ZERO
 @export_range(0.1, 20.0, 0.1)
 var push_decay_rate: float = 6.3
 var current_speed: float = 300.0
+var completed_floor_speed_boost_active: bool = false
 var time_since_last_shot: float = 0.0
 var is_dead: bool = false
 var damage_feedback_tween: Tween = null
@@ -245,8 +250,44 @@ func _update_movement_animation(
 	if animated_sprite.animation != &"walk":
 		animated_sprite.play(&"walk")
 
-func update_speed(new_speed: float):
-	current_speed = new_speed
+func update_speed(
+	new_speed: float
+) -> void:
+	var final_speed: float = maxf(
+		new_speed,
+		0.0
+	)
+
+	if completed_floor_speed_boost_active:
+		final_speed *= maxf(
+			completed_floor_speed_multiplier,
+			1.0
+		)
+
+	current_speed = final_speed
+
+func activate_completed_floor_speed_boost() -> void:
+	if completed_floor_speed_boost_active:
+		return
+
+	completed_floor_speed_boost_active = true
+
+	var base_current_speed: float = base_speed
+
+	if GameManager.player_stats != null:
+		base_current_speed = (
+			GameManager.player_stats.speed
+		)
+
+	update_speed(
+		base_current_speed
+	)
+
+	print(
+		"Активировано ускорение завершённого этажа. "
+		+ "Текущая скорость: "
+		+ str(current_speed)
+	)
 
 func apply_push(force: Vector2):
 	external_force += force
