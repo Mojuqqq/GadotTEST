@@ -79,7 +79,7 @@ var direction: int = Direction.RIGHT:
 
 @export var top_bottom_collision_size := Vector2(
 	84.0,
-	100.0
+	80.0
 ):
 	set(value):
 		top_bottom_collision_size = value

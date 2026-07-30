@@ -1,6 +1,6 @@
 [gd_scene format=3 uid="uid://b5out7n8cdnue"]
 
-[ext_resource type="Script" uid="uid://fc0oess32oqh" path="res://Scripts/Rooms/DoorSocketSide.gd" id="1_nufgy"]
+[ext_resource type="Script" uid="uid://fc0oess32oqh" path="res://Scripts/Rooms/DoorSocket.gd" id="1_nufgy"]
 [ext_resource type="Texture2D" uid="uid://cy87pq8dwooku" path="res://Assets/Art/Environment/Doors/Doors_top.png" id="2_kgb56"]
 [ext_resource type="Texture2D" uid="uid://dt8kitn3r6r07" path="res://Assets/Art/Environment/Doors/Doors_right.png" id="2_qfw4g"]
 [ext_resource type="Texture2D" uid="uid://dwn8ufxq5u4oj" path="res://Assets/Art/Environment/Doors/Doors_left.png" id="3_kgb56"]
@@ -21,22 +21,21 @@ atlas = ExtResource("3_kgb56")
 region = Rect2(0, 0, 52, 224)
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_kgb56"]
-size = Vector2(84, 29)
+size = Vector2(84, 80)
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_aeyec"]
-size = Vector2(84, 29)
+size = Vector2(84, 80)
 
 [node name="DoorSocket" type="Node2D" unique_id=760714407]
 script = ExtResource("1_nufgy")
-direction = 0
+direction = 2
 top_texture = SubResource("AtlasTexture_nufgy")
 right_texture = SubResource("AtlasTexture_gg4mo")
 bottom_texture = SubResource("AtlasTexture_qfw4g")
 left_texture = SubResource("AtlasTexture_6m3xu")
-top_bottom_collision_size = Vector2(84, 29)
 
 [node name="DoorSprite" type="Sprite2D" parent="." unique_id=1124883201]
-texture = SubResource("AtlasTexture_nufgy")
+texture = SubResource("AtlasTexture_qfw4g")
 
 [node name="TransitionArea" type="Area2D" parent="." unique_id=1263355912]
 collision_layer = 128
@@ -54,4 +53,4 @@ disabled = true
 debug_color = Color(0.8996578, 0.00017442585, 0.7667549, 0.41960785)
 
 [node name="ArrivalPoint" type="Marker2D" parent="." unique_id=485608281]
-position = Vector2(0, 70)
+position = Vector2(0, -70)
