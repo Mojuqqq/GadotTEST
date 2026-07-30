@@ -45,6 +45,16 @@ func _input(event: InputEvent) -> void:
 	if key_event.echo:
 		return
 
+	# ESC работает только когда дебаг уже открыт.
+	# На вложенных экранах возвращает на уровень назад.
+	if (
+		event.is_action_pressed(&"pause")
+		and is_instance_valid(menu_layer)
+	):
+		get_viewport().set_input_as_handled()
+		_go_back_or_close_debug_menu()
+		return
+
 	var is_f1: bool = (
 		key_event.keycode == KEY_F1
 		or key_event.physical_keycode == KEY_F1
@@ -53,14 +63,38 @@ func _input(event: InputEvent) -> void:
 	if not is_f1:
 		return
 
+	get_viewport().set_input_as_handled()
+
 	if is_instance_valid(menu_layer):
 		close_debug_menu()
 	else:
 		open_debug_menu()
 
-	get_viewport().set_input_as_handled()
+func _go_back_or_close_debug_menu() -> void:
+	match current_screen:
+		SCREEN_ADD_ITEMS:
+			_show_items_menu()
 
+		SCREEN_SPAWN_ENEMIES:
+			_show_enemies_menu()
 
+		SCREEN_ITEMS:
+			_show_main_menu()
+
+		SCREEN_ENEMIES:
+			_show_main_menu()
+
+		SCREEN_GOLD:
+			_show_main_menu()
+
+		SCREEN_KEYS:
+			_show_main_menu()
+
+		SCREEN_MAIN:
+			close_debug_menu()
+
+		_:
+			close_debug_menu()
 # =========================================================
 # ОТКРЫТИЕ И ЗАКРЫТИЕ
 # =========================================================
@@ -96,6 +130,7 @@ func _create_menu_interface() -> void:
 	menu_layer.name = "DebugMenu"
 	menu_layer.layer = 100
 	add_child(menu_layer)
+	menu_layer.add_to_group(&"DebugMenu")
 
 	var background := ColorRect.new()
 	background.color = Color(0.0, 0.0, 0.0, 0.7)

@@ -79,6 +79,18 @@ func _input(
 	):
 		return
 
+	# Пока открыт дебаг, ESC принадлежит ему.
+	# PauseMenu не должен реагировать на то же нажатие.
+	var debug_menu: Node = (
+		get_tree().get_first_node_in_group(
+			&"DebugMenu"
+		)
+	)
+
+	if is_instance_valid(debug_menu):
+		get_viewport().set_input_as_handled()
+		return
+
 	# Магазин имеет приоритет над паузой.
 	# ESC закрывает магазин и не открывает PauseMenu.
 	var shop_menu: Node = (

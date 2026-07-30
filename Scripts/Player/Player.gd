@@ -239,7 +239,10 @@ func _update_movement_animation(
 	# Пока проигрывается бросок яйца,
 	# ходьба и idle не должны его перебивать.
 	if (
-		animated_sprite.animation == &"shoot"
+		(
+			animated_sprite.animation == &"shoot"
+			or animated_sprite.animation == &"heal"
+		)
 		and animated_sprite.is_playing()
 	):
 		return
@@ -277,6 +280,40 @@ func update_speed(
 	GameManager.notify_player_speed_changed(
 		current_speed
 	)
+
+func heal(amount: int) -> int:
+	if amount <= 0:
+		return 0
+
+	if GameManager.player_stats == null:
+		return 0
+
+	var old_hp: int = GameManager.player_stats.hp
+
+	GameManager.player_stats.hp = min(
+		GameManager.player_stats.hp + amount,
+		GameManager.player_stats.max_hp
+	)
+
+	var healed_amount: int = (
+		GameManager.player_stats.hp - old_hp
+	)
+
+	if healed_amount <= 0:
+		return 0
+
+	_play_heal_animation()
+	_show_heal_feedback(healed_amount)
+	_update_health_ui_if_needed()
+
+	return healed_amount
+
+func _play_heal_animation() -> void:
+	if animated_sprite == null:
+		return
+
+	animated_sprite.stop()
+	animated_sprite.play(&"heal")
 
 func get_current_speed() -> float:
 	return current_speed
