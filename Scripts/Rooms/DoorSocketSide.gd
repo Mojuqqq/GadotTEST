@@ -20,40 +20,81 @@ enum Direction {
 @export_group("Direction")
 
 
-@export_enum("LEFT", "RIGHT")
-var side: int = DoorSide.RIGHT:
+@export_enum(
+	"TOP",
+	"RIGHT",
+	"BOTTOM",
+	"LEFT"
+)
+var direction: int = Direction.RIGHT:
 	set(value):
-		side = value
-		_refresh_direction()
+		direction = value
+		_refresh_configuration()
 
 
 @export var arrival_offset: float = 70.0:
 	set(value):
 		arrival_offset = value
-		_refresh_direction()
+		_refresh_configuration()
 
 
 @export_group("Graphics")
 
 
+@export var top_texture: Texture2D:
+	set(value):
+		top_texture = value
+		_refresh_configuration()
+
+
 @export var right_texture: Texture2D:
 	set(value):
 		right_texture = value
-		_refresh_direction()
+		_refresh_configuration()
+
+
+@export var bottom_texture: Texture2D:
+	set(value):
+		bottom_texture = value
+		_refresh_configuration()
 
 
 @export var left_texture: Texture2D:
 	set(value):
 		left_texture = value
-		_refresh_direction()
+		_refresh_configuration()
+
+
+@export_group("Collision")
+
+
+@export var side_collision_size := Vector2(
+	29.0,
+	84.0
+):
+	set(value):
+		side_collision_size = value
+		_refresh_configuration()
+
+
+@export var top_bottom_collision_size := Vector2(
+	84.0,
+	100.0
+):
+	set(value):
+		top_bottom_collision_size = value
+		_refresh_configuration()
 
 
 @export_group("Initial State")
 
+
 @export var starts_open: bool = true
 
 
-@onready var door_sprite: Sprite2D = $DoorSprite
+@onready var door_sprite: Sprite2D = (
+	$DoorSprite
+)
 
 @onready var transition_area: Area2D = (
 	$TransitionArea
@@ -73,14 +114,23 @@ var side: int = DoorSide.RIGHT:
 
 
 var is_open: bool = true
-var _editor_last_side: int = -1
-var _editor_last_offset: float = -1.0
+
+
+# Страховка для обновления прямо в редакторе.
+var _editor_last_direction: int = -1
+var _editor_last_arrival_offset: float = -1.0
+
+var _editor_last_top_texture: Texture2D
 var _editor_last_right_texture: Texture2D
+var _editor_last_bottom_texture: Texture2D
 var _editor_last_left_texture: Texture2D
+
+var _editor_last_side_size := Vector2.ZERO
+var _editor_last_top_bottom_size := Vector2.ZERO
 
 
 func _ready() -> void:
-	_refresh_direction()
+	_refresh_configuration()
 
 	if Engine.is_editor_hint():
 		return
@@ -94,31 +144,49 @@ func _ready() -> void:
 
 	set_open(starts_open)
 
+
 func _process(_delta: float) -> void:
 	if not Engine.is_editor_hint():
 		return
 
 	var configuration_changed := (
-		_editor_last_side != side
+		_editor_last_direction != direction
 		or not is_equal_approx(
-			_editor_last_offset,
+			_editor_last_arrival_offset,
 			arrival_offset
 		)
+		or _editor_last_top_texture != top_texture
 		or _editor_last_right_texture != right_texture
+		or _editor_last_bottom_texture != bottom_texture
 		or _editor_last_left_texture != left_texture
+		or not _editor_last_side_size.is_equal_approx(
+			side_collision_size
+		)
+		or not _editor_last_top_bottom_size.is_equal_approx(
+			top_bottom_collision_size
+		)
 	)
 
 	if not configuration_changed:
 		return
 
-	_editor_last_side = side
-	_editor_last_offset = arrival_offset
+	_editor_last_direction = direction
+	_editor_last_arrival_offset = arrival_offset
+
+	_editor_last_top_texture = top_texture
 	_editor_last_right_texture = right_texture
+	_editor_last_bottom_texture = bottom_texture
 	_editor_last_left_texture = left_texture
 
-	_refresh_direction()
+	_editor_last_side_size = side_collision_size
+	_editor_last_top_bottom_size = (
+		top_bottom_collision_size
+	)
 
-func _refresh_direction() -> void:
+	_refresh_configuration()
+
+
+func _refresh_configuration() -> void:
 	var sprite := get_node_or_null(
 		"DoorSprite"
 	) as Sprite2D
@@ -127,37 +195,87 @@ func _refresh_direction() -> void:
 		"ArrivalPoint"
 	) as Marker2D
 
-	# Во время первоначальной загрузки сцены
-	# дочерние узлы могут ещё не существовать.
-	if sprite == null or arrival == null:
+	var transition := get_node_or_null(
+		"TransitionArea/CollisionShape2D"
+	) as CollisionShape2D
+
+	var blocker := get_node_or_null(
+		"Blocker/CollisionShape2D"
+	) as CollisionShape2D
+
+	# При первоначальной загрузке сцены setters могут
+	# вызваться раньше появления дочерних узлов.
+	if (
+		sprite == null
+		or arrival == null
+		or transition == null
+		or blocker == null
+	):
 		return
 
-	match side:
-		DoorSide.LEFT:
+	sprite.flip_h = false
+	sprite.flip_v = false
+
+	var collision_size := side_collision_size
+
+	match direction:
+		Direction.TOP:
+			sprite.texture = top_texture
+
 			arrival.position = Vector2(
-				arrival_offset,
-				0.0
+				0.0,
+				arrival_offset
 			)
 
-			if left_texture != null:
-				sprite.texture = left_texture
-				sprite.flip_h = false
-			elif right_texture != null:
-				sprite.texture = right_texture
-				sprite.flip_h = true
+			collision_size = (
+				top_bottom_collision_size
+			)
 
-		DoorSide.RIGHT:
+		Direction.RIGHT:
+			sprite.texture = right_texture
+
 			arrival.position = Vector2(
 				-arrival_offset,
 				0.0
 			)
 
-			if right_texture != null:
-				sprite.texture = right_texture
-				sprite.flip_h = false
-			elif left_texture != null:
-				sprite.texture = left_texture
-				sprite.flip_h = true
+			collision_size = side_collision_size
+
+		Direction.BOTTOM:
+			sprite.texture = bottom_texture
+
+			arrival.position = Vector2(
+				0.0,
+				-arrival_offset
+			)
+
+			collision_size = (
+				top_bottom_collision_size
+			)
+
+		Direction.LEFT:
+			sprite.texture = left_texture
+
+			arrival.position = Vector2(
+				arrival_offset,
+				0.0
+			)
+
+			collision_size = side_collision_size
+
+	var transition_rectangle := (
+		transition.shape as RectangleShape2D
+	)
+
+	var blocker_rectangle := (
+		blocker.shape as RectangleShape2D
+	)
+
+	if transition_rectangle != null:
+		transition_rectangle.size = collision_size
+
+	if blocker_rectangle != null:
+		blocker_rectangle.size = collision_size
 
 
 func set_open(open: bool) -> void:
@@ -167,7 +285,7 @@ func set_open(open: bool) -> void:
 		return
 
 	# Открытая дверь:
-	# спрайт скрыт, переход работает.
+	# спрайт скрыт, зона перехода активна.
 	door_sprite.visible = not open
 
 	transition_area.set_deferred(
@@ -186,7 +304,7 @@ func set_open(open: bool) -> void:
 	)
 
 	# Закрытая дверь:
-	# появляется спрайт и включается блокиратор.
+	# спрайт показан, физический блокиратор включён.
 	blocker_shape.set_deferred(
 		&"disabled",
 		open

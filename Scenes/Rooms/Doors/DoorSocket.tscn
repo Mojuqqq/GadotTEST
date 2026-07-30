@@ -1,46 +1,57 @@
 [gd_scene format=3 uid="uid://b5out7n8cdnue"]
 
 [ext_resource type="Script" uid="uid://fc0oess32oqh" path="res://Scripts/Rooms/DoorSocketSide.gd" id="1_nufgy"]
+[ext_resource type="Texture2D" uid="uid://cy87pq8dwooku" path="res://Assets/Art/Environment/Doors/Doors_top.png" id="2_kgb56"]
 [ext_resource type="Texture2D" uid="uid://dt8kitn3r6r07" path="res://Assets/Art/Environment/Doors/Doors_right.png" id="2_qfw4g"]
 [ext_resource type="Texture2D" uid="uid://dwn8ufxq5u4oj" path="res://Assets/Art/Environment/Doors/Doors_left.png" id="3_kgb56"]
+[ext_resource type="Texture2D" uid="uid://im562b0niioj" path="res://Assets/Art/Environment/Doors/Doors_bottom.png" id="4_cidsq"]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_nufgy"]
+atlas = ExtResource("2_kgb56")
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_gg4mo"]
 atlas = ExtResource("2_qfw4g")
 region = Rect2(0, 0, 52, 224)
 
+[sub_resource type="AtlasTexture" id="AtlasTexture_qfw4g"]
+atlas = ExtResource("4_cidsq")
+
 [sub_resource type="AtlasTexture" id="AtlasTexture_6m3xu"]
 atlas = ExtResource("3_kgb56")
 region = Rect2(0, 0, 52, 224)
 
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_kgb56"]
+size = Vector2(84, 29)
+
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_aeyec"]
-size = Vector2(29, 84)
+size = Vector2(84, 29)
 
 [node name="DoorSocket" type="Node2D" unique_id=760714407]
 script = ExtResource("1_nufgy")
+direction = 0
+top_texture = SubResource("AtlasTexture_nufgy")
 right_texture = SubResource("AtlasTexture_gg4mo")
+bottom_texture = SubResource("AtlasTexture_qfw4g")
 left_texture = SubResource("AtlasTexture_6m3xu")
+top_bottom_collision_size = Vector2(84, 29)
 
 [node name="DoorSprite" type="Sprite2D" parent="." unique_id=1124883201]
-texture = SubResource("AtlasTexture_gg4mo")
+texture = SubResource("AtlasTexture_nufgy")
 
 [node name="TransitionArea" type="Area2D" parent="." unique_id=1263355912]
-position = Vector2(3, -4)
 collision_layer = 128
 collision_mask = 2
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="TransitionArea" unique_id=1691660618]
-position = Vector2(0, -6)
-shape = SubResource("RectangleShape2D_aeyec")
+shape = SubResource("RectangleShape2D_kgb56")
 debug_color = Color(0.8996578, 0.00017442585, 0.7667549, 0.41960785)
 
 [node name="Blocker" type="StaticBody2D" parent="." unique_id=2096702023]
-position = Vector2(3, -4)
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Blocker" unique_id=612010213]
-position = Vector2(0, -6)
 shape = SubResource("RectangleShape2D_aeyec")
 disabled = true
 debug_color = Color(0.8996578, 0.00017442585, 0.7667549, 0.41960785)
 
 [node name="ArrivalPoint" type="Marker2D" parent="." unique_id=485608281]
-position = Vector2(-70, 0)
+position = Vector2(0, 70)
