@@ -9,48 +9,32 @@ signal player_entered(
 )
 
 
-enum DoorSide {
-	LEFT,
-	RIGHT
+enum Direction {
+	TOP,
+	RIGHT,
+	BOTTOM,
+	LEFT
 }
 
 
 @export_group("Direction")
 
-var _side: int = DoorSide.RIGHT
-
 
 @export_enum("LEFT", "RIGHT")
-var side: int:
-	get:
-		return _side
-
+var side: int = DoorSide.RIGHT:
 	set(value):
-		_side = value
-
-		if is_inside_tree():
-			call_deferred(
-				&"_refresh_direction"
-			)
+		side = value
+		_refresh_direction()
 
 
-var _arrival_offset: float = 70.0
-
-
-@export var arrival_offset: float:
-	get:
-		return _arrival_offset
-
+@export var arrival_offset: float = 70.0:
 	set(value):
-		_arrival_offset = value
-
-		if is_inside_tree():
-			call_deferred(
-				&"_refresh_direction"
-			)
+		arrival_offset = value
+		_refresh_direction()
 
 
 @export_group("Graphics")
+
 
 @export var right_texture: Texture2D:
 	set(value):
@@ -89,12 +73,14 @@ var _arrival_offset: float = 70.0
 
 
 var is_open: bool = true
+var _editor_last_side: int = -1
+var _editor_last_offset: float = -1.0
+var _editor_last_right_texture: Texture2D
+var _editor_last_left_texture: Texture2D
 
 
 func _ready() -> void:
-	call_deferred(
-		&"_refresh_direction"
-	)
+	_refresh_direction()
 
 	if Engine.is_editor_hint():
 		return
@@ -108,6 +94,29 @@ func _ready() -> void:
 
 	set_open(starts_open)
 
+func _process(_delta: float) -> void:
+	if not Engine.is_editor_hint():
+		return
+
+	var configuration_changed := (
+		_editor_last_side != side
+		or not is_equal_approx(
+			_editor_last_offset,
+			arrival_offset
+		)
+		or _editor_last_right_texture != right_texture
+		or _editor_last_left_texture != left_texture
+	)
+
+	if not configuration_changed:
+		return
+
+	_editor_last_side = side
+	_editor_last_offset = arrival_offset
+	_editor_last_right_texture = right_texture
+	_editor_last_left_texture = left_texture
+
+	_refresh_direction()
 
 func _refresh_direction() -> void:
 	var sprite := get_node_or_null(
@@ -118,34 +127,37 @@ func _refresh_direction() -> void:
 		"ArrivalPoint"
 	) as Marker2D
 
-	if sprite == null:
+	# Во время первоначальной загрузки сцены
+	# дочерние узлы могут ещё не существовать.
+	if sprite == null or arrival == null:
 		return
 
-	if arrival == null:
-		return
-
-	match _side:
+	match side:
 		DoorSide.LEFT:
 			arrival.position = Vector2(
-				_arrival_offset,
+				arrival_offset,
 				0.0
 			)
 
 			if left_texture != null:
 				sprite.texture = left_texture
 				sprite.flip_h = false
-			else:
+			elif right_texture != null:
 				sprite.texture = right_texture
 				sprite.flip_h = true
 
 		DoorSide.RIGHT:
 			arrival.position = Vector2(
-				-_arrival_offset,
+				-arrival_offset,
 				0.0
 			)
 
-			sprite.texture = right_texture
-			sprite.flip_h = false
+			if right_texture != null:
+				sprite.texture = right_texture
+				sprite.flip_h = false
+			elif left_texture != null:
+				sprite.texture = left_texture
+				sprite.flip_h = true
 
 
 func set_open(open: bool) -> void:

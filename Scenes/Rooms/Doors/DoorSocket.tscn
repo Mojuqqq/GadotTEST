@@ -1,31 +1,27 @@
 [gd_scene format=3 uid="uid://b5out7n8cdnue"]
 
-[ext_resource type="Script" uid="uid://fc0oess32oqh" path="res://Scripts/Rooms/DoorSocketSide.gd" id="1_6m3xu"]
-[ext_resource type="Texture2D" uid="uid://dt8kitn3r6r07" path="res://Assets/Art/Environment/Doors/Doors_right.png" id="2_gg4mo"]
-[ext_resource type="Texture2D" uid="uid://dwn8ufxq5u4oj" path="res://Assets/Art/Environment/Doors/Doors_left.png" id="3_gg4mo"]
+[ext_resource type="Script" uid="uid://fc0oess32oqh" path="res://Scripts/Rooms/DoorSocketSide.gd" id="1_nufgy"]
+[ext_resource type="Texture2D" uid="uid://dt8kitn3r6r07" path="res://Assets/Art/Environment/Doors/Doors_right.png" id="2_qfw4g"]
+[ext_resource type="Texture2D" uid="uid://dwn8ufxq5u4oj" path="res://Assets/Art/Environment/Doors/Doors_left.png" id="3_kgb56"]
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_gg4mo"]
-atlas = ExtResource("2_gg4mo")
+atlas = ExtResource("2_qfw4g")
 region = Rect2(0, 0, 52, 224)
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_6m3xu"]
-atlas = ExtResource("3_gg4mo")
+atlas = ExtResource("3_kgb56")
 region = Rect2(0, 0, 52, 224)
-
-[sub_resource type="AtlasTexture" id="AtlasTexture_yf5fn"]
-atlas = ExtResource("2_gg4mo")
-region = Rect2(0, 0, 50, 224)
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_aeyec"]
 size = Vector2(29, 84)
 
-[node name="DoorSocketSide" type="Node2D" unique_id=760714407]
-script = ExtResource("1_6m3xu")
+[node name="DoorSocket" type="Node2D" unique_id=760714407]
+script = ExtResource("1_nufgy")
 right_texture = SubResource("AtlasTexture_gg4mo")
 left_texture = SubResource("AtlasTexture_6m3xu")
 
 [node name="DoorSprite" type="Sprite2D" parent="." unique_id=1124883201]
-texture = SubResource("AtlasTexture_yf5fn")
+texture = SubResource("AtlasTexture_gg4mo")
 
 [node name="TransitionArea" type="Area2D" parent="." unique_id=1263355912]
 position = Vector2(3, -4)
@@ -47,4 +43,4 @@ disabled = true
 debug_color = Color(0.8996578, 0.00017442585, 0.7667549, 0.41960785)
 
 [node name="ArrivalPoint" type="Marker2D" parent="." unique_id=485608281]
-position = Vector2(-56, 0)
+position = Vector2(-70, 0)
