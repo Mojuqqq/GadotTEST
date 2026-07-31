@@ -1,10 +1,10 @@
 @tool
 extends Node2D
-class_name DoorSocketSide
+class_name DoorSocket
 
 
 signal player_entered(
-	socket: DoorSocketSide,
+	socket: DoorSocket,
 	player: Node2D
 )
 
@@ -114,6 +114,9 @@ var direction: int = Direction.RIGHT:
 
 
 var is_open: bool = true
+var linked_socket: DoorSocket = null
+var target_room_node: Node2D = null
+var connection_enabled: bool = false
 
 
 # Страховка для обновления прямо в редакторе.
@@ -277,8 +280,78 @@ func _refresh_configuration() -> void:
 	if blocker_rectangle != null:
 		blocker_rectangle.size = collision_size
 
+func connect_to(
+	other_socket: DoorSocket,
+	target_room: Node2D
+) -> void:
+	linked_socket = other_socket
+	target_room_node = target_room
+
+	connectionother_socket: DoorSocket,
+	target_room: Node2D
+) -> void_enabled = (
+		is_instance_valid(linked_socket)
+		and is_instance_valid(target_room_node)
+	)
+
+	if not is_node_ready():
+		return
+
+	visible = connection_enabled
+
+	# После создания соединения дверь сначала закрыта.
+	# Room.gd сам откроет её при входе в очищенную комнату.
+	set_open(false)
+
+
+func clear_connection() -> void:
+	linked_socket = null
+	target_room_node = null
+	connection_enabled = false
+
+	if not is_node_ready():
+		return
+
+	visible = false
+	set_open(false)
+
+
+func get_arrival_global_position() -> Vector2:
+	if is_instance_valid(arrival_point):
+		return arrival_point.global_position
+
+	return global_position
 
 func set_open(open: bool) -> void:
+		if not connection_enabled:
+		is_open = false
+
+		if not is_node_ready():
+			return
+
+		door_sprite.visible = false
+
+		transition_area.set_deferred(
+			&"monitoring",
+			false
+		)
+
+		transition_area.set_deferred(
+			&"monitorable",
+			false
+		)
+
+		transition_shape.set_deferred(
+			&"disabled",
+			true
+		)
+
+		blocker_shape.set_deferred(
+			&"disabled",
+			true
+		)
+
+		return
 	is_open = open
 
 	if not is_node_ready():
@@ -314,13 +387,53 @@ func set_open(open: bool) -> void:
 func _on_transition_area_body_entered(
 	body: Node2D
 ) -> void:
+	if not connection_enabled:
+		return
+
 	if not is_open:
 		return
 
-	if not body.is_in_group("Player"):
+	if not body.is_in_group(&"Player"):
+		return
+
+	if not is_instance_valid(target_room_node):
+		push_warning(
+			"У двери "
+			+ name
+			+ " не назначена целевая комната."
+		)
+		return
+
+	if not is_instance_valid(linked_socket):
+		push_warning(
+			"У двери "
+			+ name
+			+ " отсутствует связанная дверь."
+		)
 		return
 
 	player_entered.emit(
 		self,
 		body
+	)
+
+	var main: Node = get_tree().current_scene
+
+	if main == null:
+		push_error(
+			"Не найдена текущая сцена."
+		)
+		return
+
+	if not main.has_method(&"move_player_to_room"):
+		push_error(
+			"Текущая сцена не имеет метода "
+			+ "move_player_to_room()."
+		)
+		return
+
+	main.call(
+		&"move_player_to_room",
+		target_room_node,
+		linked_socket.get_arrival_global_position()
 	)
