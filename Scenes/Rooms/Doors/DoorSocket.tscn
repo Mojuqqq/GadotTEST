@@ -21,10 +21,10 @@ atlas = ExtResource("3_kgb56")
 region = Rect2(0, 0, 52, 224)
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_kgb56"]
-size = Vector2(84, 80)
+size = Vector2(29, 84)
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_aeyec"]
-size = Vector2(84, 80)
+size = Vector2(29, 84)
 
 [node name="DoorSocket" type="Node2D" unique_id=760714407]
 script = ExtResource("1_nufgy")
@@ -33,6 +33,14 @@ top_texture = SubResource("AtlasTexture_nufgy")
 right_texture = SubResource("AtlasTexture_gg4mo")
 bottom_texture = SubResource("AtlasTexture_qfw4g")
 left_texture = SubResource("AtlasTexture_6m3xu")
+
+[node name="WallCoverSprite" type="Sprite2D" parent="." unique_id=263535214]
+visible = false
+texture = SubResource("AtlasTexture_qfw4g")
+
+[node name="OpenDoorSprite" type="Sprite2D" parent="." unique_id=502971391]
+visible = false
+texture = SubResource("AtlasTexture_qfw4g")
 
 [node name="DoorSprite" type="Sprite2D" parent="." unique_id=1124883201]
 texture = SubResource("AtlasTexture_qfw4g")

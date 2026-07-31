@@ -64,6 +64,31 @@ var direction: int = Direction.RIGHT:
 		left_texture = value
 		_refresh_configuration()
 
+@export_group("Open Graphics")
+
+
+@export var top_open_texture: Texture2D:
+	set(value):
+		top_open_texture = value
+		_refresh_configuration()
+
+
+@export var right_open_texture: Texture2D:
+	set(value):
+		right_open_texture = value
+		_refresh_configuration()
+
+
+@export var bottom_open_texture: Texture2D:
+	set(value):
+		bottom_open_texture = value
+		_refresh_configuration()
+
+
+@export var left_open_texture: Texture2D:
+	set(value):
+		left_open_texture = value
+		_refresh_configuration()
 
 @export_group("Collision")
 
@@ -85,6 +110,31 @@ var direction: int = Direction.RIGHT:
 		top_bottom_collision_size = value
 		_refresh_configuration()
 
+@export_group("Wall Covers")
+
+
+@export var top_wall_texture: Texture2D:
+	set(value):
+		top_wall_texture = value
+		_refresh_configuration()
+
+
+@export var right_wall_texture: Texture2D:
+	set(value):
+		right_wall_texture = value
+		_refresh_configuration()
+
+
+@export var bottom_wall_texture: Texture2D:
+	set(value):
+		bottom_wall_texture = value
+		_refresh_configuration()
+
+
+@export var left_wall_texture: Texture2D:
+	set(value):
+		left_wall_texture = value
+		_refresh_configuration()
 
 @export_group("Initial State")
 
@@ -94,6 +144,14 @@ var direction: int = Direction.RIGHT:
 
 @onready var door_sprite: Sprite2D = (
 	$DoorSprite
+)
+
+@onready var open_door_sprite: Sprite2D = (
+	$OpenDoorSprite
+)
+
+@onready var wall_cover_sprite: Sprite2D = (
+	$WallCoverSprite
 )
 
 @onready var transition_area: Area2D = (
@@ -190,8 +248,16 @@ func _process(_delta: float) -> void:
 
 
 func _refresh_configuration() -> void:
-	var sprite := get_node_or_null(
+	var closed_sprite := get_node_or_null(
 		"DoorSprite"
+	) as Sprite2D
+
+	var open_sprite := get_node_or_null(
+		"OpenDoorSprite"
+	) as Sprite2D
+
+	var wall_sprite := get_node_or_null(
+		"WallCoverSprite"
 	) as Sprite2D
 
 	var arrival := get_node_or_null(
@@ -206,24 +272,38 @@ func _refresh_configuration() -> void:
 		"Blocker/CollisionShape2D"
 	) as CollisionShape2D
 
-	# При первоначальной загрузке сцены setters могут
-	# вызваться раньше появления дочерних узлов.
 	if (
-		sprite == null
+		closed_sprite == null
+		or open_sprite == null
+		or wall_sprite == null
 		or arrival == null
 		or transition == null
 		or blocker == null
 	):
 		return
 
-	sprite.flip_h = false
-	sprite.flip_v = false
+	closed_sprite.flip_h = false
+	closed_sprite.flip_v = false
 
-	var collision_size := side_collision_size
+	open_sprite.flip_h = false
+	open_sprite.flip_v = false
+
+	wall_sprite.flip_h = false
+	wall_sprite.flip_v = false
+
+	var closed_texture: Texture2D = null
+	var opened_texture: Texture2D = null
+	var wall_texture: Texture2D = null
+
+	var collision_size: Vector2 = (
+		side_collision_size
+	)
 
 	match direction:
 		Direction.TOP:
-			sprite.texture = top_texture
+			closed_texture = top_texture
+			opened_texture = top_open_texture
+			wall_texture = top_wall_texture
 
 			arrival.position = Vector2(
 				0.0,
@@ -235,7 +315,9 @@ func _refresh_configuration() -> void:
 			)
 
 		Direction.RIGHT:
-			sprite.texture = right_texture
+			closed_texture = right_texture
+			opened_texture = right_open_texture
+			wall_texture = right_wall_texture
 
 			arrival.position = Vector2(
 				-arrival_offset,
@@ -245,7 +327,9 @@ func _refresh_configuration() -> void:
 			collision_size = side_collision_size
 
 		Direction.BOTTOM:
-			sprite.texture = bottom_texture
+			closed_texture = bottom_texture
+			opened_texture = bottom_open_texture
+			wall_texture = bottom_wall_texture
 
 			arrival.position = Vector2(
 				0.0,
@@ -257,7 +341,9 @@ func _refresh_configuration() -> void:
 			)
 
 		Direction.LEFT:
-			sprite.texture = left_texture
+			closed_texture = left_texture
+			opened_texture = left_open_texture
+			wall_texture = left_wall_texture
 
 			arrival.position = Vector2(
 				arrival_offset,
@@ -265,6 +351,24 @@ func _refresh_configuration() -> void:
 			)
 
 			collision_size = side_collision_size
+
+	closed_sprite.texture = closed_texture
+
+	# Пока отдельная открытая текстура не назначена,
+	# используем закрытую как временную заглушку.
+	open_sprite.texture = (
+		opened_texture
+		if opened_texture != null
+		else closed_texture
+	)
+
+	# Пока текстура стены не назначена,
+	# тоже используем временную заглушку.
+	wall_sprite.texture = (
+		wall_texture
+		if wall_texture != null
+		else closed_texture
+	)
 
 	var transition_rectangle := (
 		transition.shape as RectangleShape2D
@@ -275,10 +379,43 @@ func _refresh_configuration() -> void:
 	)
 
 	if transition_rectangle != null:
-		transition_rectangle.size = collision_size
+		transition_rectangle.size = (
+			collision_size
+		)
 
 	if blocker_rectangle != null:
-		blocker_rectangle.size = collision_size
+		blocker_rectangle.size = (
+			collision_size
+		)
+
+	# В редакторе всегда показываем закрытую дверь,
+	# чтобы было удобно выставлять позицию сокета.
+	if Engine.is_editor_hint():
+		closed_sprite.visible = true
+		open_sprite.visible = false
+		wall_sprite.visible = false
+		return
+
+	if is_node_ready():
+		_apply_visual_state()
+
+func _apply_visual_state() -> void:
+	if not is_node_ready():
+		return
+
+	visible = true
+
+	# Нет соединения — показываем стену.
+	if not connection_enabled:
+		door_sprite.visible = false
+		open_door_sprite.visible = false
+		wall_cover_sprite.visible = true
+		return
+
+	# Есть соединение.
+	wall_cover_sprite.visible = false
+	door_sprite.visible = not is_open
+	open_door_sprite.visible = is_open
 
 func connect_to(
 	other_socket: Node,
@@ -295,10 +432,10 @@ func connect_to(
 	if not is_node_ready():
 		return
 
-	visible = connection_enabled
+	visible = true
 
-	# После создания соединения дверь сначала закрыта.
-	# Room.gd откроет её при необходимости.
+	# После генерации соединённая дверь закрыта.
+	# Room.gd откроет её при очистке комнаты.
 	set_open(false)
 
 
@@ -310,7 +447,7 @@ func clear_connection() -> void:
 	if not is_node_ready():
 		return
 
-	visible = false
+	visible = true
 	set_open(false)
 
 
@@ -322,65 +459,42 @@ func get_arrival_global_position() -> Vector2:
 
 
 func set_open(open: bool) -> void:
-	if not connection_enabled:
-		is_open = false
-
-		if not is_node_ready():
-			return
-
-		door_sprite.visible = false
-
-		transition_area.set_deferred(
-			&"monitoring",
-			false
-		)
-
-		transition_area.set_deferred(
-			&"monitorable",
-			false
-		)
-
-		transition_shape.set_deferred(
-			&"disabled",
-			true
-		)
-
-		blocker_shape.set_deferred(
-			&"disabled",
-			true
-		)
-
-		return
-
-	is_open = open
+	is_open = (
+		open
+		and connection_enabled
+	)
 
 	if not is_node_ready():
 		return
 
-	# Открытая дверь:
-	# спрайт скрыт, зона перехода активна.
-	door_sprite.visible = not open
+	_apply_visual_state()
+
+	var transition_enabled: bool = (
+		connection_enabled
+		and is_open
+	)
 
 	transition_area.set_deferred(
 		&"monitoring",
-		open
+		transition_enabled
 	)
 
 	transition_area.set_deferred(
 		&"monitorable",
-		open
+		transition_enabled
 	)
 
 	transition_shape.set_deferred(
 		&"disabled",
-		not open
+		not transition_enabled
 	)
 
-	# Закрытая дверь:
-	# спрайт показан, блокиратор включён.
+	# Блокиратор включён:
+	# — у закрытой двери;
+	# — у стены без соединения.
 	blocker_shape.set_deferred(
 		&"disabled",
-		open
+		transition_enabled
 	)
 
 
