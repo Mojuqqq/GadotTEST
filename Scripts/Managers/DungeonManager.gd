@@ -628,35 +628,59 @@ func _configure_connected_door(
 
 func disable_unconnected_doors() -> void:
 	for room in room_instances:
-		var doors: Array[Area2D] = []
+		if not is_instance_valid(room):
+			continue
+
+		var room_doors: Array[Node] = []
 
 		_collect_doors(
 			room,
-			doors
+			room_doors
 		)
 
-		for door in doors:
-			if not door.has_method("set_open"):
+		for door in room_doors:
+			if not is_instance_valid(door):
 				continue
 
-			if door.target_room_node != null:
-				
+			var target_room: Variant = door.get(
+				&"target_room_node"
+			)
 
+			# Соединённую дверь не отключаем.
+			if target_room != null:
 				continue
 
-			door.set_open(false)
+			# Универсальный DoorSocket сам скрывает
+			# графику и выключает свои коллизии.
+			if door.has_method(
+				&"clear_connection"
+			):
+				door.call(
+					&"clear_connection"
+				)
+				continue
 
-			door.set_deferred(
-				"monitoring",
-				false
-			)
+			# Поддержка старой Door.gd.
+			if door.has_method(
+				&"set_open"
+			):
+				door.call(
+					&"set_open",
+					false
+				)
 
-			door.set_deferred(
-				"monitorable",
-				false
-			)
+			if door is Area2D:
+				var door_area := door as Area2D
 
-			
+				door_area.set_deferred(
+					&"monitoring",
+					false
+				)
+
+				door_area.set_deferred(
+					&"monitorable",
+					false
+				)
 
 
 # =========================================================
@@ -862,23 +886,34 @@ func _find_child_recursive(
 
 func _collect_doors(
 	node: Node,
-	result: Array[Area2D]
+	result: Array[Node]
 ) -> void:
 	for child in node.get_children():
-		if (
+		var is_old_door: bool = (
 			child is Area2D
 			and (
-				child.name == "DoorLeft"
-				or child.name == "DoorRight"
+				child.name == &"DoorLeft"
+				or child.name == &"DoorRight"
 			)
-		):
-			result.append(child)
+		)
 
-		else:
-			_collect_doors(
-				child,
-				result
-			)
+		var is_door_socket: bool = (
+			child is DoorSocket
+		)
+
+		if (
+			is_old_door
+			or is_door_socket
+		):
+			if not result.has(child):
+				result.append(child)
+
+			continue
+
+		_collect_doors(
+			child,
+			result
+		)
 
 
 # =========================================================
