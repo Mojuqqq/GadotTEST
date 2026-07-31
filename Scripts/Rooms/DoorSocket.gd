@@ -114,7 +114,7 @@ var direction: int = Direction.RIGHT:
 
 
 var is_open: bool = true
-var linked_socket: DoorSocket = null
+var linked_socket: Node = null
 var target_room_node: Node2D = null
 var connection_enabled: bool = false
 
@@ -281,7 +281,7 @@ func _refresh_configuration() -> void:
 		blocker_rectangle.size = collision_size
 
 func connect_to(
-	other_socket: DoorSocket,
+	other_socket: Node,
 	target_room: Node2D
 ) -> void:
 	linked_socket = other_socket
@@ -432,8 +432,22 @@ func _on_transition_area_body_entered(
 		)
 		return
 
+	var arrival_position: Vector2 = global_position
+
+	# Когда обе двери новые, используем ArrivalPoint
+	# связанного DoorSocket.
+	if linked_socket.has_method(
+		&"get_arrival_global_position"
+	):
+		arrival_position = linked_socket.call(
+			&"get_arrival_global_position"
+		)
+
+	# Когда связанная дверь старая, передаём позицию
+	# текущей двери. Main.gd распознает её как старый
+	# переход и использует SpawnPoint.
 	main.call(
 		&"move_player_to_room",
 		target_room_node,
-		linked_socket.get_arrival_global_position()
+		arrival_position
 	)
