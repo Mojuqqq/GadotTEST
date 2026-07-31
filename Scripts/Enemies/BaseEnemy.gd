@@ -75,6 +75,13 @@ var gold_drop_chance: float = 35.0
 @export_range(0.0, 100.0, 0.1)
 var key_drop_chance: float = 5.0
 
+@export var heart_pickup_scene: PackedScene = preload(
+	"res://Scenes/Interactables/Pickups/HeartPickup.tscn"
+)
+
+@export_range(0.0, 100.0, 0.1)
+var heart_drop_chance: float = 7.0
+
 @export var guaranteed_key_drop: bool = false
 @export var can_carry_guaranteed_key: bool = true
 
@@ -575,7 +582,21 @@ func _drop_loot() -> void:
 			"ключ"
 		)
 		return
+		
+# Если ключ не выпал, проверяем сердечко.
+	var heart_roll: float = randf_range(
+		0.0,
+		100.0
+	)
 
+	if heart_roll <= heart_drop_chance:
+		_spawn_pickup(
+			heart_pickup_scene,
+			1,
+			"сердце"
+		)
+		return
+	
 	# Если ключ не выпал, проверяем золото.
 	var gold_roll: float = randf_range(
 		0.0,

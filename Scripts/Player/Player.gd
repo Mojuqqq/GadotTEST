@@ -288,6 +288,43 @@ func _play_heal_animation() -> void:
 	animated_sprite.stop()
 	animated_sprite.play(&"heal")
 
+func receive_healing(
+	amount: int
+) -> int:
+	if amount <= 0:
+		return 0
+
+	if is_dead:
+		return 0
+
+	var hp_before: int = (
+		GameManager.player_hp
+	)
+
+	if hp_before >= GameManager.player_max_hp:
+		return 0
+
+	GameManager.heal(
+		amount
+	)
+
+	var healed_amount: int = maxi(
+		GameManager.player_hp - hp_before,
+		0
+	)
+
+	if healed_amount <= 0:
+		return 0
+
+	_play_heal_animation()
+
+	_spawn_health_feedback(
+		healed_amount,
+		true
+	)
+
+	return healed_amount
+
 func get_current_speed() -> float:
 	return current_speed
 
