@@ -287,9 +287,7 @@ func connect_to(
 	linked_socket = other_socket
 	target_room_node = target_room
 
-	connectionother_socket: DoorSocket,
-	target_room: Node2D
-) -> void_enabled = (
+	connection_enabled = (
 		is_instance_valid(linked_socket)
 		and is_instance_valid(target_room_node)
 	)
@@ -300,7 +298,7 @@ func connect_to(
 	visible = connection_enabled
 
 	# После создания соединения дверь сначала закрыта.
-	# Room.gd сам откроет её при входе в очищенную комнату.
+	# Room.gd откроет её при необходимости.
 	set_open(false)
 
 
@@ -322,8 +320,9 @@ func get_arrival_global_position() -> Vector2:
 
 	return global_position
 
+
 func set_open(open: bool) -> void:
-		if not connection_enabled:
+	if not connection_enabled:
 		is_open = false
 
 		if not is_node_ready():
@@ -352,6 +351,7 @@ func set_open(open: bool) -> void:
 		)
 
 		return
+
 	is_open = open
 
 	if not is_node_ready():
@@ -377,7 +377,7 @@ func set_open(open: bool) -> void:
 	)
 
 	# Закрытая дверь:
-	# спрайт показан, физический блокиратор включён.
+	# спрайт показан, блокиратор включён.
 	blocker_shape.set_deferred(
 		&"disabled",
 		open
