@@ -1,0 +1,65 @@
+[gd_scene format=4 uid="uid://brl45hnxy74g5"]
+
+[ext_resource type="Script" uid="uid://eqd8pyeats75" path="res://Scripts/Rooms/Room.gd" id="1_uesx0"]
+[ext_resource type="TileSet" uid="uid://dno7e7rye4vth" path="res://Assets/Tilesets/earth_tileset.tres" id="2_etql3"]
+[ext_resource type="TileSet" uid="uid://bfntpbasvpw8j" path="res://Assets/Tilesets/bg_tileset.tres" id="3_sm72y"]
+[ext_resource type="PackedScene" uid="uid://b5out7n8cdnue" path="res://Scenes/Rooms/Doors/DoorSocket.tscn" id="4_uesx0"]
+
+[node name="RoomSocketTest" type="Node2D" unique_id=148011054]
+script = ExtResource("1_uesx0")
+
+[node name="Earth" type="TileMapLayer" parent="." unique_id=655438323]
+use_parent_material = true
+position = Vector2(640, 512)
+tile_map_data = PackedByteArray("AAD9//7/AQAGAAAAAAD9////AQADAAAAAAD9/wAAAQAFAAAAAAD9/wEAAQACAAAAAAD+//7/AQADAAAAAAD+////AQACAAAAAAD+/wAAAQADAAAAAAD+/wEAAQAGAAAAAAD///7/AQAEAAAAAAD/////AQACAAAAAAD//wAAAQACAAAAAAD//wEAAQADAAAAAAAAAP7/AQADAAAAAAAAAP//AQAFAAAAAAAAAAAAAQAEAAAAAAAAAAEAAQAEAAAAAAABAP7/AQAGAAAAAAABAP//AQADAAAAAAABAAAAAQAGAAAAAAABAAEAAQACAAAAAAACAP7/AQAFAAAAAAACAP//AQACAAAAAAACAAAAAQAGAAAAAAACAAEAAQAEAAAAAAD8//3/AQADAAAAAAD8//7/AQAGAAAAAAADAAEAAQADAAAAAAADAAIAAQAGAAAAAAACAAIAAQAEAAAAAAACAAMAAQACAAAAAAABAAMAAQAEAAAAAAAAAAMAAQACAAAAAAD//wMAAQAEAAAAAAD+/wMAAQAEAAAAAAD9/wMAAQAFAAAAAAD8/wMAAQAEAAAAAAD8/wIAAQADAAAAAAD8/wEAAQAEAAAAAAD8/wAAAQACAAAAAAD8////AQADAAAAAAADAP//AQAGAAAAAAADAP7/AQAGAAAAAAAEAP7/AQACAAAAAAD7/wMAAQAGAAAAAAD7/wIAAQADAAAAAAAEAAMAAQAEAAAAAAAEAAIAAQAFAAAAAAABAAIAAQAGAAAAAAAAAAIAAQADAAAAAAADAAMAAQADAAAAAAAEAAAAAQAFAAAAAAADAAAAAQAFAAAAAAAEAAEAAQADAAAAAAAEAP//AQAGAAAAAAD//wIAAQAGAAAAAAD+/wIAAQAFAAAAAAD9/wIAAQAEAAAAAAD7/wAAAQAGAAAAAAD7////AQAGAAAAAAD7//7/AQAEAAAAAAD7/wEAAQAFAAAAAAD7//3/AQAFAAAAAAD9//3/AQADAAAAAAD+//3/AQAEAAAAAAD///3/AQAGAAAAAAAAAP3/AQAGAAAAAAABAP3/AQAGAAAAAAACAP3/AQAFAAAAAAADAP3/AQAGAAAAAAAEAP3/AQACAAAAAAD7//z/AQACAAAAAAD8//z/AQAEAAAAAAD9//z/AQADAAAAAAD+//z/AQACAAAAAAD///z/AQAFAAAAAAAAAPz/AQAEAAAAAAABAPz/AQAEAAAAAAACAPz/AQAGAAAAAAADAPz/AQAEAAAAAAAEAPz/AQAEAAAAAAA=")
+tile_set = ExtResource("2_etql3")
+rendering_quadrant_size = 128
+
+[node name="Grass" type="TileMapLayer" parent="." unique_id=1863610134]
+use_parent_material = true
+position = Vector2(546, 333)
+tile_set = ExtResource("3_sm72y")
+rendering_quadrant_size = 128
+
+[node name="Plants" type="TileMapLayer" parent="." unique_id=163387796]
+use_parent_material = true
+position = Vector2(546, 333)
+tile_set = ExtResource("3_sm72y")
+rendering_quadrant_size = 128
+
+[node name="Walls" type="TileMapLayer" parent="." unique_id=822809161]
+use_parent_material = true
+position = Vector2(1092, 666)
+tile_map_data = PackedByteArray("AAC+/9n/AAACAAIAAAAIANn/AAAaAAIAAADK/9n/AAAHAAkAAAD8/9n/AAAHAAkAAADz/9n/AAAjAAkAAAAKANn/AAAjAAkAAAAFANn/AAAjAAkAAAC9/97/AAAEABIAAAC9/+X/AAAEABIAAAC9/+z/AAAEABIAAAC9/wEAAAAEABIAAAC9/wgAAAAEABIAAAC9/w8AAAAEABIAAADG/xMAAAAHAAkAAAD8/xMAAAAHAAkAAAABABMAAAAHAAkAAAAKAN3/AAAEABIAAAAKAOT/AAAEABIAAAAKAOv/AAAEABIAAADP/9n/AAAjAAkAAADB/9n/AAAjAAkAAAC9/9n/AAAjAAkAAAC9//f/BgADAAAAAAAKAAEAAAAEABIAAAAKAAgAAAAEABIAAAAKAA8AAAAEABIAAADQ/xMAAAACAAIAAADU/xMAAAAaAAIAAADX/xMAAAACAAIAAADb/xMAAAAaAAIAAADe/xMAAAACAAIAAADp/xMAAAACAAIAAADt/xMAAAAaAAIAAADx/xMAAAAaAAIAAADx/9n/AAAaAAIAAADt/9n/AAACAAIAAADp/9n/AAACAAIAAADV/9n/AAACAAIAAADZ/9n/AAAaAAIAAADc/9n/AAACAAIAAAA=")
+tile_set = ExtResource("3_sm72y")
+rendering_quadrant_size = 128
+
+[node name="Decor" type="TileMapLayer" parent="." unique_id=342617787]
+use_parent_material = true
+position = Vector2(546, 333)
+tile_set = ExtResource("3_sm72y")
+rendering_quadrant_size = 128
+
+[node name="DoorTop" parent="." unique_id=760714407 instance=ExtResource("4_uesx0")]
+position = Vector2(616, 49)
+direction = 0
+
+[node name="DoorRight" parent="." unique_id=820739027 instance=ExtResource("4_uesx0")]
+position = Vector2(1249, 512)
+direction = 1
+
+[node name="DoorBottom" parent="." unique_id=1954041546 instance=ExtResource("4_uesx0")]
+position = Vector2(648, 976)
+
+[node name="DoorLeft" parent="." unique_id=584235124 instance=ExtResource("4_uesx0")]
+position = Vector2(28, 528)
+direction = 3
+
+[node name="SpawnPoint" type="Marker2D" parent="." unique_id=1794341211]
+position = Vector2(131, 509)
+
+[node name="ReturnSpawnPoint" type="Marker2D" parent="." unique_id=2143240022]
+position = Vector2(1206, 522)
+
+[node name="ChestSpawnPoint" type="Marker2D" parent="." unique_id=1002416639]
+position = Vector2(938, 313)
