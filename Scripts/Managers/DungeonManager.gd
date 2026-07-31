@@ -497,56 +497,130 @@ func connect_rooms() -> void:
 	for index in range(
 		room_instances.size() - 1
 	):
-		var left_room := room_instances[index]
-
-		var right_room := room_instances[
-			index + 1
-		]
-
-		var left_door := _find_child_recursive(
-			left_room,
-			"DoorRight"
+		var current_room: Node2D = (
+			room_instances[index]
 		)
 
-		var right_door := _find_child_recursive(
-			right_room,
-			"DoorLeft"
+		var next_room: Node2D = (
+			room_instances[index + 1]
 		)
 
-		if left_door == null:
+		var current_door: Node = _get_room_door(
+			current_room,
+			DoorSocket.Direction.RIGHT,
+			&"DoorRight"
+		)
+
+		var next_door: Node = _get_room_door(
+			next_room,
+			DoorSocket.Direction.LEFT,
+			&"DoorLeft"
+		)
+
+		if current_door == null:
 			push_warning(
-				"Не найдена DoorRight в комнате "
-				+ left_room.name
+				"В комнате "
+				+ current_room.name
+				+ " не найдена правая дверь."
 			)
 			continue
 
-		if right_door == null:
+		if next_door == null:
 			push_warning(
-				"Не найдена DoorLeft в комнате "
-				+ right_room.name
+				"В комнате "
+				+ next_room.name
+				+ " не найдена левая дверь."
 			)
 			continue
 
-		if not left_door.has_method("set_open"):
-			push_warning(
-				"У DoorRight отсутствует Door.gd: "
-				+ left_room.name
-			)
-			continue
+		_connect_door_pair(
+			current_door,
+			next_door,
+			current_room,
+			next_room
+		)
 
-		if not right_door.has_method("set_open"):
-			push_warning(
-				"У DoorLeft отсутствует Door.gd: "
-				+ right_room.name
-			)
-			continue
+func _get_room_door(
+	room: Node2D,
+	direction: int,
+	legacy_name: StringName
+) -> Node:
+	if room == null:
+		return null
 
-		left_door.linked_door = right_door
-		right_door.linked_door = left_door
+	# Сначала ищем универсальный DoorSocket.
+	if room.has_method(
+		&"get_door_socket"
+	):
+		var socket: Variant = room.call(
+			&"get_door_socket",
+			direction
+		)
 
-		left_door.target_room_node = right_room
-		right_door.target_room_node = left_room
+		if socket is DoorSocket:
+			return socket as DoorSocket
 
+	# Пока комната не переведена на новую систему,
+	# используем старую дверь.
+	return _find_child_recursive(
+		room,
+		String(legacy_name)
+	)
+
+func _connect_door_pair(
+	current_door: Node,
+	next_door: Node,
+	current_room: Node2D,
+	next_room: Node2D
+) -> void:
+	_configure_connected_door(
+		current_door,
+		next_door,
+		next_room
+	)
+
+	_configure_connected_door(
+		next_door,
+		current_door,
+		current_room
+	)
+
+func _configure_connected_door(
+	door: Node,
+	linked_door: Node,
+	target_room: Node2D
+) -> void:
+	if not is_instance_valid(door):
+		return
+
+	if not is_instance_valid(target_room):
+		return
+
+	# Новая универсальная дверь.
+	if door.has_method(
+		&"connect_to"
+	):
+		door.call(
+			&"connect_to",
+			linked_door,
+			target_room
+		)
+		return
+
+	# Старая Door.gd.
+	door.set(
+		&"target_room_node",
+		target_room
+	)
+
+	# Старое поле принимает только Area2D.
+	# DoorSocket является Node2D, поэтому при
+	# смешанном соединении это поле не заполняем.
+	if linked_door is Area2D:
+		door.set(
+			&"linked_door",
+			linked_door
+		)
 
 # =========================================================
 # ОТКЛЮЧЕНИЕ ДВЕРЕЙ БЕЗ СОЕДИНЕНИЙ
