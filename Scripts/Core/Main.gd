@@ -114,7 +114,7 @@ func _select_random_boss_scene() -> PackedScene:
 # Вызывается из Door.gd
 func move_player_to_room(
 	target_room_node: Node2D,
-	_door_position: Vector2
+	arrival_position: Vector2
 ) -> void:
 	if GameManager.is_transitioning:
 		return
@@ -122,65 +122,100 @@ func move_player_to_room(
 	GameManager.is_transitioning = true
 
 	# Запоминаем комнату, из которой выходим.
-	var previous_index := GameManager.current_room_index
+	var previous_index: int = (
+		GameManager.current_room_index
+	)
 
-	var target_index := GameManager.move_player_to_room(
-		target_room_node,
-		_door_position
+	var target_index: int = (
+		GameManager.move_player_to_room(
+			target_room_node,
+			arrival_position
+		)
 	)
 
 	if target_index == -1:
 		GameManager.is_transitioning = false
 		return
 
-	# Если индекс уменьшился — игрок возвращается назад.
-	var is_returning := target_index < previous_index
+	# Нужен для обратной совместимости
+	# со старыми дверями.
+	var is_returning: bool = (
+		target_index < previous_index
+	)
 
-	var room := GameManager.get_current_room()
+	var room: Node2D = (
+		GameManager.get_current_room()
+	)
 
 	if room != null:
-		var spawn_name := (
-			"ReturnSpawnPoint"
-			if is_returning
-			else "SpawnPoint"
+		var room_size := Vector2(
+			float(room_width),
+			float(room_height)
 		)
 
-		var spawn := room.get_node_or_null(
-			NodePath(spawn_name)
-		) as Node2D
+		var room_rect := Rect2(
+			room.global_position,
+			room_size
+		)
 
-		# Если ReturnSpawnPoint забыли добавить,
-		# временно используем обычный SpawnPoint.
-		if spawn == null:
-			push_warning(
-				"В комнате "
-				+ room.name
-				+ " отсутствует "
-				+ spawn_name
+		# Универсальная дверь передаёт ArrivalPoint,
+		# находящийся внутри целевой комнаты.
+		var has_door_arrival: bool = (
+			room_rect.has_point(
+				arrival_position
 			)
+		)
 
-			spawn = room.get_node_or_null(
-				"SpawnPoint"
-			) as Node2D
-
-		if spawn != null:
+		if has_door_arrival:
 			player.global_position = (
-				spawn.global_position
+				arrival_position
 			)
 		else:
-			# Последняя страховка — центр комнаты.
-			player.global_position = (
-				room.global_position
-				+ Vector2(
-					room_width / 2.0,
-					room_height / 2.0
-				)
+			# Старые Door.gd перед:
+			# Старые Door.gd передают позицию двери
+			# из предыдущей комнаты.
+			# Для них пока оставляем старую систему.
+			var spawn_name: String = (
+				"ReturnSpawnPoint"
+				if is_returning
+				else "SpawnPoint"
 			)
+
+			var spawn := room.get_node_or_null(
+				NodePath(spawn_name)
+			) as Node2D
+
+			if spawn == null:
+				push_warning(
+					"В комнате "
+					+ room.name
+					+ " отсутствует "
+					+ spawn_name
+				)
+
+				spawn = room.get_node_or_null(
+					"SpawnPoint"
+				) as Node2D
+
+			if spawn != null:
+				player.global_position = (
+					spawn.global_position
+				)
+			else:
+				# Последняя страховка —
+				# центр комнаты.
+				player.global_position = (
+					room.global_position
+					+ Vector2(
+						room_width / 2.0,
+						room_height / 2.0
+					)
+				)
 
 		player.velocity = Vector2.ZERO
 
-		# Переносим петуха и цыплёнка
-		# уже к новой позиции игрока.
+		# Переносим компаньонов уже к новой
+		# позиции игрока.
 		player.call_deferred(
 			"teleport_companions_to_player"
 		)
@@ -193,8 +228,9 @@ func move_player_to_room(
 			)
 		)
 
-
-	await get_tree().create_timer(0.3).timeout
+	await get_tree().create_timer(
+		0.3
+	).timeout
 
 	GameManager.is_transitioning = false
 
