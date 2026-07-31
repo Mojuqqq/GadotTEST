@@ -32,7 +32,8 @@ var enemies: Array = []
 var is_cleared: bool = false
 var is_active: bool = false
 
-func _ready():
+func _ready() -> void:
+	doors.clear()
 	find_doors_recursive(self)
 	_apply_right_connection_state()
 	update_enemies_list()  
@@ -132,12 +133,49 @@ func set_active(active: bool) -> void:
 			)
 
 
-func find_doors_recursive(node: Node):
+func find_doors_recursive(
+	node: Node
+) -> void:
 	for child in node.get_children():
-		if child is Area2D and (child.name == "DoorLeft" or child.name == "DoorRight"):
-			doors.append(child)
-		else:
-			find_doors_recursive(child)
+		var is_old_door: bool = (
+			child is Area2D
+			and (
+				child.name == &"DoorLeft"
+				or child.name == &"DoorRight"
+			)
+		)
+
+		var is_door_socket: bool = (
+			child is DoorSocket
+		)
+
+		if (
+			is_old_door
+			or is_door_socket
+		):
+			if not doors.has(child):
+				doors.append(child)
+
+			continue
+
+		find_doors_recursive(child)
+
+func get_door_socket(
+	direction: int
+) -> DoorSocket:
+	for door in doors:
+		if not is_instance_valid(door):
+			continue
+
+		if not door is DoorSocket:
+			continue
+
+		var socket := door as DoorSocket
+
+		if socket.direction == direction:
+			return socket
+
+	return null
 
 func update_enemies_list():
 	enemies.clear()
