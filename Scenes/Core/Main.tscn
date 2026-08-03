@@ -1,9 +1,7 @@
 [gd_scene format=3 uid="uid://dly3t3uvgx1as"]
 
 [ext_resource type="PackedScene" uid="uid://d0eu2fyd2sbyv" path="res://Scenes/Player/Player.tscn" id="1_idj7w"]
-[ext_resource type="PackedScene" uid="uid://b7rx7hf5nbu21" path="res://Scenes/Rooms/Room_Right.tscn" id="1_pbw6q"]
 [ext_resource type="Script" uid="uid://30tiqpvilvbe" path="res://Scripts/Core/Main.gd" id="1_vy5pj"]
-[ext_resource type="PackedScene" uid="uid://h665heaerces" path="res://Scenes/Rooms/Room_Left.tscn" id="2_v1gob"]
 [ext_resource type="PackedScene" uid="uid://brl45hnxy74g5" path="res://Scenes/Rooms/Room_Socket_Test.tscn" id="4_e8w2b"]
 [ext_resource type="PackedScene" uid="uid://nqq6as3gyh7a" path="res://Scenes/Enemies/Enemy_chicken.tscn" id="4_rgh2o"]
 [ext_resource type="PackedScene" uid="uid://bfltle5inqqhr" path="res://Scenes/Enemies/Enemy_cow.tscn" id="8_bmxlf"]
@@ -21,8 +19,8 @@
 
 [node name="Main" type="Node2D" unique_id=248219871]
 script = ExtResource("1_vy5pj")
-start_room_scene = ExtResource("1_pbw6q")
-end_room_scene = ExtResource("2_v1gob")
+start_room_scene = ExtResource("4_e8w2b")
+end_room_scene = ExtResource("4_e8w2b")
 room_pool = Array[PackedScene]([ExtResource("4_e8w2b")])
 enemy_pool = Array[PackedScene]([ExtResource("10_frkhe"), ExtResource("4_rgh2o"), ExtResource("11_1p5hy"), ExtResource("8_bmxlf"), ExtResource("9_grg3l"), ExtResource("12_h1m7h")])
 max_rooms = 2

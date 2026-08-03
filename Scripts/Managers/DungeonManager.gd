@@ -167,7 +167,6 @@ func _can_use_route_cell(
 
 		if occupied_cell == previous_cell:
 			continue
-
 		var grid_distance: int = (
 			abs(candidate.x - occupied_cell.x)
 			+ abs(candidate.y - occupied_cell.y)
