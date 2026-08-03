@@ -12,8 +12,8 @@ radius = 6.707315
 [node name="Enemy_chicken" type="CharacterBody2D" unique_id=240231144]
 collision_layer = 4
 script = ExtResource("1_vfuto")
-speed = 150.0
-damage = 2
+speed = 130.0
+attack_cooldown = 1.2
 hp = 1
 
 [node name="Sprite2D" type="Sprite2D" parent="." unique_id=1048545208]

@@ -10,6 +10,7 @@ height = 120.0
 [node name="Enemy_cow" type="CharacterBody2D" unique_id=1582234891]
 collision_layer = 4
 script = ExtResource("1_gu25w")
+hp = 5
 
 [node name="Sprite2D" type="Sprite2D" parent="." unique_id=1470356182]
 texture = ExtResource("2_a7icg")

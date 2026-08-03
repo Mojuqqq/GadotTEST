@@ -14,6 +14,7 @@ height = 13.821135
 [node name="Enemy_carrot" type="CharacterBody2D" unique_id=240231144]
 collision_layer = 4
 script = ExtResource("1_imdvy")
+attack_cooldown = 4.0
 
 [node name="Sprite2D" type="Sprite2D" parent="." unique_id=1048545208]
 scale = Vector2(0.6506024, 0.65060246)

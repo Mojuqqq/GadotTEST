@@ -1056,7 +1056,7 @@ func update_enemy_count() -> void:
 
 func spawn_enemies_for_room(
 	room: Node2D,
-	_index: int
+	room_index: int
 ) -> void:
 	var count := 0
 
@@ -1067,7 +1067,13 @@ func spawn_enemies_for_room(
 		count = enemies_in_end_room
 
 	else:
-		count = randi_range(
+		var progression_bonus: int = floori(
+			float(room_index) / 2.0
+		)
+
+		count = clampi(
+			min_enemies_per_room
+			+ progression_bonus,
 			min_enemies_per_room,
 			max_enemies_per_room
 		)

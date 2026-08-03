@@ -36,12 +36,12 @@ func _ready() -> void:
 	if GameManager.player_stats == null:
 		var stats := PlayerStats.new()
 
-		stats.max_hp = 5
+		stats.max_hp = 6
 		stats.damage = 1
 		stats.speed = 300.0
-		stats.fire_rate = 0.8
+		stats.fire_rate = 0.65
 		stats.egg_speed = 700.0
-		stats.attack_range = 300.0
+		stats.attack_range = 320.0
 
 		GameManager.set_player_stats(stats)
 	else:

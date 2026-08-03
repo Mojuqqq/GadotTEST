@@ -23,7 +23,8 @@ start_room_scene = ExtResource("4_e8w2b")
 end_room_scene = ExtResource("4_e8w2b")
 room_pool = Array[PackedScene]([ExtResource("4_e8w2b")])
 enemy_pool = Array[PackedScene]([ExtResource("10_frkhe"), ExtResource("4_rgh2o"), ExtResource("11_1p5hy"), ExtResource("8_bmxlf"), ExtResource("9_grg3l"), ExtResource("12_h1m7h")])
-max_rooms = 2
+min_rooms = 4
+max_rooms = 5
 boss_pool = Array[PackedScene]([ExtResource("13_n62cl"), ExtResource("13_lijq2")])
 boss_scene = ExtResource("13_lijq2")
 

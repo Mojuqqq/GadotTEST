@@ -5,7 +5,7 @@ signal player_hp_changed(hp: int, max_hp: int)
 signal stats_changed(stats)
 
 
-const DEFAULT_MAX_HP := 5
+const DEFAULT_MAX_HP := 6
 
 
 var player: Node2D = null

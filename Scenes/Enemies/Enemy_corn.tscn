@@ -16,7 +16,9 @@ height = 15.44715
 collision_layer = 4
 script = ExtResource("1_7qd05")
 speed = 100.0
+burst_cooldown = 2.5
 bullet_scene = ExtResource("2_ihed5")
+bullet_speed = 330.0
 
 [node name="Sprite2D" type="Sprite2D" parent="." unique_id=1048545208]
 scale = Vector2(0.6506024, 0.65060246)

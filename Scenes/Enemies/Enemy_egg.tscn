@@ -11,7 +11,10 @@ height = 58.0
 collision_layer = 4
 script = ExtResource("1_mylxb")
 speed = 100.0
-damage = 1
+damage = 2
+explosion_radius = 100.0
+explosion_delay = 0.65
+hp = 2
 
 [node name="Sprite2D" type="Sprite2D" parent="." unique_id=1048545208]
 scale = Vector2(0.6506024, 0.65060246)
