@@ -505,23 +505,56 @@ func connect_rooms() -> void:
 			room_instances[index + 1]
 		)
 
+		if not is_instance_valid(current_room):
+			continue
+
+		if not is_instance_valid(next_room):
+			continue
+
+		var current_direction: int = (
+			_get_direction_between_rooms(
+				current_room,
+				next_room
+			)
+		)
+
+		if current_direction == -1:
+			push_warning(
+				"Не удалось определить направление между "
+				+ current_room.name
+				+ " и "
+				+ next_room.name
+			)
+			continue
+
+		var next_direction: int = (
+			_get_opposite_direction(
+				current_direction
+			)
+		)
+
 		var current_door: Node = _get_room_door(
 			current_room,
-			DoorSocket.Direction.RIGHT,
-			&"DoorRight"
+			current_direction,
+			_get_legacy_door_name(
+				current_direction
+			)
 		)
 
 		var next_door: Node = _get_room_door(
 			next_room,
-			DoorSocket.Direction.LEFT,
-			&"DoorLeft"
+			next_direction,
+			_get_legacy_door_name(
+				next_direction
+			)
 		)
 
 		if current_door == null:
 			push_warning(
 				"В комнате "
 				+ current_room.name
-				+ " не найдена правая дверь."
+				+ " не найдена дверь направления "
+				+ str(current_direction)
 			)
 			continue
 
@@ -529,7 +562,8 @@ func connect_rooms() -> void:
 			push_warning(
 				"В комнате "
 				+ next_room.name
-				+ " не найдена левая дверь."
+				+ " не найдена дверь направления "
+				+ str(next_direction)
 			)
 			continue
 
@@ -539,6 +573,62 @@ func connect_rooms() -> void:
 			current_room,
 			next_room
 		)
+
+func _get_direction_between_rooms(
+	from_room: Node2D,
+	to_room: Node2D
+) -> int:
+	var delta: Vector2 = (
+		to_room.global_position
+		- from_room.global_position
+	)
+
+	if (
+		is_zero_approx(delta.x)
+		and is_zero_approx(delta.y)
+	):
+		return -1
+
+	if abs(delta.x) >= abs(delta.y):
+		if delta.x > 0.0:
+			return DoorSocket.Direction.RIGHT
+
+		return DoorSocket.Direction.LEFT
+
+	if delta.y > 0.0:
+		return DoorSocket.Direction.BOTTOM
+
+	return DoorSocket.Direction.TOP
+
+func _get_opposite_direction(
+	direction: int
+) -> int:
+	match direction:
+		DoorSocket.Direction.TOP:
+			return DoorSocket.Direction.BOTTOM
+
+		DoorSocket.Direction.RIGHT:
+			return DoorSocket.Direction.LEFT
+
+		DoorSocket.Direction.BOTTOM:
+			return DoorSocket.Direction.TOP
+
+		DoorSocket.Direction.LEFT:
+			return DoorSocket.Direction.RIGHT
+
+	return -1
+
+func _get_legacy_door_name(
+	direction: int
+) -> StringName:
+	match direction:
+		DoorSocket.Direction.RIGHT:
+			return &"DoorRight"
+
+		DoorSocket.Direction.LEFT:
+			return &"DoorLeft"
+
+	return &""
 
 func _get_room_door(
 	room: Node2D,
@@ -559,6 +649,11 @@ func _get_room_door(
 
 		if socket is DoorSocket:
 			return socket as DoorSocket
+
+	# У старой системы нет верхней
+	# и нижней двери.
+	if legacy_name == &"":
+		return null
 
 	# Пока комната не переведена на новую систему,
 	# используем старую дверь.
