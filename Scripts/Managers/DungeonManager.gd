@@ -55,6 +55,157 @@ var enemies_in_end_room: int = 4
 # ГЕНЕРАЦИЯ КОМНАТ
 # =========================================================
 
+func _generate_route_cells(
+	intermediate_count: int
+) -> Array[Vector2i]:
+	var total_room_count: int = (
+		intermediate_count + 2
+	)
+
+	var max_attempts: int = 100
+
+	for _attempt in range(max_attempts):
+		var route: Array[Vector2i] = [
+			Vector2i.ZERO
+		]
+
+		var occupied_cells: Dictionary = {
+			Vector2i.ZERO: true
+		}
+
+		var generation_failed: bool = false
+
+		for room_index in range(
+			1,
+			total_room_count
+		):
+			var directions: Array[Vector2i] = []
+
+			# Стартовая и конечная комнаты пока
+			# используют старые горизонтальные двери.
+			if (
+				room_index == 1
+				or room_index == total_room_count - 1
+			):
+				directions.append(
+					Vector2i.RIGHT
+				)
+			else:
+				directions = [
+					Vector2i.RIGHT,
+					Vector2i.DOWN,
+					Vector2i.UP,
+					Vector2i.LEFT
+				]
+
+				directions.shuffle()
+
+			var previous_cell: Vector2i = (
+				route[route.size() - 1]
+			)
+
+			var cell_found: bool = false
+
+			for direction_step in directions:
+				var candidate: Vector2i = (
+					previous_cell
+					+ direction_step
+				)
+
+				if not _can_use_route_cell(
+					candidate,
+					previous_cell,
+					occupied_cells
+				):
+					continue
+
+				route.append(candidate)
+				occupied_cells[candidate] = true
+				cell_found = true
+				break
+
+			if not cell_found:
+				generation_failed = true
+				break
+
+		if not generation_failed:
+			return route
+
+	push_warning(
+		"Не удалось построить маршрут с поворотами. "
+		+ "Используется горизонтальный маршрут."
+	)
+
+	return _create_horizontal_route(
+		total_room_count
+	)
+
+
+func _can_use_route_cell(
+	candidate: Vector2i,
+	previous_cell: Vector2i,
+	occupied_cells: Dictionary
+) -> bool:
+	if occupied_cells.has(candidate):
+		return false
+
+	# Не даём комнате соприкасаться с другой
+	# комнатой, если они не являются соседями
+	# по маршруту.
+	for occupied_key in occupied_cells.keys():
+		var occupied_cell: Vector2i = (
+			occupied_key
+		)
+
+		if occupied_cell == previous_cell:
+			continue
+
+	for occupied_key in occupied_cells.keys():
+		var occupied_cell: Vector2i = (
+			occupied_key as Vector2i
+		)
+
+		if occupied_cell == previous_cell:
+			continue
+
+		var grid_distance: int = (
+			abs(candidate.x - occupied_cell.x)
+			+ abs(candidate.y - occupied_cell.y)
+		)
+
+		if grid_distance <= 1:
+			return false
+
+	return true
+
+
+func _create_horizontal_route(
+	total_room_count: int
+) -> Array[Vector2i]:
+	var route: Array[Vector2i] = []
+
+	for index in range(total_room_count):
+		route.append(
+			Vector2i(index, 0)
+		)
+
+	return route
+
+
+func _route_cell_to_position(
+	cell: Vector2i
+) -> Vector2:
+	return Vector2(
+		float(
+			cell.x
+			* (room_width + room_spacing)
+		),
+		float(
+			cell.y
+			* (room_height + room_spacing)
+		)
+	)
+
 func generate_dungeon(root_node: Node) -> void:
 	_clear_existing_rooms()
 
@@ -117,6 +268,12 @@ func generate_dungeon(root_node: Node) -> void:
 		0
 	)
 
+	var route_cells: Array[Vector2i] = (
+		_generate_route_cells(
+			intermediate_count
+		)
+	)
+
 	var previous_room: Node2D = start_room
 
 	for index in range(intermediate_count):
@@ -124,11 +281,13 @@ func generate_dungeon(root_node: Node) -> void:
 			room_pool.pick_random()
 		)
 
+		var route_cell: Vector2i = (
+			route_cells[index + 1]
+		)
+
 		var room_position: Vector2 = (
-			previous_room.global_position
-			+ Vector2(
-				room_width + room_spacing,
-				0
+			_route_cell_to_position(
+				route_cell
 			)
 		)
 
@@ -158,7 +317,6 @@ func generate_dungeon(root_node: Node) -> void:
 			continue
 
 		room_instances.append(room)
-		previous_room = room
 
 		if generated_room_type == Room.RoomType.TREASURE:
 			room.call_deferred("spawn_chest")
@@ -176,11 +334,15 @@ func generate_dungeon(root_node: Node) -> void:
 				index + 1
 			)
 
+	var end_cell: Vector2i = (
+		route_cells[
+			route_cells.size() - 1
+		]
+	)
+
 	var end_position: Vector2 = (
-		previous_room.global_position
-		+ Vector2(
-			room_width + room_spacing,
-			0
+		_route_cell_to_position(
+			end_cell
 		)
 	)
 
