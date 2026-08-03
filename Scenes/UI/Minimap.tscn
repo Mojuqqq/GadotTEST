@@ -1,0 +1,11 @@
+[gd_scene format=3 uid="uid://tfkawr128kmx"]
+
+[ext_resource type="Script" uid="uid://clxhfs67gay64" path="res://Scripts/UI/Minimap.gd" id="1_lhiow"]
+
+[node name="Minimap" type="Control" unique_id=104864828]
+custom_minimum_size = Vector2(320, 220)
+layout_mode = 3
+anchors_preset = 0
+offset_right = 320.0
+offset_bottom = 220.0
+script = ExtResource("1_lhiow")
