@@ -9,3 +9,5 @@ anchors_preset = 0
 offset_right = 320.0
 offset_bottom = 220.0
 script = ExtResource("1_lhiow")
+background_color = Color(0.019607844, 0.015686275, 0.011764706, 0.6627451)
+background_border_color = Color(0.1254902, 0.09019608, 0.05490196, 1)

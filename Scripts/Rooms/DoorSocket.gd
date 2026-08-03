@@ -2,6 +2,10 @@
 extends Node2D
 class_name DoorSocket
 
+signal state_changed(
+	socket: DoorSocket,
+	is_open: bool
+)
 
 signal player_entered(
 	socket: DoorSocket,
@@ -458,7 +462,7 @@ func get_arrival_global_position() -> Vector2:
 	return global_position
 
 
-func set_open(open: bool) -> void:
+func _set_open_local(open: bool) -> void:
 	is_open = (
 		open
 		and connection_enabled
@@ -496,7 +500,26 @@ func set_open(open: bool) -> void:
 		&"disabled",
 		transition_enabled
 	)
+	
+	state_changed.emit(
+		self,
+		is_open
+	)
 
+func set_open(open: bool) -> void:
+	_set_open_local(open)
+
+	var other_socket := (
+		linked_socket as DoorSocket
+	)
+
+	if other_socket == null:
+		return
+
+	if not is_instance_valid(other_socket):
+		return
+
+	other_socket._set_open_local(open)
 
 func _on_transition_area_body_entered(
 	body: Node2D

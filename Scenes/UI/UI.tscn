@@ -13,6 +13,7 @@ offset_right = 625.0
 offset_bottom = 24.0
 
 [node name="EnemyCounter" type="Label" parent="." unique_id=1756227765]
+visible = false
 offset_left = 1057.0
 offset_top = 77.0
 offset_right = 1244.0
@@ -20,9 +21,9 @@ offset_bottom = 100.0
 
 [node name="StatsContainer" type="VBoxContainer" parent="." unique_id=100306803]
 offset_left = 16.0
-offset_top = 24.0
+offset_top = 160.0
 offset_right = 200.0
-offset_bottom = 186.0
+offset_bottom = 322.0
 
 [node name="DamageLabel" type="Label" parent="StatsContainer" unique_id=1357309642]
 layout_mode = 2
@@ -40,14 +41,9 @@ layout_mode = 2
 layout_mode = 2
 
 [node name="Minimap" parent="." unique_id=104864828 instance=ExtResource("2_636u5")]
-anchors_preset = 3
+anchors_preset = 1
 anchor_left = 1.0
-anchor_top = 1.0
 anchor_right = 1.0
-anchor_bottom = 1.0
 offset_left = -320.0
-offset_top = -220.0
 offset_right = 0.0
-offset_bottom = 0.0
 grow_horizontal = 0
-grow_vertical = 0
