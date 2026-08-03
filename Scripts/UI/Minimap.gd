@@ -124,6 +124,13 @@ var current_room_index: int = -1
 func _ready() -> void:
 	mouse_filter = Control.MOUSE_FILTER_IGNORE
 
+	if not resized.is_connected(
+		queue_redraw
+	):
+		resized.connect(
+			queue_redraw
+	)
+
 	if not GameManager.room_changed.is_connected(
 		_on_room_changed
 	):
@@ -243,6 +250,40 @@ func _get_connected_room_indices(
 
 
 func _draw() -> void:
+	var background_rect := Rect2(
+		Vector2.ZERO,
+		size
+	)
+
+	draw_rect(
+		background_rect,
+		background_color,
+		true
+	)
+
+	if background_border_width > 0.0:
+		var border_offset: float = (
+			background_border_width * 0.5
+		)
+
+		var border_rect := Rect2(
+			Vector2(
+				border_offset,
+				border_offset
+			),
+			size - Vector2(
+				background_border_width,
+				background_border_width
+			)
+		)
+
+		draw_rect(
+			border_rect,
+			background_border_color,
+			false,
+			background_border_width
+		)
+
 	var room_indices: Array[int] = (
 		_get_visited_room_indices()
 	)
