@@ -75,30 +75,18 @@ func _generate_route_cells(
 
 		var generation_failed: bool = false
 
-		for room_index in range(
+		for _room_index in range(
 			1,
 			total_room_count
 		):
-			var directions: Array[Vector2i] = []
+			var directions: Array[Vector2i] = [
+				Vector2i.RIGHT,
+				Vector2i.DOWN,
+				Vector2i.UP,
+				Vector2i.LEFT
+			]
 
-			# Стартовая и конечная комнаты пока
-			# используют старые горизонтальные двери.
-			if (
-				room_index == 1
-				or room_index == total_room_count - 1
-			):
-				directions.append(
-					Vector2i.RIGHT
-				)
-			else:
-				directions = [
-					Vector2i.RIGHT,
-					Vector2i.DOWN,
-					Vector2i.UP,
-					Vector2i.LEFT
-				]
-
-				directions.shuffle()
+			directions.shuffle()
 
 			var previous_cell: Vector2i = (
 				route[route.size() - 1]
@@ -149,24 +137,18 @@ func _can_use_route_cell(
 	if occupied_cells.has(candidate):
 		return false
 
-	# Не даём комнате соприкасаться с другой
-	# комнатой, если они не являются соседями
-	# по маршруту.
-	for occupied_key in occupied_cells.keys():
-		var occupied_cell: Vector2i = (
-			occupied_key
-		)
-
-		if occupied_cell == previous_cell:
-			continue
-
+	# Не даём новой комнате соприкасаться
+	# с несвязанной комнатой.
 	for occupied_key in occupied_cells.keys():
 		var occupied_cell: Vector2i = (
 			occupied_key as Vector2i
 		)
 
+		# С предыдущей комнатой маршрут
+		# соприкасаться обязан.
 		if occupied_cell == previous_cell:
 			continue
+
 		var grid_distance: int = (
 			abs(candidate.x - occupied_cell.x)
 			+ abs(candidate.y - occupied_cell.y)
@@ -273,7 +255,7 @@ func generate_dungeon(root_node: Node) -> void:
 		)
 	)
 
-	var previous_room: Node2D = start_room
+	var _previous_room: Node2D = start_room
 
 	for index in range(intermediate_count):
 		var random_scene: PackedScene = (
