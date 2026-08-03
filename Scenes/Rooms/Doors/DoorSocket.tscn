@@ -5,6 +5,14 @@
 [ext_resource type="Texture2D" uid="uid://dt8kitn3r6r07" path="res://Assets/Art/Environment/Doors/Doors_right.png" id="2_qfw4g"]
 [ext_resource type="Texture2D" uid="uid://dwn8ufxq5u4oj" path="res://Assets/Art/Environment/Doors/Doors_left.png" id="3_kgb56"]
 [ext_resource type="Texture2D" uid="uid://im562b0niioj" path="res://Assets/Art/Environment/Doors/Doors_bottom.png" id="4_cidsq"]
+[ext_resource type="Texture2D" uid="uid://bgeju3sban871" path="res://Assets/Art/Environment/Doors/Doors_top_open.png" id="6_jm2li"]
+[ext_resource type="Texture2D" uid="uid://b3re8j2eltvcq" path="res://Assets/Art/Environment/Doors/Doors_right_open.png" id="7_onn0b"]
+[ext_resource type="Texture2D" uid="uid://bcqleppgpu6f4" path="res://Assets/Art/Environment/Doors/Doors_bottom_open.png" id="8_dksp3"]
+[ext_resource type="Texture2D" uid="uid://sabes7otnbym" path="res://Assets/Art/Environment/Doors/Doors_left_open.png" id="9_jdrqy"]
+[ext_resource type="Texture2D" uid="uid://om21nckgh4d2" path="res://Assets/Art/Environment/Doors/Doors_top_walls.png" id="10_p60ra"]
+[ext_resource type="Texture2D" uid="uid://c53acmyw4gept" path="res://Assets/Art/Environment/Doors/Doors_right_walls.png" id="11_v8p12"]
+[ext_resource type="Texture2D" uid="uid://ct8kkqxxw5ure" path="res://Assets/Art/Environment/Doors/Doors_bottom_walls.png" id="12_y7tad"]
+[ext_resource type="Texture2D" uid="uid://bm6lu6ybi7y14" path="res://Assets/Art/Environment/Doors/Doors_left_walls.png" id="13_nnds3"]
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_nufgy"]
 atlas = ExtResource("2_kgb56")
@@ -21,10 +29,10 @@ atlas = ExtResource("3_kgb56")
 region = Rect2(0, 0, 52, 224)
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_kgb56"]
-size = Vector2(29, 84)
+size = Vector2(84, 80)
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_aeyec"]
-size = Vector2(29, 84)
+size = Vector2(84, 80)
 
 [node name="DoorSocket" type="Node2D" unique_id=760714407]
 script = ExtResource("1_nufgy")
@@ -33,14 +41,22 @@ top_texture = SubResource("AtlasTexture_nufgy")
 right_texture = SubResource("AtlasTexture_gg4mo")
 bottom_texture = SubResource("AtlasTexture_qfw4g")
 left_texture = SubResource("AtlasTexture_6m3xu")
+top_open_texture = ExtResource("6_jm2li")
+right_open_texture = ExtResource("7_onn0b")
+bottom_open_texture = ExtResource("8_dksp3")
+left_open_texture = ExtResource("9_jdrqy")
+top_wall_texture = ExtResource("10_p60ra")
+right_wall_texture = ExtResource("11_v8p12")
+bottom_wall_texture = ExtResource("12_y7tad")
+left_wall_texture = ExtResource("13_nnds3")
 
 [node name="WallCoverSprite" type="Sprite2D" parent="." unique_id=263535214]
 visible = false
-texture = SubResource("AtlasTexture_qfw4g")
+texture = ExtResource("12_y7tad")
 
 [node name="OpenDoorSprite" type="Sprite2D" parent="." unique_id=502971391]
 visible = false
-texture = SubResource("AtlasTexture_qfw4g")
+texture = ExtResource("8_dksp3")
 
 [node name="DoorSprite" type="Sprite2D" parent="." unique_id=1124883201]
 texture = SubResource("AtlasTexture_qfw4g")
