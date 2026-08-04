@@ -7,6 +7,18 @@ signal died(victim: Node)
 # === Параметры здоровья ===
 @export var hp: int = 3
 @export var max_hp: int = 3
+
+# === Масштабирование по этажам ===
+@export_group("Floor Scaling")
+
+# Обычный враг получает больше HP
+# на последующих этажах.
+@export var use_floor_hp_scaling: bool = true
+
+# +18% максимального здоровья за каждый этаж.
+@export_range(0.0, 1.0, 0.01)
+var hp_growth_per_floor: float = 0.18
+
 @export_group("Damage Feedback")
 
 # Можно вручную указать основной спрайт.
@@ -87,7 +99,60 @@ var heart_drop_chance: float = 7.0
 
 var loot_dropped: bool = false
 
+
+func _apply_floor_hp_scaling() -> void:
+	if not use_floor_hp_scaling:
+		return
+
+	var floor_number: int = maxi(
+		GameManager.current_floor,
+		1
+	)
+
+	var base_max_hp: int = maxi(
+		maxi(
+			max_hp,
+			hp
+		),
+		1
+	)
+
+	var hp_multiplier: float = (
+		1.0
+		+ hp_growth_per_floor
+		* float(floor_number - 1)
+	)
+
+	var scaled_max_hp: int = maxi(
+		base_max_hp,
+		ceili(
+			float(base_max_hp)
+			* hp_multiplier
+		)
+	)
+
+	max_hp = scaled_max_hp
+	hp = scaled_max_hp
+
+	if OS.is_debug_build():
+		print(
+			"[ENEMY SCALE] ",
+			name,
+			" | floor=",
+			floor_number,
+			" | base_hp=",
+			base_max_hp,
+			" | multiplier=",
+			snappedf(
+				hp_multiplier,
+				0.01
+			),
+			" | scaled_hp=",
+			scaled_max_hp
+		)
+
 func _ready():
+	_apply_floor_hp_scaling()
 	# Создаём HP bar
 	hp_bar = ProgressBar.new()
 	hp_bar.min_value = 0

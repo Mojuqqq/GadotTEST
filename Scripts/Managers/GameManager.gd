@@ -44,6 +44,7 @@ var last_lost_gold: int = 0
 var last_lost_keys: int = 0
 var _inventory = InventoryService.new()
 var passive_run_upgrades: Dictionary = {}
+var current_floor: int = 1
 
 # Состояние игры
 
@@ -516,9 +517,16 @@ func reset_game_state() -> void:
 	_clear_passive_run_upgrades()
 	_flow.reset()
 
+	current_floor = 1
+
 	floor_completed = false
 	floor_completed_changed.emit(
 		false
+	)
+
+	print(
+		"[FLOOR] Новый забег. Этаж: ",
+		current_floor
 	)
 
 # =========================================================
@@ -721,13 +729,21 @@ func go_to_next_floor() -> void:
 
 	_economy.leave_floor()
 
-
 	floor_completed = false
-	floor_completed_changed.emit(false)
+	floor_completed_changed.emit(
+		false
+	)
 
 	# Комнаты очищаются, но характеристики,
 	# здоровье и экономика забега остаются.
 	_dungeon.reset()
+
+	current_floor += 1
+
+	print(
+		"[FLOOR] Переход на этаж: ",
+		current_floor
+	)
 
 	_flow.go_to_next_floor()
 	

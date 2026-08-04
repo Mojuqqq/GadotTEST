@@ -18,6 +18,8 @@ var boss_loot_scatter_radius: float = 100.0
 
 
 func _ready() -> void:
+	# Боссов будем масштабировать отдельно.
+	use_floor_hp_scaling = false
 	# Босс не может стать обычным носителем
 	# гарантированного ключа этажа.
 	can_carry_guaranteed_key = false
