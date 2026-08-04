@@ -1067,15 +1067,37 @@ func spawn_enemies_for_room(
 		count = enemies_in_end_room
 
 	else:
-		var progression_bonus: int = floori(
+		var room_progression_bonus: int = floori(
 			float(room_index) / 2.0
+		)
+
+		# Каждые два этажа базовое количество
+		# врагов увеличивается ещё на одного.
+		var floor_progression_bonus: int = floori(
+			float(
+				maxi(
+					GameManager.current_floor,
+					1
+				)
+			) / 2.0
+		)
+
+		var floor_minimum: int = (
+			min_enemies_per_room
+			+ floor_progression_bonus
+		)
+
+		var floor_maximum: int = (
+			max_enemies_per_room
+			+ floor_progression_bonus
 		)
 
 		count = clampi(
 			min_enemies_per_room
-			+ progression_bonus,
-			min_enemies_per_room,
-			max_enemies_per_room
+			+ room_progression_bonus
+			+ floor_progression_bonus,
+			floor_minimum,
+			floor_maximum
 		)
 
 	if count <= 0:

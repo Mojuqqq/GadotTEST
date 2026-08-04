@@ -1,7 +1,23 @@
 extends Area2D
 
+const PLAYER_POISON_COOLDOWN_META: StringName = (
+	&"player_poison_damage_available_at_msec"
+)
 
+# Урон по врагам. Он зависит от урона яйца,
+# создавшего ядовитую лужу.
 @export var damage_per_tick: int = 1
+
+# Собственный урон по игроку не масштабируется
+# вместе с характеристикой damage.
+@export_range(1, 10, 1)
+var player_damage_per_tick: int = 1
+
+# Минимальный интервал между успешными
+# тиками яда по игроку.
+@export_range(0.1, 5.0, 0.1)
+var player_damage_interval: float = 1.0
+
 @export var tick_interval: float = 0.5
 @export var lifetime: float = 4.0
 
@@ -186,21 +202,133 @@ func _can_take_poison_damage(
 
 	return false
 
+func _can_apply_player_poison_damage(
+	player: Node
+) -> bool:
+	var current_time_msec: int = (
+		Time.get_ticks_msec()
+	)
+
+	var available_at_msec: int = int(
+		player.get_meta(
+			PLAYER_POISON_COOLDOWN_META,
+			0
+		)
+	)
+
+	if current_time_msec < available_at_msec:
+		return false
+
+	var cooldown_msec: int = maxi(
+		roundi(
+			player_damage_interval
+			* 1000.0
+		),
+		1
+	)
+
+	player.set_meta(
+		PLAYER_POISON_COOLDOWN_META,
+		current_time_msec + cooldown_msec
+	)
+
+	return true
 
 func _apply_damage(
 	body: Node
 ) -> void:
-	if body.is_in_group("Player"):
-		if not GameManager.game_over_started:
-			GameManager.take_damage(
-				damage_per_tick
+	if not is_instance_valid(body):
+		return
+
+	var telemetry: Node = (
+		get_tree().get_first_node_in_group(
+			&"BalanceTelemetry"
+		)
+	)
+
+	# =====================================================
+	# УРОН ИГРОКУ
+	# =====================================================
+
+	if body.is_in_group(&"Player"):
+		if GameManager.game_over_started:
+			return
+
+		if not body.has_method(
+			&"take_damage"
+		):
+			return
+
+		if not _can_apply_player_poison_damage(
+			body
+		):
+			return
+
+		body.call(
+			&"take_damage",
+			maxi(
+				player_damage_per_tick,
+				1
 			)
+		)
 
 		return
 
-	if body.has_method("take_damage"):
-		body.take_damage(
-			damage_per_tick
+
+	# =====================================================
+	# УРОН ВРАГУ
+	# =====================================================
+
+	if not body.has_method(
+		&"take_damage"
+	):
+		return
+
+	var enemy_hp_before: int = -1
+
+	if body is BaseEnemy:
+		var enemy := body as BaseEnemy
+
+		enemy_hp_before = maxi(
+			enemy.hp,
+			0
+		)
+
+	var enemy_actual_damage: int = (
+		damage_per_tick
+	)
+
+	if enemy_hp_before >= 0:
+		enemy_actual_damage = mini(
+			damage_per_tick,
+			enemy_hp_before
+		)
+
+	if enemy_actual_damage <= 0:
+		return
+
+	body.call(
+		&"take_damage",
+		enemy_actual_damage
+	)
+
+	var killed_by_poison: bool = (
+		enemy_hp_before > 0
+		and enemy_actual_damage
+		>= enemy_hp_before
+	)
+
+	if (
+		telemetry != null
+		and telemetry.has_method(
+			&"record_poison_damage_dealt"
+		)
+	):
+		telemetry.call(
+			&"record_poison_damage_dealt",
+			body,
+			enemy_actual_damage,
+			killed_by_poison
 		)
 
 
