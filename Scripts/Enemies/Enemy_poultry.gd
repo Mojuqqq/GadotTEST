@@ -369,7 +369,11 @@ func _process_takeoff(
 	state_elapsed += delta
 
 	var progress: float = clampf(
-		state_elapsed / maxf(takeoff_duration, 0.01),
+		state_elapsed
+		/ maxf(
+			takeoff_duration,
+			0.01
+		),
 		0.0,
 		1.0
 	)
@@ -379,28 +383,29 @@ func _process_takeoff(
 	)
 
 	if progress < 1.0:
-	return
+		return
 
-current_target = _find_nearest_target()
+	current_target = _find_nearest_target()
 
-if not _is_valid_target(current_target):
-	_reset_movement_state()
-	return
+	if not _is_valid_target(current_target):
+		_reset_movement_state()
+		return
 
-var target_offset: Vector2 = (
-	current_target.global_position
-	- global_position
-)
+	var target_offset: Vector2 = (
+		current_target.global_position
+		- global_position
+	)
 
-if target_offset == Vector2.ZERO:
-	_reset_movement_state()
-	return
+	if target_offset == Vector2.ZERO:
+		_reset_movement_state()
+		return
 
-	# Направление фиксируется только после окончания
-	# визуальной подготовки к рывку.
+	# Направление фиксируется только после
+	# завершения подготовки к рывку.
 	flight_direction = target_offset.normalized()
 
-	# Курица должна пролететь немного дальше цели.
+	# Курица пролетает немного дальше
+	# текущей позиции игрока.
 	active_flight_distance = clampf(
 		target_offset.length()
 		+ flight_overshoot_distance,
@@ -454,8 +459,10 @@ func _process_flight(
 	_set_sprite_height(flight_visual_height)
 
 	if (
-		flight_travelled >= flight_distance
-		or flight_elapsed >= flight_max_duration
+		flight_travelled
+		>= active_flight_distance
+		or flight_elapsed
+		>= flight_max_duration
 	):
 		_begin_landing()
 
@@ -466,27 +473,42 @@ func _try_deal_flight_damage(
 	if flight_damage_dealt:
 		return
 
-	if not _is_valid_target(current_target):
+	var player := (
+		get_tree().get_first_node_in_group(
+			&"Player"
+		) as Node2D
+	)
+
+	if not _is_valid_target(player):
+		return
+
+	if not player.has_method(
+		&"take_damage"
+	):
 		return
 
 	var closest_point: Vector2 = (
 		Geometry2D.get_closest_point_to_segment(
-			current_target.global_position,
+			player.global_position,
 			from_position,
 			to_position
 		)
 	)
 
 	var distance_to_flight_path: float = (
-		current_target.global_position.distance_to(
+		player.global_position.distance_to(
 			closest_point
 		)
 	)
 
-	if distance_to_flight_path > flight_hit_radius:
+	if (
+		distance_to_flight_path
+		> flight_hit_radius
+	):
 		return
 
-	current_target.take_damage(
+	player.call(
+		&"take_damage",
 		maxi(
 			flight_damage,
 			1
@@ -550,7 +572,10 @@ func _reset_movement_state() -> void:
 	state_elapsed = 0.0
 	flight_elapsed = 0.0
 	flight_travelled = 0.0
+
 	flight_direction = Vector2.ZERO
+	active_flight_distance = 0.0
+	flight_damage_dealt = false
 
 	_set_sprite_height(0.0)
 
@@ -837,39 +862,48 @@ func _clamp_spawn_position(
 # =========================================================
 
 func _find_nearest_target() -> Node2D:
-	var nearest_target: Node2D = null
+	# Основная цель босса — игрок.
+	var player := (
+		get_tree().get_first_node_in_group(
+			&"Player"
+		) as Node2D
+	)
+
+	if _is_valid_target(player):
+		return player
+
+	# Компаньон используется только тогда,
+	# когда игрок временно недоступен.
+	var nearest_companion: Node2D = null
 	var nearest_distance_squared: float = INF
 
-	var target_groups: Array[StringName] = [
-		&"Player",
+	for candidate in get_tree().get_nodes_in_group(
 		&"Companions"
-	]
+	):
+		if not _is_valid_target(candidate):
+			continue
 
-	for group_name in target_groups:
-		for candidate in get_tree().get_nodes_in_group(
-			group_name
-		):
-			if not _is_valid_target(candidate):
-				continue
+		var companion := candidate as Node2D
 
-			var target := candidate as Node2D
+		if companion == null:
+			continue
 
-			if target == null:
-				continue
-
-			var distance_squared: float = (
-				global_position.distance_squared_to(
-					target.global_position
-				)
+		var distance_squared: float = (
+			global_position.distance_squared_to(
+				companion.global_position
 			)
+		)
 
-			if distance_squared >= nearest_distance_squared:
-				continue
+		if (
+			distance_squared
+			>= nearest_distance_squared
+		):
+			continue
 
-			nearest_distance_squared = distance_squared
-			nearest_target = target
+		nearest_distance_squared = distance_squared
+		nearest_companion = companion
 
-	return nearest_target
+	return nearest_companion
 
 
 func _is_valid_target(
