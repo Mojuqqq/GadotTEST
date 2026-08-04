@@ -1,5 +1,8 @@
 extends Area2D
 
+const PLAYER_POISON_COOLDOWN_META: StringName = (
+	&"player_poison_damage_available_at_msec"
+)
 
 # Урон по врагам. Он зависит от урона яйца,
 # создавшего ядовитую лужу.
@@ -9,6 +12,11 @@ extends Area2D
 # вместе с характеристикой damage.
 @export_range(1, 10, 1)
 var player_damage_per_tick: int = 1
+
+# Минимальный интервал между успешными
+# тиками яда по игроку.
+@export_range(0.1, 5.0, 0.1)
+var player_damage_interval: float = 1.0
 
 @export var tick_interval: float = 0.5
 @export var lifetime: float = 4.0
@@ -194,6 +202,37 @@ func _can_take_poison_damage(
 
 	return false
 
+func _can_apply_player_poison_damage(
+	player: Node
+) -> bool:
+	var current_time_msec: int = (
+		Time.get_ticks_msec()
+	)
+
+	var available_at_msec: int = int(
+		player.get_meta(
+			PLAYER_POISON_COOLDOWN_META,
+			0
+		)
+	)
+
+	if current_time_msec < available_at_msec:
+		return false
+
+	var cooldown_msec: int = maxi(
+		roundi(
+			player_damage_interval
+			* 1000.0
+		),
+		1
+	)
+
+	player.set_meta(
+		PLAYER_POISON_COOLDOWN_META,
+		current_time_msec + cooldown_msec
+	)
+
+	return true
 
 func _apply_damage(
 	body: Node
@@ -220,6 +259,11 @@ func _apply_damage(
 		):
 			return
 
+		if not _can_apply_player_poison_damage(
+			body
+		):
+			return
+
 		body.call(
 			&"take_damage",
 			maxi(
@@ -230,38 +274,6 @@ func _apply_damage(
 
 		return
 
-		var hp_before: int = maxi(
-			GameManager.player_hp,
-			0
-		)
-
-		var actual_damage: int = mini(
-			damage_per_tick,
-			hp_before
-		)
-
-		if actual_damage <= 0:
-			return
-
-		# Записываем ДО изменения HP.
-		# record_damage_taken() сам вычисляет
-		# hp_before и hp_after.
-		if (
-			telemetry != null
-			and telemetry.has_method(
-				&"record_damage_taken"
-			)
-		):
-			telemetry.call(
-				&"record_damage_taken",
-				actual_damage
-			)
-
-		GameManager.take_damage(
-			actual_damage
-		)
-
-		return
 
 	# =====================================================
 	# УРОН ВРАГУ
