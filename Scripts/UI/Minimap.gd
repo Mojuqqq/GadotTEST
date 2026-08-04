@@ -100,6 +100,7 @@ class_name Minimap
 var visited_rooms: Dictionary = {}
 var connected_door_sockets: Array[DoorSocket] = []
 var current_room_index: int = -1
+var connected_marker_rooms: Array[Room] = []
 
 
 func _ready() -> void:
@@ -136,6 +137,7 @@ func _exit_tree() -> void:
 		)
 	
 	_disconnect_door_signals()
+	_disconnect_minimap_marker_signals()
 
 
 func _sync_with_current_dungeon() -> void:
@@ -155,6 +157,7 @@ func _sync_with_current_dungeon() -> void:
 	visited_rooms[current_room_index] = true
 
 	_connect_door_signals()
+	_connect_minimap_marker_signals()
 
 	queue_redraw()
 
@@ -173,6 +176,7 @@ func _on_room_changed(
 	visited_rooms[room_index] = true
 
 	_connect_door_signals()
+	_connect_minimap_marker_signals()
 
 	queue_redraw()
 
@@ -660,6 +664,9 @@ func _draw_room_type_icon(
 	if typed_room == null:
 		return
 
+	if not typed_room.has_active_minimap_marker():
+		return
+
 	var icon: Texture2D = null
 
 	match typed_room.room_type:
@@ -741,6 +748,46 @@ func _draw_room_type_texture(
 		icon_rect,
 		false
 	)
+
+func _connect_minimap_marker_signals() -> void:
+	_disconnect_minimap_marker_signals()
+
+	for room_variant in GameManager.room_instances:
+		if not is_instance_valid(room_variant):
+			continue
+
+		var room := room_variant as Room
+
+		if room == null:
+			continue
+
+		if not room.minimap_marker_changed.is_connected(
+			_on_minimap_marker_changed
+		):
+			room.minimap_marker_changed.connect(
+				_on_minimap_marker_changed
+			)
+
+		connected_marker_rooms.append(room)
+
+
+func _disconnect_minimap_marker_signals() -> void:
+	for room in connected_marker_rooms:
+		if not is_instance_valid(room):
+			continue
+
+		if room.minimap_marker_changed.is_connected(
+			_on_minimap_marker_changed
+		):
+			room.minimap_marker_changed.disconnect(
+				_on_minimap_marker_changed
+			)
+
+	connected_marker_rooms.clear()
+
+
+func _on_minimap_marker_changed() -> void:
+	queue_redraw()
 
 func _connect_door_signals() -> void:
 	_disconnect_door_signals()

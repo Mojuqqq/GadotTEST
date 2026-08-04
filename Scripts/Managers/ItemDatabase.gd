@@ -15,16 +15,26 @@ func init_items(_game_manager: Node):
 {
 	"id": "energy",
 	"name": "⚡ Скоростные сапоги",
-	"desc": "+15% скорость",
+	"desc": (
+		"+15% к базовой скорости. "
+		+ "Максимум 3 улучшения за забег"
+	),
 	"icon": "res://Assets/Art/Items/New_boots.png",
 	"shop_price": 20,
+
+	"max_passive_stacks": 3,
+
 	"apply": func(stats, gm):
-		stats.speed *= 1.15
+		# 15% от базовой скорости 300:
+		# 300 × 0.15 = 45.
+		stats.speed += 45.0
 
 		if (
 			is_instance_valid(gm.player)
 			and not gm.player.is_queued_for_deletion()
-			and gm.player.has_method("update_speed")
+			and gm.player.has_method(
+				&"update_speed"
+			)
 		):
 			gm.player.update_speed(
 				stats.speed
@@ -36,11 +46,21 @@ func init_items(_game_manager: Node):
 {
 	"id": "eye",
 	"name": "👁 Новые очки",
-	"desc": "Увеличивает дальность атаки",
+	"desc": (
+		"+20% к дальности атаки. "
+		+ "Максимум 3 улучшения за забег"
+	),
 	"icon": "res://Assets/Art/Items/New_glasses.png",
 	"shop_price": 25,
+
+	"max_passive_stacks": 3,
+
 	"apply": func(stats, gm):
-		stats.attack_range_multiplier *= 1.5
+		stats.attack_range_multiplier = minf(
+			stats.attack_range_multiplier + 0.2,
+			1.6
+		)
+
 		gm.notify_stats_changed()
 },
 

@@ -1,6 +1,8 @@
 extends Node2D
 class_name Room
 
+signal minimap_marker_changed
+
 const MERCHANT_SCENE: PackedScene = preload("res://Scenes/Interactables/NPC/Merchant.tscn")
 
 enum RoomType {
@@ -265,6 +267,10 @@ func _on_enemy_died(
 		return
 
 	is_cleared = true
+
+	if is_boss_room():
+		minimap_marker_changed.emit()
+
 	unlock_doors()
 
 
@@ -517,6 +523,16 @@ func spawn_chest() -> void:
 	chest.name = "GeneratedChest"
 	chest.item = item
 
+	if chest.has_signal(&"opened"):
+		chest.connect(
+			&"opened",
+			Callable(
+				self,
+				"_on_room_chest_opened"
+			),
+			CONNECT_ONE_SHOT
+		)
+
 	if is_boss_room():
 		if chest.has_signal("collected"):
 			chest.connect(
@@ -542,6 +558,9 @@ func spawn_chest() -> void:
 			GameManager.room_height * 0.5
 		)
 
+func _on_room_chest_opened() -> void:
+	minimap_marker_changed.emit()
+
 func _on_boss_reward_collected(
 	_item: ItemData,
 	_amount: int
@@ -556,6 +575,58 @@ func _on_boss_reward_collected(
 	GameManager.trigger_game_over(
 		true
 	)
+
+func has_active_minimap_marker() -> bool:
+	match room_type:
+		RoomType.TREASURE:
+			var chest: Node = get_node_or_null(
+				"GeneratedChest"
+			)
+
+			if not is_instance_valid(chest):
+				return false
+
+			if chest.is_queued_for_deletion():
+				return false
+
+			if not chest.has_method(
+				&"has_uncollected_reward"
+			):
+				return false
+
+			return bool(
+				chest.call(
+					&"has_uncollected_reward"
+				)
+			)
+
+		RoomType.SHOP:
+			var merchant: Node = get_node_or_null(
+				"GeneratedMerchant"
+			)
+
+			if not is_instance_valid(merchant):
+				return false
+
+			if merchant.is_queued_for_deletion():
+				return false
+
+			if not merchant.has_method(
+				&"has_unsold_offers"
+			):
+				return false
+
+			return bool(
+				merchant.call(
+					&"has_unsold_offers"
+				)
+			)
+
+		RoomType.BOSS:
+			return not is_cleared
+
+		_:
+			return false
 
 func set_room_type(new_type: RoomType) -> void:
 	room_type = new_type
@@ -613,6 +684,15 @@ func spawn_merchant() -> void:
 
 	merchant.name = "GeneratedMerchant"
 
+	if merchant.has_signal(&"stock_changed"):
+		merchant.connect(
+			&"stock_changed",
+			Callable(
+				self,
+				"_on_shop_stock_changed"
+			)
+		)
+
 	add_child(merchant)
 
 	var spawn_point := get_node_or_null(
@@ -628,3 +708,7 @@ func spawn_merchant() -> void:
 			GameManager.room_width * 0.5,
 			GameManager.room_height * 0.5
 		)
+
+
+func _on_shop_stock_changed() -> void:
+	minimap_marker_changed.emit()

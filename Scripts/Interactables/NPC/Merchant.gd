@@ -1,5 +1,6 @@
 extends Node2D
 
+signal stock_changed
 
 const SHOP_MENU_SCENE: PackedScene = preload(
 	"res://Scenes/UI/ShopMenu.tscn"
@@ -356,8 +357,9 @@ func purchase_offer(index: int) -> Dictionary:
 	offer["sold"] = true
 	offers[index] = offer
 
-	var item_name: String = _get_item_name(item)
+	stock_changed.emit()
 
+	var item_name: String = _get_item_name(item)
 
 	var purchase_message: String = (
 		"Куплено: "

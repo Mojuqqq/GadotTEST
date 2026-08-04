@@ -1,5 +1,8 @@
 extends Area2D
 
+
+signal opened
+
 signal collected(
 	item: ItemData,
 	amount: int
@@ -202,6 +205,9 @@ func open(added_amount: int) -> void:
 		return
 
 	is_opened = true
+
+	opened.emit()
+
 	player_near = false
 	interaction_label.visible = false
 
