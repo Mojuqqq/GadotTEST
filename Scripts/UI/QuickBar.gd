@@ -305,9 +305,7 @@ func _refresh_active_effects() -> void:
 			item_id
 		)
 
-	active_effects_container.visible = (
-		not active_effect_cards.is_empty()
-	)
+	active_effects_container.visible = true
 
 
 # =========================================================
