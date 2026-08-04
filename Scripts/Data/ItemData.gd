@@ -39,5 +39,14 @@ var max_grant_amount: int = 1
 @export_range(1, 999, 1)
 var max_inventory_stack: int = 99
 
+
+@export_group("Passive Limits")
+
+# Максимальное количество одинаковых
+# пассивных улучшений за один забег.
+@export_range(1, 999, 1)
+var max_passive_stacks: int = 99
+
+
 # Храним функцию применения предмета.
 var apply: Callable

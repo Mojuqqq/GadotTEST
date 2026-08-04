@@ -47,14 +47,17 @@ func init_items(_game_manager: Node):
 {
 	"id": "golden_egg",
 	"name": "🥚 Золотое яйцо",
-	"desc": "+50% урон",
+	"desc": (
+		"+1 к урону. "
+		+ "Максимум 3 улучшения за забег"
+	),
 	"icon": "res://Assets/Art/Items/Gold_egg.png",
 	"shop_price": 35,
-	"apply": func(stats, gm):
-		stats.damage = ceili(
-			stats.damage * 1.5
-		)
 
+	"max_passive_stacks": 3,
+
+	"apply": func(stats, gm):
+		stats.damage += 1
 		stats.has_golden_egg = true
 
 		gm.notify_stats_changed()
@@ -215,6 +218,16 @@ func _create_items(
 			int(
 				data.get(
 					"max_inventory_stack",
+					99
+				)
+			),
+			1
+		)
+		
+		item.max_passive_stacks = maxi(
+			int(
+				data.get(
+					"max_passive_stacks",
 					99
 				)
 			),

@@ -100,45 +100,26 @@ func _on_interaction_area_body_exited(
 func _generate_offers() -> void:
 	offers.clear()
 
-	var available_items: Array = (
-		GameManager.all_items.duplicate()
-	)
+	var available_items: Array[ItemData] = []
 
-	available_items.shuffle()
-
-	var count: int = mini(
-		offer_count,
-		available_items.size()
-	)
-
-	for index in range(count):
-		var item := (
-			available_items[index]
-			as ItemData
-		)
-
+	for item in GameManager.all_items:
 		if item == null:
-			push_warning(
-				"Торговец пропустил некорректный "
-				+ "элемент списка предметов."
-			)
 			continue
 
-		var price: int = maxi(
-			item.shop_price,
-			1
+		if (
+			item.use_mode
+			== ItemData.UseMode.PASSIVE
+			and not GameManager.can_receive_passive_upgrade(
+				item
+			)
+		):
+			continue
+
+		available_items.append(
+			item
 		)
 
-		var grant_amount: int = (
-			GameManager.roll_item_grant_amount(item)
-		)
-
-		offers.append({
-			"item": item,
-			"price": price,
-			"amount": grant_amount,
-			"sold": false
-		})
+	available_items.shuffle()
 
 
 func get_offers() -> Array[Dictionary]:
@@ -167,6 +148,16 @@ func _has_inventory_space(
 
 	if amount <= 0:
 		return false
+
+	if (
+		item.use_mode
+		== ItemData.UseMode.PASSIVE
+	):
+		return (
+			GameManager.can_receive_passive_upgrade(
+				item
+			)
+		)
 
 	var current_amount: int = (
 		GameManager.get_inventory_item_amount(

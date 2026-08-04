@@ -439,6 +439,28 @@ func _get_enemy_spawn_position(
 	# находится далеко от стен.
 	return last_candidate
 
+func _get_available_reward_items() -> Array[ItemData]:
+	var available_items: Array[ItemData] = []
+
+	for item in GameManager.all_items:
+		if item == null:
+			continue
+
+		if (
+			item.use_mode
+			== ItemData.UseMode.PASSIVE
+			and not GameManager.can_receive_passive_upgrade(
+				item
+			)
+		):
+			continue
+
+		available_items.append(
+			item
+		)
+
+	return available_items
+
 func spawn_chest() -> void:
 	if (
 		not is_treasure_room()
@@ -465,7 +487,20 @@ func spawn_chest() -> void:
 	if existing_chest != null:
 		return
 
-	var item = GameManager.all_items.pick_random()
+	var available_items: Array[ItemData] = (
+		_get_available_reward_items()
+	)
+
+	if available_items.is_empty():
+		push_warning(
+			"Нельзя создать сундук: "
+			+ "нет доступных наград."
+		)
+		return
+
+	var item: ItemData = (
+		available_items.pick_random()
+	)
 
 	var chest_scene: PackedScene = preload(
 		"res://Scenes/Interactables/Chest.tscn"

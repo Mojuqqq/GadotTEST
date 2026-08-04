@@ -105,6 +105,16 @@ func _has_inventory_space_for_item() -> bool:
 	if item == null:
 		return false
 
+	if (
+		item.use_mode
+		== ItemData.UseMode.PASSIVE
+	):
+		return (
+			GameManager.can_receive_passive_upgrade(
+				item
+			)
+		)
+
 	var current_amount: int = (
 		GameManager.get_inventory_item_amount(
 			item.id

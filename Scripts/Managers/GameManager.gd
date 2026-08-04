@@ -867,6 +867,31 @@ func add_item_to_inventory(
 		final_amount
 	)
 
+func can_receive_passive_upgrade(
+	item: ItemData
+) -> bool:
+	if item == null:
+		return false
+
+	if (
+		item.use_mode
+		!= ItemData.UseMode.PASSIVE
+	):
+		return true
+
+	var current_stacks: int = (
+		get_passive_upgrade_count(
+			item.id
+		)
+	)
+
+	var maximum_stacks: int = maxi(
+		item.max_passive_stacks,
+		1
+	)
+
+	return current_stacks < maximum_stacks
+
 func _apply_passive_reward(
 	item: ItemData,
 	amount: int
@@ -890,7 +915,44 @@ func _apply_passive_reward(
 			"added_amount": 0
 		}
 
-	for _stack_index in range(amount):
+	var current_stacks: int = (
+		get_passive_upgrade_count(
+			item.id
+		)
+	)
+
+	var maximum_stacks: int = maxi(
+		item.max_passive_stacks,
+		1
+	)
+
+	var available_stacks: int = maxi(
+		maximum_stacks - current_stacks,
+		0
+	)
+
+	var applied_amount: int = mini(
+		amount,
+		available_stacks
+	)
+
+	if applied_amount <= 0:
+		return {
+			"success": false,
+			"message": (
+				"Достигнут максимум улучшения: "
+				+ item.name
+			),
+			"requested_amount": amount,
+			"added_amount": 0,
+			"overflow_amount": amount,
+			"new_amount": current_stacks,
+			"applied_immediately": false
+		}
+
+	for _stack_index in range(
+		applied_amount
+	):
 		item.apply.call(
 			player_stats,
 			self
@@ -898,7 +960,12 @@ func _apply_passive_reward(
 
 	_register_passive_upgrade(
 		item,
-		amount
+		applied_amount
+	)
+
+	var new_stack_amount: int = (
+		current_stacks
+		+ applied_amount
 	)
 
 	return {
@@ -907,16 +974,18 @@ func _apply_passive_reward(
 			"Получено улучшение: "
 			+ item.name
 			+ (
-				" ×" + str(amount)
-				if amount > 1
+				" ×" + str(applied_amount)
+				if applied_amount > 1
 				else ""
 			)
 		),
 		"item": item,
 		"requested_amount": amount,
-		"added_amount": amount,
-		"overflow_amount": 0,
-		"new_amount": 0,
+		"added_amount": applied_amount,
+		"overflow_amount": (
+			amount - applied_amount
+		),
+		"new_amount": new_stack_amount,
 		"applied_immediately": true
 	}
 
