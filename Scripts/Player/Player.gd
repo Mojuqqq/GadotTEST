@@ -339,6 +339,23 @@ func receive_healing(
 	if healed_amount <= 0:
 		return 0
 
+	var telemetry: Node = (
+		get_tree().get_first_node_in_group(
+			&"BalanceTelemetry"
+		)
+	)
+
+	if (
+		telemetry != null
+		and telemetry.has_method(
+			&"record_healing"
+		)
+	):
+		telemetry.call(
+			&"record_healing",
+			healed_amount
+		)
+
 	_play_heal_animation()
 
 	_spawn_health_feedback(
@@ -443,6 +460,22 @@ func shoot() -> void:
 		use_golden_egg
 	)
 
+	var telemetry: Node = (
+		get_tree().get_first_node_in_group(
+			&"BalanceTelemetry"
+		)
+	)
+
+	if (
+		telemetry != null
+		and telemetry.has_method(
+			&"record_shot"
+		)
+	):
+		telemetry.call(
+			&"record_shot"
+		)
+	
 	# Списываем тухлое яйцо только после
 	# успешного создания снаряда.
 	if use_rotten_egg:
@@ -678,6 +711,23 @@ func take_damage(
 
 	if actual_damage <= 0:
 		return
+
+	var telemetry: Node = (
+		get_tree().get_first_node_in_group(
+			&"BalanceTelemetry"
+		)
+	)
+
+	if (
+		telemetry != null
+		and telemetry.has_method(
+			&"record_damage_taken"
+		)
+	):
+		telemetry.call(
+			&"record_damage_taken",
+			actual_damage
+		)
 
 	_spawn_health_feedback(
 		actual_damage,

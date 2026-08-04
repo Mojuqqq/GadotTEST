@@ -103,7 +103,46 @@ func _on_body_entered(body: Node) -> void:
 
 	# Попадание во врага.
 	if body.has_method("take_damage"):
+		var hp_before: int = -1
+
+		if body is BaseEnemy:
+			var enemy := body as BaseEnemy
+			hp_before = enemy.hp
+
 		body.take_damage(damage)
+
+		var actual_damage: int = damage
+		var killed_by_hit: bool = false
+
+		if hp_before >= 0:
+			actual_damage = mini(
+				damage,
+				hp_before
+			)
+
+			killed_by_hit = (
+				hp_before > 0
+				and actual_damage >= hp_before
+			)
+
+		var telemetry: Node = (
+			get_tree().get_first_node_in_group(
+				&"BalanceTelemetry"
+			)
+		)
+
+		if (
+			telemetry != null
+			and telemetry.has_method(
+				&"record_direct_hit"
+			)
+		):
+			telemetry.call(
+				&"record_direct_hit",
+				body,
+				actual_damage,
+				killed_by_hit
+			)
 
 		if creates_poison_cloud:
 			call_deferred(
