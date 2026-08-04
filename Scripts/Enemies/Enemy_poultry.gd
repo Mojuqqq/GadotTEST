@@ -105,6 +105,16 @@ var flight_speed: float = 550.0
 @export_range(50.0, 800.0, 10.0)
 var flight_distance: float = 260.0
 
+# Урон при попадании непосредственно
+# во время полёта-рывка.
+@export_range(1, 20, 1)
+var flight_damage: int = 2
+
+# Радиус пересечения траектории рывка
+# с целью.
+@export_range(20.0, 200.0, 5.0)
+var flight_hit_radius: float = 95.0
+
 # Время разгона до максимальной скорости.
 @export_range(0.05, 2.0, 0.05)
 var flight_acceleration_time: float = 0.25
@@ -138,6 +148,10 @@ var state_elapsed: float = 0.0
 var flight_direction: Vector2 = Vector2.ZERO
 var flight_travelled: float = 0.0
 var flight_elapsed: float = 0.0
+
+# За один рывок одна цель может получить
+# урон только один раз.
+var flight_damage_dealt: bool = false
 
 var attack_timer: Timer = null
 var summon_timer: Timer = null
@@ -389,6 +403,11 @@ func _process_flight(
 	move_and_slide()
 	_clamp_to_room()
 
+	_try_deal_flight_damage(
+		previous_position,
+		global_position
+	)
+
 	flight_travelled += previous_position.distance_to(
 		global_position
 	)
@@ -401,6 +420,41 @@ func _process_flight(
 	):
 		_begin_landing()
 
+func _try_deal_flight_damage(
+	from_position: Vector2,
+	to_position: Vector2
+) -> void:
+	if flight_damage_dealt:
+		return
+
+	if not _is_valid_target(current_target):
+		return
+
+	var closest_point: Vector2 = (
+		Geometry2D.get_closest_point_to_segment(
+			current_target.global_position,
+			from_position,
+			to_position
+		)
+	)
+
+	var distance_to_flight_path: float = (
+		current_target.global_position.distance_to(
+			closest_point
+		)
+	)
+
+	if distance_to_flight_path > flight_hit_radius:
+		return
+
+	current_target.take_damage(
+		maxi(
+			flight_damage,
+			1
+		)
+	)
+
+	flight_damage_dealt = true
 
 func _process_landing(
 	delta: float
@@ -438,6 +492,8 @@ func _start_flight() -> void:
 
 	if flight_direction == Vector2.ZERO:
 		return
+
+	flight_damage_dealt = false
 
 	movement_state = MovementState.TAKEOFF
 	state_elapsed = 0.0
