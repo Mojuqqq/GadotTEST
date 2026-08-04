@@ -85,34 +85,15 @@ class_name Minimap
 	1.0
 )
 
-@export_group("Room Type Colors")
+@export_group("Room Type Icons")
 
-@export var start_icon_color := Color(
-	0.9,
-	0.9,
-	0.82,
-	1.0
-)
+@export var treasure_room_icon: Texture2D
+@export var shop_room_icon: Texture2D
+@export var boss_room_icon: Texture2D
 
-@export var treasure_icon_color := Color(
-	1.0,
-	0.78,
-	0.15,
-	1.0
-)
-
-@export var shop_icon_color := Color(
-	0.35,
-	0.78,
-	0.38,
-	1.0
-)
-
-@export var boss_icon_color := Color(
-	0.8,
-	0.15,
-	0.12,
-	1.0
+@export var room_type_icon_max_size := Vector2(
+	14.0,
+	14.0
 )
 
 
@@ -123,7 +104,10 @@ var current_room_index: int = -1
 
 func _ready() -> void:
 	mouse_filter = Control.MOUSE_FILTER_IGNORE
-
+	texture_filter = (
+		CanvasItem.TEXTURE_FILTER_NEAREST
+	)
+	
 	if not resized.is_connected(
 		queue_redraw
 	):
@@ -658,57 +642,105 @@ func _draw_room_type_icon(
 	room_index: int,
 	room_center: Vector2
 ) -> void:
+	if room_index < 0:
+		return
+
+	if room_index >= GameManager.room_instances.size():
+		return
+
 	var room: Node2D = (
 		GameManager.room_instances[room_index]
 	)
+
+	if not is_instance_valid(room):
+		return
 
 	var typed_room := room as Room
 
 	if typed_room == null:
 		return
 
+	var icon: Texture2D = null
+
 	match typed_room.room_type:
 		Room.RoomType.START:
-			draw_circle(
-				room_center,
-				3.0,
-				start_icon_color
-			)
+			# Стартовая комната остаётся обычной комнатой
+			# без дополнительной фигуры или иконки.
+			return
 
 		Room.RoomType.TREASURE:
-			draw_circle(
-				room_center,
-				4.0,
-				treasure_icon_color
-			)
+			icon = treasure_room_icon
 
 		Room.RoomType.SHOP:
-			draw_rect(
-				Rect2(
-					room_center
-					- Vector2(4.0, 4.0),
-					Vector2(8.0, 8.0)
-				),
-				shop_icon_color,
-				true
-			)
+			icon = shop_room_icon
 
 		Room.RoomType.BOSS:
-			var boss_shape := PackedVector2Array([
-				room_center
-				+ Vector2(0.0, -5.0),
-				room_center
-				+ Vector2(5.0, 0.0),
-				room_center
-				+ Vector2(0.0, 5.0),
-				room_center
-				+ Vector2(-5.0, 0.0)
-			])
+			icon = boss_room_icon
 
-			draw_colored_polygon(
-				boss_shape,
-				boss_icon_color
+		_:
+			return
+
+	_draw_room_type_texture(
+		icon,
+		room_center
+	)
+
+func _draw_room_type_texture(
+	icon: Texture2D,
+	room_center: Vector2
+) -> void:
+	if icon == null:
+		return
+
+	var source_size: Vector2 = (
+		icon.get_size()
+	)
+
+	if (
+		source_size.x <= 0.0
+		or source_size.y <= 0.0
+	):
+		return
+
+	# Иконка не должна выходить за границы комнаты.
+	var available_size := Vector2(
+		minf(
+			room_type_icon_max_size.x,
+			maxf(
+				room_draw_size.x - 4.0,
+				1.0
 			)
+		),
+		minf(
+			room_type_icon_max_size.y,
+			maxf(
+				room_draw_size.y - 4.0,
+				1.0
+			)
+		)
+	)
+
+	# Сохраняем исходные пропорции изображения.
+	var scale_factor: float = minf(
+		available_size.x / source_size.x,
+		available_size.y / source_size.y
+	)
+
+	var icon_draw_size: Vector2 = (
+		source_size * scale_factor
+	)
+
+	var icon_rect := Rect2(
+		room_center
+		- icon_draw_size * 0.5,
+		icon_draw_size
+	)
+
+	draw_texture_rect(
+		icon,
+		icon_rect,
+		false
+	)
 
 func _connect_door_signals() -> void:
 	_disconnect_door_signals()

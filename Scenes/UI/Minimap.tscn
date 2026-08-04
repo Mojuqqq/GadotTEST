@@ -1,6 +1,9 @@
 [gd_scene format=3 uid="uid://tfkawr128kmx"]
 
 [ext_resource type="Script" uid="uid://clxhfs67gay64" path="res://Scripts/UI/Minimap.gd" id="1_lhiow"]
+[ext_resource type="Texture2D" uid="uid://dsq8r43hea3p2" path="res://Assets/Art/UI/Minimap/chest_icon.png" id="2_a7d3d"]
+[ext_resource type="Texture2D" uid="uid://dvtiq5b0id1i2" path="res://Assets/Art/UI/Minimap/shop_icon.png" id="3_itplw"]
+[ext_resource type="Texture2D" uid="uid://sryxsk3hys6k" path="res://Assets/Art/UI/Minimap/boss_icon.png" id="4_gbsa2"]
 
 [node name="Minimap" type="Control" unique_id=104864828]
 custom_minimum_size = Vector2(320, 220)
@@ -11,3 +14,6 @@ offset_bottom = 220.0
 script = ExtResource("1_lhiow")
 background_color = Color(0.019607844, 0.015686275, 0.011764706, 0.6627451)
 background_border_color = Color(0.1254902, 0.09019608, 0.05490196, 1)
+treasure_room_icon = ExtResource("2_a7d3d")
+shop_room_icon = ExtResource("3_itplw")
+boss_room_icon = ExtResource("4_gbsa2")

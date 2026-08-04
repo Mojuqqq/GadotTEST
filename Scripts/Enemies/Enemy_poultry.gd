@@ -22,6 +22,11 @@ enum MovementState {
 @export_range(1, 200, 1)
 var boss_max_hp: int = 30
 
+# Рост максимального здоровья за каждый
+# этаж после первого.
+@export_range(0.0, 1.0, 0.05)
+var boss_hp_growth_per_floor: float = 0.25
+
 @export_range(10.0, 500.0, 5.0)
 var speed: float = 95.0
 
@@ -153,8 +158,40 @@ var base_sprite_z_index: int = 0
 # =========================================================
 
 func _ready() -> void:
-	hp = boss_max_hp
-	max_hp = boss_max_hp
+	var floor_number: int = maxi(
+		GameManager.current_floor,
+		1
+	)
+
+	var floor_multiplier: float = (
+		1.0
+		+ boss_hp_growth_per_floor
+		* float(floor_number - 1)
+	)
+
+	var scaled_boss_hp: int = ceili(
+		float(
+			maxi(
+				boss_max_hp,
+				1
+			)
+		)
+		* floor_multiplier
+	)
+
+	max_hp = scaled_boss_hp
+	hp = scaled_boss_hp
+
+	print(
+		"[BOSS POULTRY] floor=",
+		floor_number,
+		" | base_hp=",
+		boss_max_hp,
+		" | multiplier=",
+		floor_multiplier,
+		" | hp=",
+		scaled_boss_hp
+	)
 
 	super()
 
