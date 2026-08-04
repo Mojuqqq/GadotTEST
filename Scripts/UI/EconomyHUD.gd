@@ -10,10 +10,11 @@ extends CanvasLayer
 
 const FLYING_ICON_SIZE: float = 32.0
 
-const PICKUP_FLY_FIRST_DURATION: float = 0.16
-const PICKUP_FLY_SECOND_DURATION: float = 0.34
+const PICKUP_FLY_MIN_DURATION: float = 0.55
+const PICKUP_FLY_MAX_DURATION: float = 0.85
 
-const PICKUP_FLY_HEIGHT: float = 45.0
+const PICKUP_FLY_SPEED: float = 900.0
+const PICKUP_FLY_ARC_HEIGHT: float = 90.0
 
 
 var counter_pulse_tweens: Dictionary = {}
@@ -90,7 +91,7 @@ func play_pickup_fly(
 	flying_icon.texture = texture
 
 	flying_icon.texture_filter = (
-		CanvasItem.TEXTURE_FILTER_NEAREST
+		CanvasItem.TEXTURE_FILTER_LINEAR
 	)
 
 	flying_icon.position = start_position
@@ -125,55 +126,57 @@ func play_pickup_fly(
 		start_scale * 0.6
 	)
 
-	# Сначала предмет немного поднимается,
-	# затем ускоряется к счётчику.
-	var middle_position: Vector2 = (
+	var distance_to_target: float = (
+		start_position.distance_to(
+			target_position
+		)
+	)
+
+	var flight_duration: float = clampf(
+		distance_to_target / PICKUP_FLY_SPEED,
+		PICKUP_FLY_MIN_DURATION,
+		PICKUP_FLY_MAX_DURATION
+	)
+
+	var arc_height: float = minf(
+		PICKUP_FLY_ARC_HEIGHT,
+		distance_to_target * 0.3
+	)
+
+	# Контрольная точка формирует единую плавную дугу.
+	var control_position: Vector2 = (
 		start_position.lerp(
 			target_position,
-			0.35
+			0.45
 		)
 		+ Vector2(
 			0.0,
-			-PICKUP_FLY_HEIGHT
+			-arc_height
 		)
 	)
 
 	var fly_tween: Tween = create_tween()
 
-	fly_tween.tween_property(
-		flying_icon,
-		"position",
-		middle_position,
-		PICKUP_FLY_FIRST_DURATION
+	fly_tween.set_process_mode(
+		Tween.TWEEN_PROCESS_IDLE
+	)
+
+	fly_tween.tween_method(
+		_update_flying_pickup.bind(
+			flying_icon,
+			start_position,
+			control_position,
+			target_position,
+			start_scale,
+			final_scale
+		),
+		0.0,
+		1.0,
+		flight_duration
 	).set_trans(
-		Tween.TRANS_QUAD
+		Tween.TRANS_SINE
 	).set_ease(
-		Tween.EASE_OUT
-	)
-
-	fly_tween.tween_property(
-		flying_icon,
-		"position",
-		target_position,
-		PICKUP_FLY_SECOND_DURATION
-	).set_trans(
-		Tween.TRANS_QUAD
-	).set_ease(
-		Tween.EASE_IN
-	)
-
-	fly_tween.parallel().tween_property(
-		flying_icon,
-		"scale",
-		final_scale,
-		PICKUP_FLY_SECOND_DURATION
-	)
-
-	fly_tween.parallel().tween_property(
-		flying_icon,
-		"modulate:a",
-		0.7,
-		PICKUP_FLY_SECOND_DURATION
+		Tween.EASE_IN_OUT
 	)
 
 	fly_tween.tween_callback(
@@ -181,6 +184,80 @@ func play_pickup_fly(
 			flying_icon,
 			target_icon
 		)
+	)
+
+	fly_tween.tween_callback(
+		_on_pickup_fly_finished.bind(
+			flying_icon,
+			target_icon
+		)
+	)
+
+func _update_flying_pickup(
+	progress: float,
+	flying_icon: Sprite2D,
+	start_position: Vector2,
+	control_position: Vector2,
+	target_position: Vector2,
+	start_scale: Vector2,
+	final_scale: Vector2
+) -> void:
+	if not is_instance_valid(
+		flying_icon
+	):
+		return
+
+	var safe_progress: float = clampf(
+		progress,
+		0.0,
+		1.0
+	)
+
+	# Квадратичная кривая Безье:
+	# start → control → target.
+	var first_segment: Vector2 = (
+		start_position.lerp(
+			control_position,
+			safe_progress
+		)
+	)
+
+	var second_segment: Vector2 = (
+		control_position.lerp(
+			target_position,
+			safe_progress
+		)
+	)
+
+	flying_icon.position = (
+		first_segment.lerp(
+			second_segment,
+			safe_progress
+		)
+	)
+
+	flying_icon.scale = (
+		start_scale.lerp(
+			final_scale,
+			safe_progress
+		)
+	)
+
+	# Прозрачность уменьшается только ближе
+	# к окончанию полёта.
+	var fade_progress: float = clampf(
+		(
+			safe_progress
+			- 0.72
+		) / 0.28,
+		0.0,
+		1.0
+	)
+
+	flying_icon.modulate.a = lerpf(
+		1.0,
+		0.65,
+		fade_progress
 	)
 
 func _get_counter_target_icon(
