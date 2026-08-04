@@ -102,24 +102,84 @@ func _generate_offers() -> void:
 
 	var available_items: Array[ItemData] = []
 
-	for item in GameManager.all_items:
+	for raw_item in GameManager.all_items:
+		var item := raw_item as ItemData
+
 		if item == null:
 			continue
 
+		# Пассивный предмет исключается только тогда,
+		# когда игрок уже достиг его лимита.
 		if (
 			item.use_mode
 			== ItemData.UseMode.PASSIVE
-			and not GameManager.can_receive_passive_upgrade(
-				item
-			)
 		):
-			continue
+			var current_stacks: int = (
+				GameManager.get_passive_upgrade_count(
+					item.id
+				)
+			)
+
+			var maximum_stacks: int = maxi(
+				item.max_passive_stacks,
+				1
+			)
+
+			if current_stacks >= maximum_stacks:
+				continue
 
 		available_items.append(
 			item
 		)
 
+	print(
+		"[SHOP] Всего предметов: ",
+		GameManager.all_items.size(),
+		" | доступно: ",
+		available_items.size()
+	)
+
+	if available_items.is_empty():
+		push_warning(
+			"Магазин не смог создать товары: "
+			+ "список доступных предметов пуст."
+		)
+		return
+
 	available_items.shuffle()
+
+	var count: int = mini(
+		offer_count,
+		available_items.size()
+	)
+
+	for index in range(count):
+		var item: ItemData = (
+			available_items[index]
+		)
+
+		var price: int = maxi(
+			item.shop_price,
+			1
+		)
+
+		var grant_amount: int = (
+			GameManager.roll_item_grant_amount(
+				item
+			)
+		)
+
+		offers.append({
+			"item": item,
+			"price": price,
+			"amount": grant_amount,
+			"sold": false
+		})
+
+	print(
+		"[SHOP] Создано предложений: ",
+		offers.size()
+	)
 
 
 func get_offers() -> Array[Dictionary]:

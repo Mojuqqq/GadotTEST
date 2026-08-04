@@ -6,6 +6,8 @@ extends BaseBoss
 # =========================================================
 
 
+@export_group("Base Combat")
+
 @export var speed: float = 80.0
 
 @export var melee_range: float = 300.0
@@ -19,6 +21,40 @@ extends BaseBoss
 @export var bullet_speed: float = 350.0
 
 
+@export_group("Floor Scaling")
+
+# Здоровье петуха на первом этаже.
+@export_range(1, 500, 1)
+var base_boss_hp: int = 32
+
+# +25% здоровья за каждый следующий этаж.
+@export_range(0.0, 1.0, 0.05)
+var boss_hp_growth_per_floor: float = 0.25
+
+
+@export_group("Phase Two")
+
+# Вторая фаза начинается при 50% здоровья.
+@export_range(0.1, 0.9, 0.05)
+var phase_two_hp_ratio: float = 0.5
+
+# Ускорение передвижения.
+@export_range(1.0, 3.0, 0.05)
+var phase_two_speed_multiplier: float = 1.5
+
+# Уменьшение перезарядки ближней атаки.
+@export_range(0.1, 1.0, 0.05)
+var phase_two_melee_cooldown_multiplier: float = 0.65
+
+# Уменьшение перезарядки дальней атаки.
+@export_range(0.1, 1.0, 0.05)
+var phase_two_ranged_cooldown_multiplier: float = 0.6
+
+# Ускорение снарядов.
+@export_range(1.0, 3.0, 0.05)
+var phase_two_bullet_speed_multiplier: float = 1.3
+
+
 # =========================================================
 # СОСТОЯНИЕ
 # =========================================================
@@ -28,15 +64,61 @@ var is_melee_mode: bool = false
 var attack_timer: Timer = null
 
 
+var phase_two_active: bool = false
+var phase_two_threshold_hp: int = 0
+
+var initial_speed: float = 0.0
+var initial_melee_cooldown: float = 0.0
+var initial_ranged_cooldown: float = 0.0
+var initial_bullet_speed: float = 0.0
+
+
 # =========================================================
 # ИНИЦИАЛИЗАЦИЯ
 # =========================================================
 
 func _ready() -> void:
-	hp = 20
-	max_hp = 20
+	var floor_number: int = maxi(
+		GameManager.current_floor,
+		1
+	)
+
+	var hp_multiplier: float = (
+		1.0
+		+ boss_hp_growth_per_floor
+		* float(floor_number - 1)
+	)
+
+	max_hp = ceili(
+		float(base_boss_hp)
+		* hp_multiplier
+	)
+
+	hp = max_hp
+
+	phase_two_threshold_hp = maxi(
+		ceili(
+			float(max_hp)
+			* phase_two_hp_ratio
+		),
+		1
+	)
+
+	initial_speed = speed
+	initial_melee_cooldown = melee_cooldown
+	initial_ranged_cooldown = ranged_cooldown
+	initial_bullet_speed = bullet_speed
 
 	super()
+
+	print(
+		"[BOSS COCK] floor=",
+		floor_number,
+		" | hp=",
+		max_hp,
+		" | phase_2_at=",
+		phase_two_threshold_hp
+	)
 
 	add_to_group("Enemies")
 
@@ -68,6 +150,80 @@ func _ready() -> void:
 # =========================================================
 # ДВИЖЕНИЕ И ВЫБОР ЦЕЛИ
 # =========================================================
+func _update_phase_two() -> void:
+	if phase_two_active:
+		return
+
+	if hp <= 0:
+		return
+
+	if hp > phase_two_threshold_hp:
+		return
+
+	phase_two_active = true
+
+	speed = (
+		initial_speed
+		* phase_two_speed_multiplier
+	)
+
+	melee_cooldown = maxf(
+		initial_melee_cooldown
+		* phase_two_melee_cooldown_multiplier,
+		0.15
+	)
+
+	ranged_cooldown = maxf(
+		initial_ranged_cooldown
+		* phase_two_ranged_cooldown_multiplier,
+		0.25
+	)
+
+	bullet_speed = (
+		initial_bullet_speed
+		* phase_two_bullet_speed_multiplier
+	)
+
+	# Ускоряем следующую атаку после смены фазы.
+	if (
+		attack_timer != null
+		and is_active
+	):
+		attack_timer.stop()
+		attack_timer.start(0.25)
+
+	# Визуально показываем переход во вторую фазу.
+	if is_instance_valid(
+		damage_visual
+	):
+		damage_visual_base_modulate = Color(
+			1.0,
+			0.65,
+			0.65,
+			1.0
+		)
+
+		damage_visual.modulate = (
+			damage_visual_base_modulate
+		)
+
+	print(
+		"[BOSS COCK] PHASE 2",
+		" | floor=",
+		GameManager.current_floor,
+		" | hp=",
+		hp,
+		"/",
+		max_hp,
+		" | speed=",
+		speed,
+		" | melee_cd=",
+		melee_cooldown,
+		" | ranged_cd=",
+		ranged_cooldown,
+		" | bullet_speed=",
+		bullet_speed
+	)
 
 func _physics_process(
 	_delta: float
@@ -76,6 +232,8 @@ func _physics_process(
 		velocity = Vector2.ZERO
 		move_and_slide()
 		return
+
+	_update_phase_two()
 
 	current_target = _find_nearest_target()
 
