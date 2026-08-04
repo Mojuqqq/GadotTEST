@@ -1,0 +1,24 @@
+[remap]
+
+importer="wav"
+type="AudioStreamWAV"
+uid="uid://besuiih8vg7w1"
+path="res://.godot/imported/168984__lavik89__digital-hit.wav-3088d1c83f557c534b4b1f990a41db17.sample"
+
+[deps]
+
+source_file="res://Assets/Audio/атак плеер/168984__lavik89__digital-hit.wav"
+dest_files=["res://.godot/imported/168984__lavik89__digital-hit.wav-3088d1c83f557c534b4b1f990a41db17.sample"]
+
+[params]
+
+force/8_bit=false
+force/mono=false
+force/max_rate=false
+force/max_rate_hz=44100
+edit/trim=false
+edit/normalize=false
+edit/loop_mode=0
+edit/loop_begin=0
+edit/loop_end=-1
+compress/mode=2

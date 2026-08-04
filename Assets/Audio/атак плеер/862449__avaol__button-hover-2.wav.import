@@ -1,0 +1,24 @@
+[remap]
+
+importer="wav"
+type="AudioStreamWAV"
+uid="uid://1s8n2862fwg8"
+path="res://.godot/imported/862449__avaol__button-hover-2.wav-531d2b4eb86ce060d96e7440d675811f.sample"
+
+[deps]
+
+source_file="res://Assets/Audio/атак плеер/862449__avaol__button-hover-2.wav"
+dest_files=["res://.godot/imported/862449__avaol__button-hover-2.wav-531d2b4eb86ce060d96e7440d675811f.sample"]
+
+[params]
+
+force/8_bit=false
+force/mono=false
+force/max_rate=false
+force/max_rate_hz=44100
+edit/trim=false
+edit/normalize=false
+edit/loop_mode=0
+edit/loop_begin=0
+edit/loop_end=-1
+compress/mode=2

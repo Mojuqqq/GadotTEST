@@ -6,12 +6,12 @@
 [ext_resource type="PackedScene" uid="uid://nqq6as3gyh7a" path="res://Scenes/Enemies/Enemy_chicken.tscn" id="4_rgh2o"]
 [ext_resource type="PackedScene" uid="uid://bfltle5inqqhr" path="res://Scenes/Enemies/Enemy_cow.tscn" id="8_bmxlf"]
 [ext_resource type="PackedScene" uid="uid://dfh1vkyscefxw" path="res://Scenes/Enemies/Enemy_egg.tscn" id="9_grg3l"]
+[ext_resource type="PackedScene" uid="uid://c7lx73rp2g788" path="res://Scenes/Enemies/Boss_omelet.tscn" id="9_ki3rp"]
 [ext_resource type="PackedScene" uid="uid://dux56347sws2d" path="res://Scenes/UI/UI.tscn" id="9_vy5pj"]
 [ext_resource type="PackedScene" uid="uid://cqtvq0voq4fph" path="res://Scenes/Enemies/Enemy_carrot.tscn" id="10_frkhe"]
 [ext_resource type="PackedScene" uid="uid://c2n4eww25erye" path="res://Scenes/Enemies/Enemy_corn.tscn" id="11_1p5hy"]
 [ext_resource type="PackedScene" uid="uid://m4leu411eb0" path="res://Scenes/Enemies/Enemy_onion.tscn" id="12_h1m7h"]
 [ext_resource type="PackedScene" uid="uid://daili7udbv6ll" path="res://Scenes/Enemies/Enemy_poultry.tscn" id="13_lijq2"]
-[ext_resource type="PackedScene" uid="uid://cai6g7bruh7sj" path="res://Scenes/Enemies/Enemy_cock.tscn" id="13_n62cl"]
 [ext_resource type="Script" uid="uid://bmsix2wb6k7ub" path="res://Scripts/Debug/BalanceTelemetry.gd" id="16_ki3rp"]
 [ext_resource type="PackedScene" uid="uid://cy8mddadcgpo6" path="res://Scenes/UI/PauseMenu.tscn" id="17_2w5on"]
 [ext_resource type="Script" uid="uid://b4wp3f70s1114" path="res://Scripts/Debug/Debug.gd" id="17_346fj"]
@@ -26,7 +26,7 @@ room_pool = Array[PackedScene]([ExtResource("4_e8w2b")])
 enemy_pool = Array[PackedScene]([ExtResource("10_frkhe"), ExtResource("4_rgh2o"), ExtResource("11_1p5hy"), ExtResource("8_bmxlf"), ExtResource("9_grg3l"), ExtResource("12_h1m7h")])
 min_rooms = 4
 max_rooms = 5
-boss_pool = Array[PackedScene]([ExtResource("13_n62cl"), ExtResource("13_lijq2")])
+boss_pool = Array[PackedScene]([ExtResource("9_ki3rp")])
 boss_scene = ExtResource("13_lijq2")
 
 [node name="Rooms" type="Node2D" parent="." unique_id=742137853]

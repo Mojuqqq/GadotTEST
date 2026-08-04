@@ -1,0 +1,37 @@
+[gd_scene format=3 uid="uid://c7lx73rp2g788"]
+
+[ext_resource type="Script" uid="uid://cqo55ledu0gmv" path="res://Scripts/Enemies/Boss_omelet.gd" id="1_lrip4"]
+[ext_resource type="PackedScene" uid="uid://m4v1x8hypgty" path="res://Scenes/Enemies/Omelet_bullet.tscn" id="2_8ti18"]
+[ext_resource type="Texture2D" uid="uid://bsmk3kss0oiw5" path="res://Assets/Art/Characters/Enemies/Enemy_boss_omlet.png" id="2_68mha"]
+
+[sub_resource type="CapsuleShape2D" id="CapsuleShape2D_q8716"]
+radius = 73.0
+height = 316.0
+
+[sub_resource type="CanvasItemMaterial" id="CanvasItemMaterial_benfh"]
+blend_mode = 2
+light_mode = 1
+
+[node name="Boss_omelet" type="CharacterBody2D" unique_id=240231144]
+collision_layer = 4
+script = ExtResource("1_lrip4")
+mini_omelet_scene = ExtResource("2_8ti18")
+
+[node name="Sprite2D" type="Sprite2D" parent="." unique_id=1048545208]
+scale = Vector2(1.0718765, 0.9509423)
+texture = ExtResource("2_68mha")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=731214316]
+position = Vector2(3, 0)
+rotation = 1.5707964
+shape = SubResource("CapsuleShape2D_q8716")
+
+[node name="LandingMarker" type="Node2D" parent="." unique_id=1466085347]
+visible = false
+z_index = 20
+
+[node name="Sprite2D" type="Sprite2D" parent="LandingMarker" unique_id=1880458292]
+texture_filter = 4
+texture_repeat = 2
+material = SubResource("CanvasItemMaterial_benfh")
+texture = ExtResource("2_68mha")
