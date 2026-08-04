@@ -13,15 +13,16 @@ const AVAILABLE_SLOT_COUNT: int = 5
 var quick_slots: Array[QuickSlot] = []
 var active_effect_cards: Dictionary = {}
 
+var item_warning_label: Label = null
+var item_warning_tween: Tween = null
+
 var effect_refresh_accumulator: float = 0.0
-
-
 const EFFECT_REFRESH_INTERVAL: float = 0.1
-
 
 func _ready() -> void:
 	process_mode = Node.PROCESS_MODE_PAUSABLE
 
+	_create_item_warning_label()
 	_create_slot_buttons()
 	_connect_signals()
 	_refresh_quick_bar()
@@ -44,7 +45,72 @@ func _process(
 	effect_refresh_accumulator = 0.0
 
 	_refresh_active_effects()
-	
+
+func _create_item_warning_label() -> void:
+	item_warning_label = Label.new()
+	item_warning_label.name = "ItemUseWarningLabel"
+
+	item_warning_label.set_anchors_preset(
+		Control.PRESET_CENTER_BOTTOM
+	)
+
+	item_warning_label.offset_left = -250.0
+	item_warning_label.offset_top = -175.0
+	item_warning_label.offset_right = 250.0
+	item_warning_label.offset_bottom = -135.0
+
+	item_warning_label.grow_horizontal = (
+		Control.GROW_DIRECTION_BOTH
+	)
+
+	item_warning_label.grow_vertical = (
+		Control.GROW_DIRECTION_BEGIN
+	)
+
+	item_warning_label.mouse_filter = (
+		Control.MOUSE_FILTER_IGNORE
+	)
+
+	item_warning_label.horizontal_alignment = (
+		HORIZONTAL_ALIGNMENT_CENTER
+	)
+
+	item_warning_label.vertical_alignment = (
+		VERTICAL_ALIGNMENT_CENTER
+	)
+
+	item_warning_label.add_theme_color_override(
+		"font_color",
+		Color(
+			1.0,
+			0.35,
+			0.25,
+			1.0
+		)
+	)
+
+	item_warning_label.add_theme_color_override(
+		"font_outline_color",
+		Color(
+			0.08,
+			0.03,
+			0.02,
+			1.0
+		)
+	)
+
+	item_warning_label.add_theme_constant_override(
+		"outline_size",
+		5
+	)
+
+	item_warning_label.text = ""
+	item_warning_label.modulate.a = 0.0
+
+	add_child(
+		item_warning_label
+	)
+
 # =========================================================
 # СОЗДАНИЕ СЛОТОВ
 # =========================================================
@@ -156,12 +222,85 @@ func _activate_quick_slot(
 	):
 		return
 		
-	GameManager.use_quick_slot(
-		slot_index
+	var result: Dictionary = (
+		GameManager.use_quick_slot(
+			slot_index
+		)
 	)
+
+	var success: bool = bool(
+		result.get(
+			"success",
+			false
+		)
+	)
+
+	if not success:
+		var message: String = str(
+			result.get(
+				"message",
+				"Сейчас предмет нельзя применить."
+			)
+		)
+
+		_show_item_use_warning(
+			message
+		)
 
 	_refresh_quick_bar()
 
+func _show_item_use_warning(
+	message: String
+) -> void:
+	if not is_instance_valid(
+		item_warning_label
+	):
+		return
+
+	var final_message: String = (
+		message.strip_edges()
+	)
+
+	if final_message.is_empty():
+		final_message = (
+			"Сейчас предмет нельзя применить."
+		)
+
+	if (
+		item_warning_tween != null
+		and item_warning_tween.is_valid()
+	):
+		item_warning_tween.kill()
+
+	item_warning_label.text = final_message
+	item_warning_label.modulate = Color.WHITE
+
+	item_warning_tween = create_tween()
+
+	item_warning_tween.tween_interval(
+		1.6
+	)
+
+	item_warning_tween.tween_property(
+		item_warning_label,
+		"modulate:a",
+		0.0,
+		0.3
+	)
+
+	item_warning_tween.tween_callback(
+		_clear_item_use_warning
+	)
+
+
+func _clear_item_use_warning() -> void:
+	if not is_instance_valid(
+		item_warning_label
+	):
+		return
+
+	item_warning_label.text = ""
+	item_warning_label.modulate.a = 0.0
 
 # =========================================================
 # ОБНОВЛЕНИЕ UI

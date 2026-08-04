@@ -18,7 +18,7 @@ var player_damage_per_tick: int = 1
 @export_range(0.1, 5.0, 0.1)
 var player_damage_interval: float = 1.0
 
-@export var tick_interval: float = 0.5
+@export var tick_interval: float = 1.0
 @export var lifetime: float = 4.0
 
 
@@ -339,7 +339,7 @@ func _apply_damage(
 func setup(
 	damage: int,
 	duration: float = 4.0,
-	interval: float = 0.5
+	interval: float = 1.0
 ) -> void:
 	damage_per_tick = maxi(
 		damage,

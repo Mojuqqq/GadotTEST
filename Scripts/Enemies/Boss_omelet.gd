@@ -854,16 +854,14 @@ func _stop_rain_runtime(
 
 
 func _clear_active_mini_omelets() -> void:
-	for mini in active_mini_omelets:
-		if not is_instance_valid(mini):
+	for mini_omelet in active_mini_omelets:
+		if not is_instance_valid(mini_omelet):
 			continue
 
-		if mini.is_queued_for_deletion():
+		if mini_omelet.is_queued_for_deletion():
 			continue
 
-		mini.queue_free()
-
-	active_mini_omelets.clear()
+		mini_omelet.queue_free()
 
 
 # =========================================================
