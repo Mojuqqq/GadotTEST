@@ -266,7 +266,8 @@ func _refresh_active_effects() -> void:
 		):
 			active_effect_cards[item_id] = (
 				_create_effect_card(
-					item_id
+					item_id,
+					effect
 				)
 			)
 
@@ -368,13 +369,51 @@ func _on_inventory_changed(
 	_refresh_quick_bar()
 
 func _create_effect_card(
-	item_id: String
+	item_id: String,
+	effect: Dictionary
 ) -> Dictionary:
 	var item: ItemData = (
 		_find_database_item(
 			item_id
 		)
 	)
+
+	var display_name: String = str(
+		effect.get(
+			"display_name",
+			""
+		)
+	)
+
+	var effect_icon := effect.get(
+		"icon"
+	) as Texture2D
+
+	var icon_path: String = str(
+		effect.get(
+			"icon_path",
+			""
+		)
+	)
+
+	if (
+		effect_icon == null
+		and not icon_path.is_empty()
+		and ResourceLoader.exists(icon_path)
+	):
+		effect_icon = (
+			load(icon_path) as Texture2D
+		)
+
+	if item != null:
+		if display_name.is_empty():
+			display_name = item.name
+
+		if effect_icon == null:
+			effect_icon = item.icon
+
+	if display_name.is_empty():
+		display_name = item_id
 
 	var panel := PanelContainer.new()
 
@@ -443,8 +482,7 @@ func _create_effect_card(
 		CanvasItem.TEXTURE_FILTER_NEAREST
 	)
 
-	if item != null:
-		icon.texture = item.icon
+	icon.texture = effect_icon
 
 	content.add_child(
 		icon
@@ -467,10 +505,7 @@ func _create_effect_card(
 
 	var name_label := Label.new()
 
-	if item != null:
-		name_label.text = item.name
-	else:
-		name_label.text = item_id
+	name_label.text = display_name
 
 	name_label.text_overrun_behavior = (
 		TextServer.OVERRUN_TRIM_ELLIPSIS

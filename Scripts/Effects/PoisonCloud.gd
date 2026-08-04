@@ -190,17 +190,110 @@ func _can_take_poison_damage(
 func _apply_damage(
 	body: Node
 ) -> void:
-	if body.is_in_group("Player"):
-		if not GameManager.game_over_started:
-			GameManager.take_damage(
-				damage_per_tick
+	if not is_instance_valid(body):
+		return
+
+	var telemetry: Node = (
+		get_tree().get_first_node_in_group(
+			&"BalanceTelemetry"
+		)
+	)
+
+	# =====================================================
+	# УРОН ИГРОКУ
+	# =====================================================
+
+	if body.is_in_group(&"Player"):
+		if GameManager.game_over_started:
+			return
+
+		var hp_before: int = maxi(
+			GameManager.player_hp,
+			0
+		)
+
+		var actual_damage: int = mini(
+			damage_per_tick,
+			hp_before
+		)
+
+		if actual_damage <= 0:
+			return
+
+		# Записываем ДО изменения HP.
+		# record_damage_taken() сам вычисляет
+		# hp_before и hp_after.
+		if (
+			telemetry != null
+			and telemetry.has_method(
+				&"record_damage_taken"
 			)
+		):
+			telemetry.call(
+				&"record_damage_taken",
+				actual_damage
+			)
+
+		GameManager.take_damage(
+			actual_damage
+		)
 
 		return
 
-	if body.has_method("take_damage"):
-		body.take_damage(
-			damage_per_tick
+	# =====================================================
+	# УРОН ВРАГУ
+	# =====================================================
+
+	if not body.has_method(
+		&"take_damage"
+	):
+		return
+
+	var enemy_hp_before: int = -1
+
+	if body is BaseEnemy:
+		var enemy := body as BaseEnemy
+
+		enemy_hp_before = maxi(
+			enemy.hp,
+			0
+		)
+
+	var enemy_actual_damage: int = (
+		damage_per_tick
+	)
+
+	if enemy_hp_before >= 0:
+		enemy_actual_damage = mini(
+			damage_per_tick,
+			enemy_hp_before
+		)
+
+	if enemy_actual_damage <= 0:
+		return
+
+	body.call(
+		&"take_damage",
+		enemy_actual_damage
+	)
+
+	var killed_by_poison: bool = (
+		enemy_hp_before > 0
+		and enemy_actual_damage
+		>= enemy_hp_before
+	)
+
+	if (
+		telemetry != null
+		and telemetry.has_method(
+			&"record_poison_damage_dealt"
+		)
+	):
+		telemetry.call(
+			&"record_poison_damage_dealt",
+			body,
+			enemy_actual_damage,
+			killed_by_poison
 		)
 
 

@@ -62,7 +62,15 @@ var last_stats_snapshot: Dictionary = {}
 var totals: Dictionary = {
 	"shots": 0,
 	"hits": 0,
+
 	"direct_damage_dealt": 0,
+
+	# Периодический урон ядовитой лужи.
+	"poison_damage_dealt": 0,
+	"poison_ticks": 0,
+	"poison_kills": 0,
+	"poison_damage_by_target": {},
+
 	"damage_taken": 0,
 	"healing_received": 0,
 	"direct_player_kills": 0,
@@ -328,6 +336,12 @@ func _on_room_changed(
 		"hits": 0,
 
 		"direct_damage_dealt": 0,
+
+		"poison_damage_dealt": 0,
+		"poison_ticks": 0,
+		"poison_kills": 0,
+		"poison_damage_by_target": {},
+
 		"damage_taken": 0,
 		"healing_received": 0,
 
@@ -728,6 +742,54 @@ func record_direct_hit(
 		1
 	)
 
+func record_poison_damage_dealt(
+	target: Node,
+	damage_amount: int,
+	killed_by_poison: bool
+) -> void:
+	var actual_amount: int = maxi(
+		damage_amount,
+		0
+	)
+
+	if actual_amount <= 0:
+		return
+
+	_increment_total_and_room(
+		"poison_damage_dealt",
+		actual_amount
+	)
+
+	_increment_total_and_room(
+		"poison_ticks",
+		1
+	)
+
+	if killed_by_poison:
+		_increment_total_and_room(
+			"poison_kills",
+			1
+		)
+
+	var target_name: String = (
+		_get_node_type_name(
+			target
+		)
+	)
+
+	_increment_dictionary_counter(
+		totals,
+		"poison_damage_by_target",
+		target_name,
+		actual_amount
+	)
+
+	_increment_dictionary_counter(
+		current_room_data,
+		"poison_damage_by_target",
+		target_name,
+		actual_amount
+	)
 
 # =========================================================
 # ПОЛУЧЕННЫЙ УРОН
@@ -1434,7 +1496,7 @@ func _save_report(
 	)
 
 	var report: Dictionary = {
-		"version": 2,
+		"version": 3,
 
 		"saved_at": (
 			Time.get_datetime_string_from_system()
@@ -1913,6 +1975,25 @@ func _print_current_room_summary(
 			* 100.0
 		)
 
+	var direct_damage_dealt: int = int(
+		current_room_data.get(
+			"direct_damage_dealt",
+			0
+		)
+	)
+
+	var poison_damage_dealt: int = int(
+		current_room_data.get(
+			"poison_damage_dealt",
+			0
+		)
+	)
+
+	var total_damage_dealt: int = (
+		direct_damage_dealt
+		+ poison_damage_dealt
+	)
+	
 	print(
 		"\n[BALANCE ROOM] ",
 		current_room_data.get(
@@ -1972,10 +2053,7 @@ func _print_current_room_summary(
 		"%",
 
 		"\n  damage dealt/taken=",
-		current_room_data.get(
-			"direct_damage_dealt",
-			0
-		),
+		total_damage_dealt,
 		"/",
 		current_room_data.get(
 			"damage_taken",
@@ -1987,6 +2065,11 @@ func _print_current_room_summary(
 			"damage_by_source",
 			{}
 		),
+		
+		"\n  damage direct/poison=",
+		direct_damage_dealt,
+		"/",
+		poison_damage_dealt,
 
 		"\n  hp=",
 		current_room_data.get(

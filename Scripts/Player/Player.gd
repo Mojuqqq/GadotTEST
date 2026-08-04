@@ -1199,6 +1199,25 @@ func get_active_timed_effects() -> Array[Dictionary]:
 			)
 		})
 
+	if (
+		tear_timer != null
+		and is_crying
+		and not tear_timer.is_stopped()
+	):
+		effects.append({
+			"item_id": "onion_tears",
+			"display_name": "🧅 Слёзы лука",
+			"icon_path": (
+				"res://Assets/Art/Characters/"
+				+ "Enemies/Enemy_onion.png"
+			),
+			"time_left": tear_timer.time_left,
+			"duration": maxf(
+				tear_timer.wait_time,
+				0.01
+			)
+		})
+
 	return effects
 
 
