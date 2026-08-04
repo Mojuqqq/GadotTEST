@@ -303,7 +303,52 @@ func _explode() -> void:
 		if distance > explosion_radius:
 			continue
 
-		enemy.take_damage(damage)
+		var hp_before: int = -1
+
+		if enemy is BaseEnemy:
+			var base_enemy := enemy as BaseEnemy
+
+			hp_before = maxi(
+				base_enemy.hp,
+				0
+			)
+
+		var actual_damage: int = damage
+
+		if hp_before >= 0:
+			actual_damage = mini(
+				damage,
+				hp_before
+			)
+
+		enemy.take_damage(
+			damage
+		)
+
+		var killed_by_companion: bool = (
+			hp_before > 0
+			and actual_damage >= hp_before
+		)
+
+		var telemetry: Node = (
+			get_tree().get_first_node_in_group(
+				&"BalanceTelemetry"
+			)
+		)
+
+		if (
+			telemetry != null
+			and telemetry.has_method(
+				&"record_companion_damage"
+			)
+		):
+			telemetry.call(
+				&"record_companion_damage",
+				"ChickBomb",
+				enemy,
+				actual_damage,
+				killed_by_companion
+			)
 
 
 	var tween := create_tween()

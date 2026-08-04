@@ -16,14 +16,6 @@ extends CharacterBody2D
 @export_range(0.0, 32.0, 1.0)
 var damage_bounce_height: float = 12.0
 
-@export_group("Damage")
-
-@export_range(0.0, 2.0, 0.05)
-var damage_invulnerability_duration: float = 0.65
-
-var is_damage_invulnerable: bool = false
-var damage_invulnerability_timer: Timer = null
-
 @export_group("Completed Floor Boost")
 
 @export_range(1.0, 2.0, 0.05)
@@ -101,20 +93,6 @@ func _ready():
 	add_child(hot_sauce_timer)
 	
 	call_deferred("_create_egg_pool")
-	
-	damage_invulnerability_timer = Timer.new()
-	damage_invulnerability_timer.name = (
-		"DamageInvulnerabilityTimer"
-	)
-	damage_invulnerability_timer.one_shot = true
-
-	damage_invulnerability_timer.timeout.connect(
-		_on_damage_invulnerability_timeout
-	)
-
-	add_child(
-		damage_invulnerability_timer
-	)
 	
 func _create_egg_pool() -> void:
 	if egg_scene == null:
@@ -685,9 +663,6 @@ func take_damage(
 
 	if is_dead:
 		return
-		
-	if is_damage_invulnerable:
-		return
 
 	var current_hp: int = maxi(
 		GameManager.player_hp,
@@ -699,16 +674,6 @@ func take_damage(
 		current_hp
 	)
 	
-	is_damage_invulnerable = true
-
-	if damage_invulnerability_timer != null:
-		damage_invulnerability_timer.start(
-			maxf(
-				damage_invulnerability_duration,
-				0.0
-			)
-		)
-
 	if actual_damage <= 0:
 		return
 
@@ -1219,7 +1184,3 @@ func get_active_timed_effects() -> Array[Dictionary]:
 		})
 
 	return effects
-
-
-func _on_damage_invulnerability_timeout() -> void:
-	is_damage_invulnerable = false

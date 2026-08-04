@@ -1,7 +1,15 @@
 extends Area2D
 
 
+# Урон по врагам. Он зависит от урона яйца,
+# создавшего ядовитую лужу.
 @export var damage_per_tick: int = 1
+
+# Собственный урон по игроку не масштабируется
+# вместе с характеристикой damage.
+@export_range(1, 10, 1)
+var player_damage_per_tick: int = 1
+
 @export var tick_interval: float = 0.5
 @export var lifetime: float = 4.0
 
@@ -206,6 +214,21 @@ func _apply_damage(
 	if body.is_in_group(&"Player"):
 		if GameManager.game_over_started:
 			return
+
+		if not body.has_method(
+			&"take_damage"
+		):
+			return
+
+		body.call(
+			&"take_damage",
+			maxi(
+				player_damage_per_tick,
+				1
+			)
+		)
+
+		return
 
 		var hp_before: int = maxi(
 			GameManager.player_hp,

@@ -70,6 +70,13 @@ var totals: Dictionary = {
 	"poison_ticks": 0,
 	"poison_kills": 0,
 	"poison_damage_by_target": {},
+	
+	# Урон дружественных компаньонов.
+	"companion_damage_dealt": 0,
+	"companion_hits": 0,
+	"companion_kills": 0,
+	"companion_damage_by_source": {},
+	"companion_damage_by_target": {},
 
 	"damage_taken": 0,
 	"healing_received": 0,
@@ -341,6 +348,11 @@ func _on_room_changed(
 		"poison_ticks": 0,
 		"poison_kills": 0,
 		"poison_damage_by_target": {},
+		"companion_damage_dealt": 0,
+		"companion_hits": 0,
+		"companion_kills": 0,
+		"companion_damage_by_source": {},
+		"companion_damage_by_target": {},
 
 		"damage_taken": 0,
 		"healing_received": 0,
@@ -791,6 +803,77 @@ func record_poison_damage_dealt(
 		actual_amount
 	)
 
+
+func record_companion_damage(
+	source_name: String,
+	target: Node,
+	damage_amount: int,
+	killed_by_companion: bool
+) -> void:
+	var actual_amount: int = maxi(
+		damage_amount,
+		0
+	)
+
+	if actual_amount <= 0:
+		return
+
+	var safe_source_name: String = (
+		source_name.strip_edges()
+	)
+
+	if safe_source_name.is_empty():
+		safe_source_name = "UnknownCompanion"
+
+	_increment_total_and_room(
+		"companion_damage_dealt",
+		actual_amount
+	)
+
+	_increment_total_and_room(
+		"companion_hits",
+		1
+	)
+
+	if killed_by_companion:
+		_increment_total_and_room(
+			"companion_kills",
+			1
+		)
+
+	var target_name: String = (
+		_get_node_type_name(
+			target
+		)
+	)
+
+	_increment_dictionary_counter(
+		totals,
+		"companion_damage_by_source",
+		safe_source_name,
+		actual_amount
+	)
+
+	_increment_dictionary_counter(
+		current_room_data,
+		"companion_damage_by_source",
+		safe_source_name,
+		actual_amount
+	)
+
+	_increment_dictionary_counter(
+		totals,
+		"companion_damage_by_target",
+		target_name,
+		actual_amount
+	)
+
+	_increment_dictionary_counter(
+		current_room_data,
+		"companion_damage_by_target",
+		target_name,
+		actual_amount
+	)
 # =========================================================
 # ПОЛУЧЕННЫЙ УРОН
 # =========================================================
@@ -1496,7 +1579,7 @@ func _save_report(
 	)
 
 	var report: Dictionary = {
-		"version": 3,
+		"version": 4,
 
 		"saved_at": (
 			Time.get_datetime_string_from_system()
@@ -1989,9 +2072,17 @@ func _print_current_room_summary(
 		)
 	)
 
+	var companion_damage_dealt: int = int(
+		current_room_data.get(
+			"companion_damage_dealt",
+			0
+		)
+	)
+
 	var total_damage_dealt: int = (
 		direct_damage_dealt
 		+ poison_damage_dealt
+		+ companion_damage_dealt
 	)
 	
 	print(
@@ -2066,10 +2157,12 @@ func _print_current_room_summary(
 			{}
 		),
 		
-		"\n  damage direct/poison=",
+		"\n  damage direct/poison/companions=",
 		direct_damage_dealt,
 		"/",
 		poison_damage_dealt,
+		"/",
+		companion_damage_dealt,
 
 		"\n  hp=",
 		current_room_data.get(
