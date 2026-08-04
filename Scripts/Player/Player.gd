@@ -18,7 +18,7 @@ var damage_bounce_height: float = 12.0
 
 @export_group("Completed Floor Boost")
 
-@export_range(1.0, 2.0, 0.05)
+@export_range(1.0, 4.0, 0.05)
 var completed_floor_speed_multiplier: float = 3.0
 @onready var animated_sprite: AnimatedSprite2D = ($AnimatedSprite2D)
 var egg_pool: Array[Node] = []

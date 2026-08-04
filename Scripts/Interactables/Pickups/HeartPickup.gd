@@ -30,6 +30,10 @@ func _on_body_entered(
 
 	is_collected = true
 
+	_play_counter_fly(
+		&"health"
+	)
+
 	set_deferred(
 		&"monitoring",
 		false

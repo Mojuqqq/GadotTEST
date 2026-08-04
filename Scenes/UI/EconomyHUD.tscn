@@ -50,6 +50,7 @@ layout_mode = 2
 theme_override_constants/separation = 6
 
 [node name="HealthIcon" type="TextureRect" parent="MarginContainer/HBoxContainer/HealthCounter/Background/MarginContainer/HealthContainer" unique_id=1048867130]
+unique_name_in_owner = true
 custom_minimum_size = Vector2(32, 32)
 layout_mode = 2
 mouse_filter = 2
@@ -94,6 +95,7 @@ layout_mode = 2
 theme_override_constants/separation = 6
 
 [node name="GoldIcon" type="TextureRect" parent="MarginContainer/HBoxContainer/GoldCounter/Background/MarginContainer/GoldContainer" unique_id=322223483]
+unique_name_in_owner = true
 custom_minimum_size = Vector2(32, 32)
 layout_mode = 2
 mouse_filter = 2
@@ -139,6 +141,7 @@ layout_mode = 2
 theme_override_constants/separation = 6
 
 [node name="KeyIcon" type="TextureRect" parent="MarginContainer/HBoxContainer/KeysCounter/Background/MarginContainer/KeyContainer" unique_id=642717280]
+unique_name_in_owner = true
 custom_minimum_size = Vector2(32, 32)
 layout_mode = 2
 mouse_filter = 2

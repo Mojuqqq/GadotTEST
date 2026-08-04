@@ -863,6 +863,8 @@ func _clear_active_mini_omelets() -> void:
 
 		mini_omelet.queue_free()
 
+	active_mini_omelets.clear()
+
 
 # =========================================================
 # ОБЩИЙ УРОН ПО ОБЛАСТИ

@@ -107,6 +107,39 @@ func _start_idle_animation() -> void:
 		Tween.EASE_IN_OUT
 	)
 
+func _play_counter_fly(
+	counter_target: StringName
+) -> void:
+	if not is_instance_valid(
+		pickup_sprite
+	):
+		return
+
+	if pickup_sprite.texture == null:
+		return
+
+	var economy_hud: Node = (
+		get_tree().get_first_node_in_group(
+			&"EconomyHUD"
+		)
+	)
+
+	if not is_instance_valid(
+		economy_hud
+	):
+		return
+
+	if not economy_hud.has_method(
+		&"play_pickup_fly"
+	):
+		return
+
+	economy_hud.call(
+		&"play_pickup_fly",
+		pickup_sprite.texture,
+		pickup_sprite.global_position,
+		counter_target
+	)
 
 func _play_collect_animation() -> void:
 	if idle_tween != null:
