@@ -18,7 +18,6 @@ height = 80.89429
 collision_layer = 4
 script = ExtResource("1_8kp35")
 melee_range = 120.0
-ranged_cooldown = 2.5
 bullet_scene = ExtResource("2_lxk11")
 hp = 24
 

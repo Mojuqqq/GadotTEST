@@ -54,6 +54,10 @@ var phase_two_ranged_cooldown_multiplier: float = 0.6
 @export_range(1.0, 3.0, 0.05)
 var phase_two_bullet_speed_multiplier: float = 1.3
 
+# Угол между центральным и боковыми снарядами.
+@export_range(5.0, 45.0, 1.0)
+var phase_two_spread_angle_degrees: float = 14.0
+
 
 # =========================================================
 # СОСТОЯНИЕ
@@ -428,6 +432,44 @@ func ranged_attack(
 	if not _is_valid_target(target):
 		return
 
+	var direction_to_target: Vector2 = (
+		target.global_position
+		- global_position
+	).normalized()
+
+	# В первой фазе петух выпускает
+	# один снаряд прямо в игрока.
+	if not phase_two_active:
+		_spawn_ranged_bullet(
+			direction_to_target
+		)
+		return
+
+	# Во второй фазе выпускается веер:
+	# один снаряд прямо и два по сторонам.
+	var spread_angle: float = deg_to_rad(
+		phase_two_spread_angle_degrees
+	)
+
+	_spawn_ranged_bullet(
+		direction_to_target.rotated(
+			-spread_angle
+		)
+	)
+
+	_spawn_ranged_bullet(
+		direction_to_target
+	)
+
+	_spawn_ranged_bullet(
+		direction_to_target.rotated(
+			spread_angle
+		)
+	)
+
+func _spawn_ranged_bullet(
+	direction: Vector2
+) -> void:
 	if bullet_scene == null:
 		push_warning(
 			"У босса не назначена сцена снаряда."
@@ -442,30 +484,40 @@ func ranged_attack(
 		)
 		return
 
-	var current_scene: Node = get_tree().current_scene
+	var current_scene: Node = (
+		get_tree().current_scene
+	)
 
 	if current_scene == null:
 		bullet.queue_free()
 		return
 
-	current_scene.add_child(bullet)
-
-	if not bullet is Node2D:
-		bullet.queue_free()
-		return
+	current_scene.add_child(
+		bullet
+	)
 
 	var bullet_node := bullet as Node2D
 
-	bullet_node.global_position = global_position
+	if bullet_node == null:
+		bullet.queue_free()
+		return
 
-	var direction_to_target: Vector2 = (
-		target.global_position
-		- global_position
-	).normalized()
+	bullet_node.global_position = (
+		global_position
+	)
 
-	if bullet.has_method("setup"):
-		bullet.setup(
-			direction_to_target,
-			bullet_speed,
-			ranged_damage
+	if not bullet.has_method(
+		&"setup"
+	):
+		push_warning(
+			"У снаряда босса отсутствует setup()."
 		)
+		bullet.queue_free()
+		return
+
+	bullet.call(
+		&"setup",
+		direction.normalized(),
+		bullet_speed,
+		ranged_damage
+	)
