@@ -695,9 +695,9 @@ func _spawn_one_mini_omelet() -> void:
 		mini_omelet_scene.instantiate()
 	)
 
-	var mini := mini_instance as Node2D
+	var mini_omelet := mini_instance as Node2D
 
-	if mini == null:
+	if mini_omelet == null:
 		if mini_instance != null:
 			mini_instance.queue_free()
 
@@ -716,25 +716,25 @@ func _spawn_one_mini_omelet() -> void:
 
 	# Позиция назначается до add_child,
 	# чтобы объект не появился сначала в точке 0, 0.
-	mini.position = room_node.to_local(
+	mini_omelet.position = room_node.to_local(
 		spawn_position
 	)
 
-	room_node.add_child(mini)
+	room_node.add_child(mini_omelet)
 
-	active_mini_omelets.append(mini)
+	active_mini_omelets.append(mini_omelet)
 
-	if mini.has_signal("finished"):
+	if mini_omelet.has_signal("finished"):
 		var callback := Callable(
 			self,
 			"_on_mini_omelet_finished"
 		)
 
-		if not mini.is_connected(
+		if not mini_omelet.is_connected(
 			"finished",
 			callback
 		):
-			mini.connect(
+			mini_omelet.connect(
 				"finished",
 				callback
 			)
@@ -811,10 +811,11 @@ func _get_random_rain_position() -> Vector2:
 
 
 func _on_mini_omelet_finished(
-	mini: Node
+	mini_omelet: Node
 ) -> void:
-	active_mini_omelets.erase(mini)
-
+	active_mini_omelets.erase(
+		mini_omelet
+	)
 
 func _cleanup_active_mini_omelets() -> void:
 	for index in range(
@@ -822,15 +823,17 @@ func _cleanup_active_mini_omelets() -> void:
 		-1,
 		-1
 	):
-		var mini: Node = active_mini_omelets[index]
 
-		if not is_instance_valid(mini):
+		var mini_omelet: Node = (
+			active_mini_omelets[index]
+		)
+
+		if not is_instance_valid(mini_omelet):
 			active_mini_omelets.remove_at(index)
 			continue
 
-		if mini.is_queued_for_deletion():
+		if mini_omelet.is_queued_for_deletion():
 			active_mini_omelets.remove_at(index)
-
 
 func _stop_rain_runtime(
 	clear_existing: bool
