@@ -105,15 +105,24 @@ var flight_speed: float = 550.0
 @export_range(50.0, 800.0, 10.0)
 var flight_distance: float = 260.0
 
-# Урон при попадании непосредственно
-# во время полёта-рывка.
+# Дополнительное расстояние после позиции цели,
+# чтобы курица пролетала через неё, а не
+# останавливалась перед ней.
+@export_range(0.0, 300.0, 10.0)
+var flight_overshoot_distance: float = 120.0
+
+# Максимальная фактическая длина рывка.
+@export_range(100.0, 900.0, 10.0)
+var flight_max_distance: float = 520.0
+
+# Урон при пересечении игрока рывком.
 @export_range(1, 20, 1)
 var flight_damage: int = 2
 
-# Радиус пересечения траектории рывка
-# с целью.
+# Допустимое расстояние между игроком
+# и траекторией полёта.
 @export_range(20.0, 200.0, 5.0)
-var flight_hit_radius: float = 95.0
+var flight_hit_radius: float = 105.0
 
 # Время разгона до максимальной скорости.
 @export_range(0.05, 2.0, 0.05)
@@ -148,6 +157,7 @@ var state_elapsed: float = 0.0
 var flight_direction: Vector2 = Vector2.ZERO
 var flight_travelled: float = 0.0
 var flight_elapsed: float = 0.0
+var active_flight_distance: float = 0.0
 
 # За один рывок одна цель может получить
 # урон только один раз.
@@ -369,7 +379,36 @@ func _process_takeoff(
 	)
 
 	if progress < 1.0:
-		return
+	return
+
+current_target = _find_nearest_target()
+
+if not _is_valid_target(current_target):
+	_reset_movement_state()
+	return
+
+var target_offset: Vector2 = (
+	current_target.global_position
+	- global_position
+)
+
+if target_offset == Vector2.ZERO:
+	_reset_movement_state()
+	return
+
+	# Направление фиксируется только после окончания
+	# визуальной подготовки к рывку.
+	flight_direction = target_offset.normalized()
+
+	# Курица должна пролететь немного дальше цели.
+	active_flight_distance = clampf(
+		target_offset.length()
+		+ flight_overshoot_distance,
+		flight_distance,
+		flight_max_distance
+	)
+
+	flight_damage_dealt = false
 
 	movement_state = MovementState.FLYING
 
@@ -485,14 +524,10 @@ func _start_flight() -> void:
 	if not _is_valid_target(current_target):
 		return
 
-	flight_direction = (
-		current_target.global_position
-		- global_position
-	).normalized()
-
-	if flight_direction == Vector2.ZERO:
-		return
-
+	# Направление пока не фиксируем.
+	# Игрок ещё может двигаться во время подготовки.
+	flight_direction = Vector2.ZERO
+	active_flight_distance = 0.0
 	flight_damage_dealt = false
 
 	movement_state = MovementState.TAKEOFF
