@@ -29,9 +29,11 @@ atlas = ExtResource("3_kgb56")
 region = Rect2(0, 0, 52, 224)
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_kgb56"]
+resource_local_to_scene = true
 size = Vector2(84, 80)
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_aeyec"]
+resource_local_to_scene = true
 size = Vector2(84, 80)
 
 [node name="DoorSocket" type="Node2D" unique_id=760714407]
