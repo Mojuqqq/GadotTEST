@@ -8,7 +8,7 @@ extends BaseEnemy
 @export var speed: float = 30.0
 @export var damage: int = 3
 
-@export var explosion_radius: float = 120.0
+@export var explosion_radius: float = 60.0
 @export var detection_radius: float = 30.0
 @export var explosion_delay: float = 0.4
 

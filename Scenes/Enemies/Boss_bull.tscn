@@ -1,0 +1,33 @@
+[gd_scene format=3 uid="uid://bmw7di788gna0"]
+
+[ext_resource type="Script" uid="uid://e7pxag6tvavc" path="res://Scripts/Enemies/Boss_bull.gd" id="1_nnbj0"]
+[ext_resource type="Texture2D" uid="uid://bjh7pxyy6tvcf" path="res://Assets/Art/Characters/Enemies/Enemy_boss_black_bull.png" id="2_5jldn"]
+
+[sub_resource type="CapsuleShape2D" id="CapsuleShape2D_q8716"]
+radius = 87.0
+height = 174.0
+
+[sub_resource type="CapsuleShape2D" id="CapsuleShape2D_benfh"]
+radius = 92.0
+height = 184.0
+
+[node name="Boss_bull" type="CharacterBody2D" unique_id=240231144]
+collision_layer = 4
+script = ExtResource("1_nnbj0")
+
+[node name="Sprite2D" type="Sprite2D" parent="." unique_id=1048545208]
+scale = Vector2(0.1544924, 0.15548886)
+texture = ExtResource("2_5jldn")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=731214316]
+rotation = 1.5707964
+shape = SubResource("CapsuleShape2D_q8716")
+
+[node name="ChargeHitbox" type="Area2D" parent="." unique_id=919917117]
+collision_layer = 0
+collision_mask = 2
+monitoring = false
+
+[node name="CollisionShape2D2" type="CollisionShape2D" parent="ChargeHitbox" unique_id=1677879840]
+rotation = 1.5707964
+shape = SubResource("CapsuleShape2D_benfh")
