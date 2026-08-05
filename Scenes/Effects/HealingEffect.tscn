@@ -1,40 +1,38 @@
 [gd_scene format=3 uid="uid://dd63xygckjltt"]
 
 [ext_resource type="Script" uid="uid://cmhi6uq37djbv" path="res://Scripts/HealingEffect.gd" id="1_av8wx"]
+[ext_resource type="Texture2D" uid="uid://cgqo0c128jp7e" path="res://Assets/Art/Effects/heal_particle.png" id="2_qu5db"]
+[ext_resource type="Texture2D" uid="uid://f523bfta83sv" path="res://Assets/Art/Effects/heal_ring.png" id="2_x16lk"]
 
-[sub_resource type="Gradient" id="Gradient_qu5db"]
-colors = PackedColorArray(0, 0.83137256, 0, 0.49019608, 1, 1, 0.6509804, 0.46666667)
-
-[sub_resource type="GradientTexture1D" id="GradientTexture1D_57qmd"]
-gradient = SubResource("Gradient_qu5db")
-
-[sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_g4v7s"]
-particle_flag_disable_z = true
-direction = Vector3(0, -1, 0)
-spread = 180.0
-initial_velocity_min = 70.0
-initial_velocity_max = 120.0
-gravity = Vector3(0, -20, 0)
-scale_min = 0.79999995
-scale_max = 1.3
-color_ramp = SubResource("GradientTexture1D_57qmd")
+[sub_resource type="Gradient" id="Gradient_mu3u0"]
+offsets = PackedFloat32Array(0, 0.48453608, 1)
+colors = PackedColorArray(0, 1, 0, 1, 0.03529412, 1, 0.4862745, 0.84705883, 0.03529412, 1, 0.4862745, 0)
 
 [node name="HealingEffect" type="Node2D" unique_id=49783018]
 script = ExtResource("1_av8wx")
 
-[node name="Burst" type="GPUParticles2D" parent="." unique_id=1551434263]
+[node name="GroundRing" type="Sprite2D" parent="." unique_id=532905868]
+modulate = Color(1, 1, 1, 0)
+position = Vector2(0, 54)
+scale = Vector2(0.9, 0.9)
+texture = ExtResource("2_x16lk")
+
+[node name="Burst" type="CPUParticles2D" parent="." unique_id=35346434]
 z_index = 5
 emitting = false
 amount = 12
+texture = ExtResource("2_qu5db")
 lifetime = 0.45
 one_shot = true
 explosiveness = 1.0
-process_material = SubResource("ParticleProcessMaterial_g4v7s")
+color_ramp = SubResource("Gradient_mu3u0")
 
-[node name="Rising" type="GPUParticles2D" parent="." unique_id=1766929062]
+[node name="Rising" type="CPUParticles2D" parent="." unique_id=1224955003]
 z_index = 5
 emitting = false
 amount = 10
+texture = ExtResource("2_qu5db")
 lifetime = 0.9
 one_shot = true
 explosiveness = 0.55
+color_ramp = SubResource("Gradient_mu3u0")

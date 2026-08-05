@@ -1238,7 +1238,4 @@ func _spawn_healing_effect() -> void:
 	# узлом игрока и не управляет AnimatedSprite2D.
 	add_child(effect)
 
-	effect.position = Vector2(
-		0.0,
-		-20.0
-	)
+	effect.position = Vector2.ZERO
