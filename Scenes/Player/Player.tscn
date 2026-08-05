@@ -8,6 +8,7 @@
 [ext_resource type="Texture2D" uid="uid://dg2f2uxsqr35c" path="res://Assets/Art/Characters/Player/player_idle_anim.png" id="4_jmcll"]
 [ext_resource type="Texture2D" uid="uid://ncb6merf0kjh" path="res://Assets/Art/Characters/Player/player_walk_anim.png" id="4_ude3g"]
 [ext_resource type="Texture2D" uid="uid://dgbfodiw8e4hk" path="res://Assets/Art/Characters/Player/player_idle_frame_1_2.png" id="5_4wape"]
+[ext_resource type="Texture2D" uid="uid://f523bfta83sv" path="res://Assets/Art/Effects/heal_ring.png" id="5_esmjy"]
 [ext_resource type="Texture2D" uid="uid://3ylw1hmqlut3" path="res://Assets/Art/Characters/Player/player_heal_anim.png" id="5_i5acl"]
 [ext_resource type="Texture2D" uid="uid://d4gf5bllp7uwb" path="res://Assets/Art/Characters/Player/player_idle_frame_2.png" id="6_t26db"]
 [ext_resource type="Texture2D" uid="uid://dch3haou7fcj5" path="res://Assets/Art/Characters/Player/player_shoot_frame_3.png" id="10_esmjy"]
@@ -218,6 +219,13 @@ healing_effect_scene = ExtResource("4_0u84n")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=738740004 groups=["Player"]]
 shape = SubResource("CapsuleShape2D_spwcu")
+
+[node name="HealingGroundRing" type="Sprite2D" parent="." unique_id=1886021594]
+modulate = Color(1, 1, 1, 0)
+show_behind_parent = true
+position = Vector2(0, 65)
+scale = Vector2(0.9, 0.9)
+texture = ExtResource("5_esmjy")
 
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="." unique_id=2037802211]
 texture_filter = 1

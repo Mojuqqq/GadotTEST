@@ -1,10 +1,6 @@
 extends Node2D
 
 
-@onready var ground_ring: Sprite2D = (
-	$GroundRing
-)
-
 @onready var burst: CPUParticles2D = (
 	$Burst
 )
@@ -19,7 +15,6 @@ func _ready() -> void:
 
 	await get_tree().process_frame
 
-	_play_ground_ring_pulse()
 
 	burst.restart()
 	rising.restart()
@@ -102,88 +97,3 @@ func _configure_particles() -> void:
 
 	rising.scale_amount_min = 0.7
 	rising.scale_amount_max = 1.1
-
-func _play_ground_ring_pulse() -> void:
-	if ground_ring == null:
-		return
-
-	ground_ring.modulate.a = 0.0
-	ground_ring.scale = Vector2(
-		0.85,
-		0.85
-	)
-
-	var tween: Tween = create_tween()
-
-	# Первый мягкий вход
-	tween.tween_property(
-		ground_ring,
-		"modulate:a",
-		0.75,
-		0.12
-	)
-
-	tween.parallel().tween_property(
-		ground_ring,
-		"scale",
-		Vector2(1.0, 1.0),
-		0.12
-	)
-
-	# Небольшая пульсация
-	tween.tween_property(
-		ground_ring,
-		"modulate:a",
-		0.55,
-		0.16
-	)
-
-	tween.parallel().tween_property(
-		ground_ring,
-		"scale",
-		Vector2(1.08, 1.08),
-		0.16
-	)
-
-	tween.tween_property(
-		ground_ring,
-		"modulate:a",
-		0.75,
-		0.16
-	)
-
-	tween.parallel().tween_property(
-		ground_ring,
-		"scale",
-		Vector2(0.96, 0.96),
-		0.16
-	)
-
-	tween.tween_property(
-		ground_ring,
-		"modulate:a",
-		0.45,
-		0.18
-	)
-
-	tween.parallel().tween_property(
-		ground_ring,
-		"scale",
-		Vector2(1.1, 1.1),
-		0.18
-	)
-
-	# Затухание
-	tween.tween_property(
-		ground_ring,
-		"modulate:a",
-		0.0,
-		0.22
-	)
-
-	tween.parallel().tween_property(
-		ground_ring,
-		"scale",
-		Vector2(1.18, 1.18),
-		0.22
-	)
