@@ -141,6 +141,7 @@ visible = false
 stream = ExtResource("11_2tscw")
 volume_db = -8.0
 autoplay = true
+bus = &"Music"
 
 [connection signal="pressed" from="NewGameButton" to="." method="_on_new_game_button_pressed"]
 [connection signal="pressed" from="SettingsButton" to="." method="_on_settings_button_pressed"]
