@@ -9,15 +9,15 @@ const SFX_BUS: StringName = &"SFX"
 # =========================================================
 
 const UI_CLICK: AudioStream = preload(
-	"res://Assets/Audio/Клик/506054__mellau__button-click-1.wav"
+	"res://Assets/Audio/UI/button_click.wav"
 )
 
 const UI_HOVER: AudioStream = preload(
-	"res://Assets/Audio/Клик/navedenie--derevyannyiy-tap.wav"
+	"res://Assets/Audio/UI/button_hover.wav"
 )
 
 const UI_CANCEL: AudioStream = preload(
-	"res://Assets/Audio/Клик/788602__el_boss__cancel-or-no-button-sound.wav"
+	"res://Assets/Audio/UI/button_cancel.wav"
 )
 
 
@@ -26,12 +26,13 @@ const UI_CANCEL: AudioStream = preload(
 # =========================================================
 
 const PAUSE_SOUND: AudioStream = preload(
-	"res://Assets/Audio/пауза/836021__matustrm__pause.wav"
+	"res://Assets/Audio/System/pause.wav"
 )
 
 const RESUME_SOUND: AudioStream = preload(
-	"res://Assets/Audio/анпауза/836022__matustrm__resume.wav"
+	"res://Assets/Audio/System/resume.wav"
 )
+
 
 
 # =========================================================
@@ -39,23 +40,23 @@ const RESUME_SOUND: AudioStream = preload(
 # =========================================================
 
 const PLAYER_ATTACK: AudioStream = preload(
-	"res://Assets/Audio/атак плеер/168984__lavik89__digital-hit.wav"
+	"res://Assets/Audio/Player/egg_throw.wav"
 )
 
 const CHEST_OPEN: AudioStream = preload(
-	"res://Assets/Audio/бонус/sunduk-otkryivaetsya--nagrada.wav"
+	"res://Assets/Audio/World/chest_open.wav"
 )
 
 const BONUS: AudioStream = preload(
-	"res://Assets/Audio/бонус/otkryitie--dostijenie.wav"
+	"res://Assets/Audio/System/reward.wav"
 )
 
 const ERROR_SOUND: AudioStream = preload(
-	"res://Assets/Audio/ерор/327738__distillerystudio__error_01.wav"
+	"res://Assets/Audio/UI/error.wav"
 )
 
 const DOOR_OPEN: AudioStream = preload(
-	"res://Assets/Audio/опен дор/35109__digifishmusic__electromechanical-thunk.wav"
+	"res://Assets/Audio/World/door_open.wav"
 )
 
 

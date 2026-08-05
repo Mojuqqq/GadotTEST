@@ -3,12 +3,12 @@
 importer="wav"
 type="AudioStreamWAV"
 uid="uid://dyqbfwhareot8"
-path="res://.godot/imported/otkryitie--dostijenie.wav-75e9113929c332535d804335fbff3682.sample"
+path="res://.godot/imported/reward.wav-99fb69e3d51771793d522ea715fcb7b0.sample"
 
 [deps]
 
-source_file="res://Assets/Audio/бонус/otkryitie--dostijenie.wav"
-dest_files=["res://.godot/imported/otkryitie--dostijenie.wav-75e9113929c332535d804335fbff3682.sample"]
+source_file="res://Assets/Audio/System/reward.wav"
+dest_files=["res://.godot/imported/reward.wav-99fb69e3d51771793d522ea715fcb7b0.sample"]
 
 [params]
 
