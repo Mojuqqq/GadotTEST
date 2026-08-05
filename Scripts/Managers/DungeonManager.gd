@@ -1152,6 +1152,20 @@ func enter_room(index: int) -> void:
 		)
 		return
 
+	var is_entering_another_room: bool = (
+		index != current_room_index
+	)
+
+	# Замена должна произойти ДО изменения
+	# current_room_index и ДО on_room_entered().
+	if (
+		debug_next_room_boss_scene != null
+		and is_entering_another_room
+	):
+		_replace_room_with_debug_boss(
+			room_instances[index]
+		)
+
 	if (
 		current_room_index >= 0
 		and current_room_index
@@ -1171,14 +1185,14 @@ func enter_room(index: int) -> void:
 	room.visible = true
 	current_room_index = index
 
-	
-
 	room_changed.emit(
 		room.name,
 		index
 	)
 
-	if room.has_method("on_room_entered"):
+	if room.has_method(
+		"on_room_entered"
+	):
 		room.on_room_entered()
 	else:
 		push_warning(
@@ -1188,14 +1202,6 @@ func enter_room(index: int) -> void:
 		)
 
 	update_enemy_count()
-
-	if (
-		debug_next_room_boss_scene != null
-		and index != current_room_index
-	):
-		_replace_room_with_debug_boss(
-			room_instances[index]
-		)
 
 # =========================================================
 # ПЕРЕХОД В ДРУГУЮ КОМНАТУ
