@@ -169,11 +169,29 @@ func _input(
 
 
 func toggle_pause() -> void:
-	visible = not visible
-	get_tree().paused = visible
+	_set_pause_state(
+		not visible
+	)
 
-	if visible:
+
+func _set_pause_state(
+	paused: bool
+) -> void:
+	var state_changed: bool = (
+		visible != paused
+	)
+
+	visible = paused
+	get_tree().paused = paused
+
+	if not state_changed:
+		return
+
+	if paused:
+		AudioManager.play_pause()
 		_refresh_next_floor_button()
+	else:
+		AudioManager.play_resume()
 
 
 func _on_continue_button_pressed() -> void:
@@ -207,7 +225,7 @@ func _on_next_floor_button_pressed() -> void:
 
 
 func _on_next_floor_confirmed() -> void:
-	visible = false
+	_set_pause_state(false)
 	GameManager.go_to_next_floor()
 
 
@@ -267,8 +285,7 @@ func _on_menu_button_pressed() -> void:
 	exit_run_dialog.popup_centered()
 
 func _on_exit_run_confirmed() -> void:
-	visible = false
-	get_tree().paused = false
+	_set_pause_state(false)
 
 	if exit_will_save_gold:
 		GameManager.finish_run_and_return_to_menu()
@@ -288,8 +305,7 @@ func close_pause_menu() -> void:
 		settings_menu.close_menu()
 		return
 
-	visible = false
-	get_tree().paused = false
+	_set_pause_state(false)
 	
 func _on_close_button_pressed() -> void:
 	close_pause_menu()

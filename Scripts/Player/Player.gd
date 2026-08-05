@@ -21,6 +21,9 @@ var damage_bounce_height: float = 12.0
 @export_range(1.0, 4.0, 0.05)
 var completed_floor_speed_multiplier: float = 3.0
 @onready var animated_sprite: AnimatedSprite2D = ($AnimatedSprite2D)
+@onready var footsteps: AudioStreamPlayer2D = (
+	$Footsteps
+)
 var egg_pool: Array[Node] = []
 const INITIAL_POOL_SIZE := 20
 
@@ -204,6 +207,8 @@ func _physics_process(delta):
 	if external_force.length_squared() < 1.0:
 		external_force = Vector2.ZERO
 	move_and_slide()
+	
+	_update_footsteps()
 	
 	_update_movement_animation(
 		direction
@@ -436,6 +441,10 @@ func shoot() -> void:
 		egg.damage,
 		use_rotten_egg,
 		use_golden_egg
+	)
+
+	AudioManager.play_player_attack(
+		global_position
 	)
 
 	var telemetry: Node = (
@@ -888,6 +897,8 @@ func die() -> void:
 
 	is_dead = true
 
+	if is_instance_valid(footsteps):
+		footsteps.stop()
 
 	velocity = Vector2.ZERO
 	external_force = Vector2.ZERO
@@ -1184,3 +1195,24 @@ func get_active_timed_effects() -> Array[Dictionary]:
 		})
 
 	return effects
+
+func _update_footsteps() -> void:
+	if not is_instance_valid(footsteps):
+		return
+
+	# Проверяем реальное перемещение, а не только
+	# нажатую клавишу. Поэтому у стены шаги
+	# не будут продолжать звучать бесконечно.
+	var is_actually_moving: bool = (
+		get_real_velocity().length_squared()
+		> 100.0
+	)
+
+	if is_actually_moving:
+		if not footsteps.playing:
+			footsteps.play()
+
+		return
+
+	if footsteps.playing:
+		footsteps.stop()

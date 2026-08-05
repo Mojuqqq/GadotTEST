@@ -236,6 +236,7 @@ func _activate_quick_slot(
 	)
 
 	if not success:
+		AudioManager.play_error()
 		var message: String = str(
 			result.get(
 				"message",

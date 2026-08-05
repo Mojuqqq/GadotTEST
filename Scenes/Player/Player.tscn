@@ -12,6 +12,7 @@
 [ext_resource type="Texture2D" uid="uid://dch3haou7fcj5" path="res://Assets/Art/Characters/Player/player_shoot_frame_3.png" id="10_esmjy"]
 [ext_resource type="Texture2D" uid="uid://bteux7vpsx73y" path="res://Assets/Art/Characters/Player/player_shoot_frame_4.png" id="11_6tu5v"]
 [ext_resource type="Texture2D" uid="uid://b8hfgpbr0s3hx" path="res://Assets/Art/Characters/Player/player_shoot_frame_5.png" id="12_spxdj"]
+[ext_resource type="AudioStream" uid="uid://dsgdjginkj1wr" path="res://Assets/Audio/ходьба/351785__mma_official__steps.wav" id="13_epg6k"]
 
 [sub_resource type="CapsuleShape2D" id="CapsuleShape2D_spwcu"]
 radius = 31.0
@@ -221,3 +222,8 @@ texture_filter = 1
 scale = Vector2(0.5, 0.5)
 sprite_frames = SubResource("SpriteFrames_obgpu")
 animation = &"idle"
+
+[node name="Footsteps" type="AudioStreamPlayer2D" parent="." unique_id=716466668]
+stream = ExtResource("13_epg6k")
+volume_db = -18.0
+max_distance = 700.0

@@ -507,7 +507,19 @@ func _set_open_local(open: bool) -> void:
 	)
 
 func set_open(open: bool) -> void:
+	var was_open: bool = is_open
+
 	_set_open_local(open)
+
+	if (
+		open
+		and not was_open
+		and is_open
+		and not Engine.is_editor_hint()
+	):
+		AudioManager.play_door_open(
+			global_position
+		)
 
 	var other_socket := (
 		linked_socket as DoorSocket

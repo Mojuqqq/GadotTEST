@@ -206,6 +206,10 @@ func open(added_amount: int) -> void:
 
 	is_opened = true
 
+	AudioManager.play_chest_open(
+		global_position
+	)
+
 	opened.emit()
 
 	player_near = false
@@ -302,10 +306,16 @@ func show_reward(
 func _show_feedback(
 	message: String
 ) -> void:
+	AudioManager.play_error()
+
 	interaction_label.text = message
 	interaction_label.visible = true
 
 
 func _show_no_key_feedback() -> void:
+	AudioManager.play_error()
+
 	interaction_label.text = "Нужен ключ!"
 	interaction_label.visible = true
+	
+	
