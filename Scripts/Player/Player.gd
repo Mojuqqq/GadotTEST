@@ -4,6 +4,7 @@ extends CharacterBody2D
 @export var egg_scene: PackedScene
 @export_group("Damage Feedback")
 
+
 @export var damage_feedback_scene: PackedScene
 
 @export var damage_tint: Color = Color(
@@ -15,6 +16,10 @@ extends CharacterBody2D
 
 @export_range(0.0, 32.0, 1.0)
 var damage_bounce_height: float = 12.0
+
+@export_group("Healing Effect")
+
+@export var healing_effect_scene: PackedScene
 
 @export_group("Completed Floor Boost")
 
@@ -245,10 +250,7 @@ func _update_movement_animation(
 	# Пока проигрывается бросок яйца,
 	# ходьба и idle не должны его перебивать.
 	if (
-		(
-			animated_sprite.animation == &"shoot"
-			or animated_sprite.animation == &"heal"
-		)
+		animated_sprite.animation == &"shoot"
 		and animated_sprite.is_playing()
 	):
 		return
@@ -287,12 +289,6 @@ func update_speed(
 		current_speed
 	)
 
-func _play_heal_animation() -> void:
-	if animated_sprite == null:
-		return
-
-	animated_sprite.stop()
-	animated_sprite.play(&"heal")
 
 func receive_healing(
 	amount: int
@@ -339,7 +335,7 @@ func receive_healing(
 			healed_amount
 		)
 
-	_play_heal_animation()
+	_spawn_healing_effect()
 
 	_spawn_health_feedback(
 		healed_amount,
@@ -578,7 +574,7 @@ func _use_omelet() -> Dictionary:
 	)
 
 	if added_hp > 0:
-		_play_heal_animation()
+		_spawn_healing_effect()
 
 		_spawn_health_feedback(
 			added_hp,
@@ -1216,3 +1212,33 @@ func _update_footsteps() -> void:
 
 	if footsteps.playing:
 		footsteps.stop()
+
+
+func _spawn_healing_effect() -> void:
+	if healing_effect_scene == null:
+		push_warning(
+			"Player: не назначена сцена "
+			+ "HealingEffect."
+		)
+		return
+
+	var effect := (
+		healing_effect_scene.instantiate()
+		as Node2D
+	)
+
+	if effect == null:
+		push_warning(
+			"Корень HealingEffect "
+			+ "должен быть Node2D."
+		)
+		return
+
+	# Эффект становится отдельным дочерним
+	# узлом игрока и не управляет AnimatedSprite2D.
+	add_child(effect)
+
+	effect.position = Vector2(
+		0.0,
+		-20.0
+	)
