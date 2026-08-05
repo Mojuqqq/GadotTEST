@@ -235,5 +235,6 @@ animation = &"idle"
 
 [node name="Footsteps" type="AudioStreamPlayer2D" parent="." unique_id=716466668]
 stream = ExtResource("13_epg6k")
-volume_db = -18.0
+volume_db = -22.0
 max_distance = 700.0
+bus = &"SFX"
