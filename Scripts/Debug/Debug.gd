@@ -8,7 +8,7 @@ const SCREEN_ENEMIES: StringName = &"enemies"
 const SCREEN_SPAWN_ENEMIES: StringName = &"spawn_enemies"
 const SCREEN_GOLD: StringName = &"gold"
 const SCREEN_KEYS: StringName = &"keys"
-
+const SCREEN_BOSSES: StringName = &"bosses"
 
 var menu_layer: CanvasLayer = null
 var content_box: VBoxContainer = null
@@ -72,6 +72,9 @@ func _input(event: InputEvent) -> void:
 
 func _go_back_or_close_debug_menu() -> void:
 	match current_screen:
+		SCREEN_BOSSES:
+			_show_main_menu()
+			
 		SCREEN_ADD_ITEMS:
 			_show_items_menu()
 
@@ -270,6 +273,14 @@ func _show_main_menu() -> void:
 		Callable(self, "_show_keys_menu")
 	)
 
+	_add_menu_button(
+		"5. Боссы",
+		Callable(
+			self,
+			"_show_bosses_menu"
+		)
+	)
+	
 	_add_menu_button(
 		"Закрыть",
 		Callable(self, "close_debug_menu")
@@ -539,6 +550,158 @@ func _get_enemy_display_name(
 
 	return "Моб без названия"
 
+# =========================================================
+# БОССЫ
+# =========================================================
+
+func _show_bosses_menu() -> void:
+	current_screen = SCREEN_BOSSES
+	_clear_content()
+
+	title_label.text = "Боссы"
+
+	var selected_scene: PackedScene = (
+		GameManager.get_debug_next_room_boss_scene()
+	)
+
+	if selected_scene == null:
+		_add_information_label(
+			"Замена следующей комнаты не выбрана."
+		)
+	else:
+		_add_information_label(
+			"Следующая посещённая комната: "
+			+ _get_boss_display_name(
+				selected_scene
+			)
+		)
+
+	if GameManager.boss_pool.is_empty():
+		_add_information_label(
+			"Пул боссов пуст."
+		)
+	else:
+		var list_box := _create_scroll_list()
+
+		for boss_scene in GameManager.boss_pool:
+			if boss_scene == null:
+				continue
+
+			var button := Button.new()
+
+			button.text = (
+				"Следующая комната → "
+				+ _get_boss_display_name(
+					boss_scene
+				)
+			)
+
+			button.size_flags_horizontal = (
+				Control.SIZE_EXPAND_FILL
+			)
+
+			button.custom_minimum_size = Vector2(
+				0.0,
+				42.0
+			)
+
+			button.pressed.connect(
+				Callable(
+					self,
+					"_select_next_room_boss"
+				).bind(
+					boss_scene
+				)
+			)
+
+			list_box.add_child(button)
+
+	if selected_scene != null:
+		_add_menu_button(
+			"Отменить замену",
+			Callable(
+				self,
+				"_cancel_next_room_boss"
+			)
+		)
+
+	_add_back_button(
+		Callable(
+			self,
+			"_show_main_menu"
+		)
+	)
+
+
+func _select_next_room_boss(
+	boss_scene: PackedScene
+) -> void:
+	if boss_scene == null:
+		_set_status(
+			"Сцена босса не назначена."
+		)
+		return
+
+	var success: bool = (
+		GameManager.arm_debug_next_room_boss(
+			boss_scene
+		)
+	)
+
+	if not success:
+		_set_status(
+			"Не удалось выбрать босса."
+		)
+		return
+
+	_set_status(
+		"Следующая посещённая комната: "
+		+ _get_boss_display_name(
+			boss_scene
+		)
+	)
+
+	call_deferred(
+		"_show_bosses_menu"
+	)
+
+
+func _cancel_next_room_boss() -> void:
+	GameManager.cancel_debug_next_room_boss()
+
+	_set_status(
+		"Замена следующей комнаты отменена."
+	)
+
+	call_deferred(
+		"_show_bosses_menu"
+	)
+
+
+func _get_boss_display_name(
+	boss_scene: PackedScene
+) -> String:
+	if boss_scene == null:
+		return "Неизвестный босс"
+
+	var scene_name: String = (
+		boss_scene.resource_path
+		.get_file()
+		.get_basename()
+	)
+
+	match scene_name:
+		"Enemy_cock":
+			return "Король-петух"
+
+		"Boss_omelet":
+			return "Омлет"
+
+		"Enemy_poultry":
+			return "Курица"
+
+		_:
+			return scene_name
 
 # =========================================================
 # ЗОЛОТО

@@ -63,6 +63,8 @@ func _ready() -> void:
 	GameManager.end_room_scene = end_room_scene
 	GameManager.room_pool = room_pool
 	GameManager.enemy_pool = enemy_pool
+	GameManager.boss_pool = boss_pool
+
 	GameManager.boss_scene = (
 		_select_random_boss_scene()
 	)

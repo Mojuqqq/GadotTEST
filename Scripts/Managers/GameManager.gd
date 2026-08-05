@@ -45,6 +45,11 @@ var last_lost_keys: int = 0
 var _inventory = InventoryService.new()
 var passive_run_upgrades: Dictionary = {}
 var current_floor: int = 1
+var boss_pool: Array[PackedScene]:
+	get:
+		return _dungeon.boss_pool
+	set(value):
+		_dungeon.boss_pool = value
 
 # Состояние игры
 
@@ -505,6 +510,20 @@ func spawn_enemies_for_room(
 		index
 	)
 
+func arm_debug_next_room_boss(
+	selected_boss_scene: PackedScene
+) -> bool:
+	return _dungeon.arm_debug_next_room_boss(
+		selected_boss_scene
+	)
+
+
+func cancel_debug_next_room_boss() -> void:
+	_dungeon.cancel_debug_next_room_boss()
+
+
+func get_debug_next_room_boss_scene() -> PackedScene:
+	return _dungeon.get_debug_next_room_boss_scene()
 
 # =========================================================
 # ПОЛНЫЙ СБРОС ЗАБЕГА

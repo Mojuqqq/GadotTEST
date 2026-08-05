@@ -14,7 +14,9 @@ var is_transitioning: bool = false
 
 var room_instances: Array[Node2D] = []
 var current_room_index: int = 0
-
+# Одноразовая замена следующей посещённой
+# комнаты на комнату с выбранным боссом.
+var debug_next_room_boss_scene: PackedScene = null
 
 # =========================================================
 # НАСТРОЙКИ ГЕНЕРАЦИИ
@@ -38,6 +40,7 @@ var boss_scene: PackedScene = null
 
 var room_pool: Array[PackedScene] = []
 var enemy_pool: Array[PackedScene] = []
+var boss_pool: Array[PackedScene] = []
 
 
 # =========================================================
@@ -50,6 +53,37 @@ var max_enemies_per_room: int = 4
 var enemies_in_start_room: int = 0
 var enemies_in_end_room: int = 4
 
+# =========================================================
+# DEBUG: ВЫБОР БОССА ДЛЯ СЛЕДУЮЩЕЙ КОМНАТЫ
+# =========================================================
+
+func arm_debug_next_room_boss(
+	selected_boss_scene: PackedScene
+) -> bool:
+	if selected_boss_scene == null:
+		return false
+
+	debug_next_room_boss_scene = selected_boss_scene
+
+	print(
+		"[DEBUG] Следующая посещённая комната "
+		+ "будет заменена на босс-комнату: "
+		+ selected_boss_scene.resource_path
+	)
+
+	return true
+
+
+func cancel_debug_next_room_boss() -> void:
+	debug_next_room_boss_scene = null
+
+	print(
+		"[DEBUG] Замена следующей комнаты отменена."
+	)
+
+
+func get_debug_next_room_boss_scene() -> PackedScene:
+	return debug_next_room_boss_scene
 
 # =========================================================
 # ГЕНЕРАЦИЯ КОМНАТ
@@ -920,6 +954,184 @@ func disable_unconnected_doors() -> void:
 					false
 				)
 
+# =========================================================
+# DEBUG: ЗАМЕНА КОМНАТЫ НА БОСС-КОМНАТУ
+# =========================================================
+
+func _replace_room_with_debug_boss(
+	room_node: Node2D
+) -> void:
+	var selected_boss_scene: PackedScene = (
+		debug_next_room_boss_scene
+	)
+
+	# Выбор одноразовый.
+	debug_next_room_boss_scene = null
+
+	if selected_boss_scene == null:
+		return
+
+	var room := room_node as Room
+
+	if room == null:
+		push_warning(
+			"[DEBUG] Целевая комната не использует Room.gd."
+		)
+		return
+
+	_clear_debug_room_content(room)
+
+	room.set_active(false)
+	room.set_room_type(
+		Room.RoomType.BOSS
+	)
+
+	room.is_cleared = false
+	room.enemies.clear()
+
+	var boss_created: bool = (
+		_spawn_debug_boss(
+			room,
+			selected_boss_scene
+		)
+	)
+
+	if not boss_created:
+		push_warning(
+			"[DEBUG] Не удалось создать выбранного босса."
+		)
+		return
+
+	room.update_enemies_list()
+	room.minimap_marker_changed.emit()
+
+	print(
+		"[DEBUG] Комната "
+		+ room.name
+		+ " заменена на босс-комнату."
+	)
+
+
+func _clear_debug_room_content(
+	room: Room
+) -> void:
+	var nodes_to_remove: Array[Node] = []
+
+	var removable_groups: Array[StringName] = [
+		&"Enemies",
+		&"Bosses",
+		&"FloorChests",
+		&"Merchants"
+	]
+
+	for group_name in removable_groups:
+		for node in get_tree().get_nodes_in_group(
+			group_name
+		):
+			if not is_instance_valid(node):
+				continue
+
+			if not room.is_ancestor_of(node):
+				continue
+
+			if nodes_to_remove.has(node):
+				continue
+
+			nodes_to_remove.append(node)
+
+	# Страховка для сундука и торговца,
+	# даже если они не добавлены в группы.
+	var generated_names: Array[StringName] = [
+		&"GeneratedChest",
+		&"GeneratedMerchant"
+	]
+
+	for generated_name in generated_names:
+		var generated_node: Node = (
+			room.get_node_or_null(
+				NodePath(
+					String(generated_name)
+				)
+			)
+		)
+
+		if not is_instance_valid(generated_node):
+			continue
+
+		if nodes_to_remove.has(generated_node):
+			continue
+
+		nodes_to_remove.append(generated_node)
+
+	for node in nodes_to_remove:
+		if not is_instance_valid(node):
+			continue
+
+		var parent: Node = node.get_parent()
+
+		# Убираем из дерева сразу, чтобы
+		# update_enemies_list() его уже не видел.
+		if parent != null:
+			parent.remove_child(node)
+
+		node.queue_free()
+
+
+func _spawn_debug_boss(
+	room: Room,
+	selected_boss_scene: PackedScene
+) -> bool:
+	if selected_boss_scene == null:
+		return false
+
+	var instance: Node = (
+		selected_boss_scene.instantiate()
+	)
+
+	var boss := instance as Node2D
+
+	if boss == null:
+		if instance != null:
+			instance.free()
+
+		return false
+
+	boss.position = Vector2(
+		float(room_width) * 0.5,
+		float(room_height) * 0.5
+	)
+
+	room.add_child(boss)
+
+	if boss.has_method(
+		&"set_room_limits"
+	):
+		boss.call(
+			&"set_room_limits",
+			Rect2(
+				room.global_position,
+				Vector2(
+					float(room_width),
+					float(room_height)
+				)
+			)
+		)
+
+	# Босс включится стандартным
+	# on_room_entered() после перехода.
+	if boss.has_method(
+		&"set_active"
+	):
+		boss.call(
+			&"set_active",
+			false
+		)
+	else:
+		boss.process_mode = (
+			Node.PROCESS_MODE_DISABLED
+		)
+
+	return true
 
 # =========================================================
 # ВХОД В КОМНАТУ
@@ -977,6 +1189,13 @@ func enter_room(index: int) -> void:
 
 	update_enemy_count()
 
+	if (
+		debug_next_room_boss_scene != null
+		and index != current_room_index
+	):
+		_replace_room_with_debug_boss(
+			room_instances[index]
+		)
 
 # =========================================================
 # ПЕРЕХОД В ДРУГУЮ КОМНАТУ
@@ -1189,6 +1408,8 @@ func _collect_doors(
 func reset() -> void:
 	is_transitioning = false
 	current_room_index = 0
+
+	debug_next_room_boss_scene = null
 
 	_clear_existing_rooms()
 
