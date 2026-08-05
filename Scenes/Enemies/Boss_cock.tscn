@@ -1,7 +1,7 @@
 [gd_scene format=3 uid="uid://cai6g7bruh7sj"]
 
-[ext_resource type="Script" uid="uid://d3bl6alqmmis" path="res://Scripts/Enemies/Enemy_cock.gd" id="1_8kp35"]
-[ext_resource type="PackedScene" uid="uid://b4hjmxhbxyu7a" path="res://Scenes/Enemies/Big-Egg.tscn" id="2_lxk11"]
+[ext_resource type="Script" uid="uid://d3bl6alqmmis" path="res://Scripts/Enemies/Boss_cock.gd" id="1_bjciw"]
+[ext_resource type="PackedScene" uid="uid://b4hjmxhbxyu7a" path="res://Scenes/Enemies/Big-Egg.tscn" id="2_mq6l2"]
 
 [sub_resource type="CompressedTexture2D" id="CompressedTexture2D_8kp35"]
 load_path = "res://.godot/imported/Enemy_boss_cock.png-caf897af9b1b736dcec550ad5044fd11.ctex"
@@ -14,11 +14,11 @@ height = 194.0
 radius = 39.837387
 height = 80.89429
 
-[node name="Enemy_cock" type="CharacterBody2D" unique_id=240231144]
+[node name="Boss_cock" type="CharacterBody2D" unique_id=240231144]
 collision_layer = 4
-script = ExtResource("1_8kp35")
+script = ExtResource("1_bjciw")
 melee_range = 120.0
-bullet_scene = ExtResource("2_lxk11")
+bullet_scene = ExtResource("2_mq6l2")
 hp = 24
 
 [node name="Sprite2D" type="Sprite2D" parent="." unique_id=1048545208]
