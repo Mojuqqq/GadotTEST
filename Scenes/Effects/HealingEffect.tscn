@@ -2,7 +2,6 @@
 
 [ext_resource type="Script" uid="uid://cmhi6uq37djbv" path="res://Scripts/HealingEffect.gd" id="1_av8wx"]
 [ext_resource type="Texture2D" uid="uid://cgqo0c128jp7e" path="res://Assets/Art/Effects/heal_particle.png" id="2_qu5db"]
-[ext_resource type="Texture2D" uid="uid://f523bfta83sv" path="res://Assets/Art/Effects/heal_ring.png" id="2_x16lk"]
 
 [sub_resource type="Gradient" id="Gradient_mu3u0"]
 offsets = PackedFloat32Array(0, 0.48453608, 1)
@@ -10,12 +9,6 @@ colors = PackedColorArray(0, 1, 0, 1, 0.03529412, 1, 0.4862745, 0.84705883, 0.03
 
 [node name="HealingEffect" type="Node2D" unique_id=49783018]
 script = ExtResource("1_av8wx")
-
-[node name="GroundRing" type="Sprite2D" parent="." unique_id=532905868]
-modulate = Color(1, 1, 1, 0)
-position = Vector2(0, 54)
-scale = Vector2(0.9, 0.9)
-texture = ExtResource("2_x16lk")
 
 [node name="Burst" type="CPUParticles2D" parent="." unique_id=35346434]
 z_index = 5

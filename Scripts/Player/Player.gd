@@ -20,6 +20,13 @@ var damage_bounce_height: float = 12.0
 @export_group("Healing Effect")
 
 @export var healing_effect_scene: PackedScene
+@onready var healing_ground_ring: Sprite2D = (
+	$HealingGroundRing
+)
+var healing_ring_tween: Tween = null
+var healing_ring_base_scale: Vector2 = (
+	Vector2.ONE
+)
 
 @export_group("Completed Floor Boost")
 
@@ -97,6 +104,12 @@ func _ready():
 	hot_sauce_timer.timeout.connect(
 		_on_hot_sauce_effect_ended
 	)
+	
+	healing_ring_base_scale = (
+		healing_ground_ring.scale
+	)
+
+	healing_ground_ring.modulate.a = 0.0
 
 	add_child(hot_sauce_timer)
 	
@@ -336,6 +349,7 @@ func receive_healing(
 		)
 
 	_spawn_healing_effect()
+	_play_healing_ground_ring()
 
 	_spawn_health_feedback(
 		healed_amount,
@@ -575,6 +589,7 @@ func _use_omelet() -> Dictionary:
 
 	if added_hp > 0:
 		_spawn_healing_effect()
+		_play_healing_ground_ring()
 
 		_spawn_health_feedback(
 			added_hp,
@@ -1239,3 +1254,84 @@ func _spawn_healing_effect() -> void:
 	add_child(effect)
 
 	effect.position = Vector2.ZERO
+
+func _play_healing_ground_ring() -> void:
+	if not is_instance_valid(
+		healing_ground_ring
+	):
+		return
+
+	if (
+		healing_ring_tween != null
+		and healing_ring_tween.is_valid()
+	):
+		healing_ring_tween.kill()
+
+	healing_ground_ring.visible = true
+	healing_ground_ring.modulate.a = 0.0
+
+	healing_ground_ring.scale = (
+		healing_ring_base_scale * 0.85
+	)
+
+	healing_ring_tween = create_tween()
+
+	# Появление.
+	healing_ring_tween.tween_property(
+		healing_ground_ring,
+		"modulate:a",
+		0.8,
+		0.12
+	)
+
+	healing_ring_tween.parallel().tween_property(
+		healing_ground_ring,
+		"scale",
+		healing_ring_base_scale,
+		0.12
+	)
+
+	# Первый импульс.
+	healing_ring_tween.tween_property(
+		healing_ground_ring,
+		"scale",
+		healing_ring_base_scale * 1.08,
+		0.18
+	)
+
+	healing_ring_tween.parallel().tween_property(
+		healing_ground_ring,
+		"modulate:a",
+		0.55,
+		0.18
+	)
+
+	# Второй импульс.
+	healing_ring_tween.tween_property(
+		healing_ground_ring,
+		"scale",
+		healing_ring_base_scale * 0.96,
+		0.16
+	)
+
+	healing_ring_tween.parallel().tween_property(
+		healing_ground_ring,
+		"modulate:a",
+		0.75,
+		0.16
+	)
+
+	# Расширение и исчезновение.
+	healing_ring_tween.tween_property(
+		healing_ground_ring,
+		"scale",
+		healing_ring_base_scale * 1.16,
+		0.26
+	)
+
+	healing_ring_tween.parallel().tween_property(
+		healing_ground_ring,
+		"modulate:a",
+		0.0,
+		0.26
+	)
