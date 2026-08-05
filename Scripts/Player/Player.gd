@@ -203,12 +203,18 @@ func _on_egg_returned_to_pool(egg):
 	if not egg_pool.has(egg):
 		egg_pool.append(egg)
 
-func _physics_process(delta):
+func _physics_process(
+	delta: float
+) -> void:
 	if is_dead:
 		return
 
 	_validate_external_movement_lock()
 
+	# Пока игрок оглушён Быком:
+	# — нельзя двигаться;
+	# — нельзя стрелять;
+	# — не работает отбрасывание.
 	if external_movement_locked:
 		velocity = Vector2.ZERO
 		external_force = Vector2.ZERO
@@ -219,16 +225,45 @@ func _physics_process(delta):
 			Vector2.ZERO
 		)
 
-	# === Движение ===
-	var direction = Vector2.ZERO
-	if Input.is_action_pressed("move_left"):   direction.x -= 1
-	if Input.is_action_pressed("move_right"):  direction.x += 1
-	if Input.is_action_pressed("move_up"):     direction.y -= 1
-	if Input.is_action_pressed("move_down"):   direction.y += 1
+		return
+
+	# =====================================================
+	# ДВИЖЕНИЕ
+	# =====================================================
+
+	var direction := Vector2.ZERO
+
+	if Input.is_action_pressed(
+		&"move_left"
+	):
+		direction.x -= 1.0
+
+	if Input.is_action_pressed(
+		&"move_right"
+	):
+		direction.x += 1.0
+
+	if Input.is_action_pressed(
+		&"move_up"
+	):
+		direction.y -= 1.0
+
+	if Input.is_action_pressed(
+		&"move_down"
+	):
+		direction.y += 1.0
+
 	direction = direction.normalized()
-	
-	var desired_velocity = direction * current_speed
-	velocity = desired_velocity + external_force
+
+	var desired_velocity: Vector2 = (
+		direction * current_speed
+	)
+
+	velocity = (
+		desired_velocity
+		+ external_force
+	)
+
 	var push_decay_weight: float = (
 		1.0
 		- exp(
@@ -244,17 +279,22 @@ func _physics_process(delta):
 
 	if external_force.length_squared() < 1.0:
 		external_force = Vector2.ZERO
+
 	move_and_slide()
-	
+
 	_update_footsteps()
-	
+
 	_update_movement_animation(
 		direction
 	)
+
 	if is_dead:
 		return
-		
-	# === Стрельба ===
+
+	# =====================================================
+	# СТРЕЛЬБА
+	# =====================================================
+
 	time_since_last_shot += delta
 
 	var is_shooting: bool = (
@@ -403,6 +443,12 @@ func apply_push(force: Vector2):
 	external_force += force
 
 func shoot() -> void:
+	if is_dead:
+		return
+
+	if external_movement_locked:
+		return
+
 	if egg_scene == null:
 		return
 
@@ -1275,7 +1321,7 @@ func _spawn_healing_effect() -> void:
 
 	effect.position = Vector2.ZERO
 
-<<<<<<< HEAD
+
 # =========================================================
 # ВНЕШНЕЕ УПРАВЛЕНИЕ ПОЛОЖЕНИЕМ
 # =========================================================
@@ -1360,7 +1406,7 @@ func _clear_external_movement_lock() -> void:
 
 	velocity = Vector2.ZERO
 	external_force = Vector2.ZERO
-=======
+	
 func _play_healing_ground_ring() -> void:
 	if not is_instance_valid(
 		healing_ground_ring
@@ -1441,4 +1487,3 @@ func _play_healing_ground_ring() -> void:
 		0.0,
 		0.26
 	)
->>>>>>> 5d4f2b9e30a931cc729cd020f309eaa0d7309579
