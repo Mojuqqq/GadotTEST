@@ -10,6 +10,7 @@
 [ext_resource type="Texture2D" uid="uid://cflrib13kjv45" path="res://Assets/Art/UI/button_settings.png" id="7_uhpec"]
 [ext_resource type="Texture2D" uid="uid://bgrxf40uj0lds" path="res://Assets/Art/UI/title_panel.png" id="9_cdexa"]
 [ext_resource type="PackedScene" uid="uid://c1c8qo1iqbg5u" path="res://Scenes/UI/SettingsMenu.tscn" id="10_i4k7f"]
+[ext_resource type="AudioStream" uid="uid://bdkxo5kyubjwi" path="res://Assets/Audio/System/main_theme.wav" id="11_2tscw"]
 
 [sub_resource type="StyleBoxTexture" id="StyleBoxTexture_et2pw"]
 content_margin_left = 60.0
@@ -135,6 +136,11 @@ autowrap_mode = 3
 
 [node name="SettingsMenu" parent="." unique_id=1734913198 instance=ExtResource("10_i4k7f")]
 visible = false
+
+[node name="MainMusic" type="AudioStreamPlayer" parent="." unique_id=1680239201]
+stream = ExtResource("11_2tscw")
+volume_db = -8.0
+autoplay = true
 
 [connection signal="pressed" from="NewGameButton" to="." method="_on_new_game_button_pressed"]
 [connection signal="pressed" from="SettingsButton" to="." method="_on_settings_button_pressed"]
