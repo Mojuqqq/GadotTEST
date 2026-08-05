@@ -40,6 +40,13 @@ var current_speed: float = 300.0
 var completed_floor_speed_boost_active: bool = false
 var time_since_last_shot: float = 0.0
 var is_dead: bool = false
+# =========================================================
+# ВНЕШНЯЯ БЛОКИРОВКА ДВИЖЕНИЯ
+# =========================================================
+
+var external_movement_locked: bool = false
+var external_movement_lock_source: Node = null
+
 var damage_feedback_tween: Tween = null
 
 var visual_base_scale: Vector2 = Vector2.ONE
@@ -186,6 +193,19 @@ func _on_egg_returned_to_pool(egg):
 func _physics_process(delta):
 	if is_dead:
 		return
+
+	_validate_external_movement_lock()
+
+	if external_movement_locked:
+		velocity = Vector2.ZERO
+		external_force = Vector2.ZERO
+
+		_update_footsteps()
+
+		_update_movement_animation(
+			Vector2.ZERO
+		)
+
 	# === Движение ===
 	var direction = Vector2.ZERO
 	if Input.is_action_pressed("move_left"):   direction.x -= 1
@@ -1239,3 +1259,88 @@ func _spawn_healing_effect() -> void:
 	add_child(effect)
 
 	effect.position = Vector2.ZERO
+
+# =========================================================
+# ВНЕШНЕЕ УПРАВЛЕНИЕ ПОЛОЖЕНИЕМ
+# =========================================================
+
+func set_external_movement_lock(
+	source: Node,
+	locked: bool
+) -> void:
+	if locked:
+		if not is_instance_valid(source):
+			return
+
+		external_movement_lock_source = source
+		external_movement_locked = true
+
+		velocity = Vector2.ZERO
+		external_force = Vector2.ZERO
+
+		return
+
+	# Другой объект не может снять чужую блокировку.
+	if (
+		external_movement_lock_source != source
+		and is_instance_valid(
+			external_movement_lock_source
+		)
+	):
+		return
+
+	_clear_external_movement_lock()
+
+
+func force_external_position(
+	source: Node,
+	target_global_position: Vector2
+) -> void:
+	if is_dead:
+		return
+
+	if not external_movement_locked:
+		return
+
+	if external_movement_lock_source != source:
+		return
+
+	var motion: Vector2 = (
+		target_global_position
+		- global_position
+	)
+
+	if motion.length_squared() > 0.01:
+		# В отличие от прямого присваивания global_position,
+		# этот метод учитывает коллизию игрока со стеной.
+		move_and_collide(
+			motion
+		)
+
+	velocity = Vector2.ZERO
+	external_force = Vector2.ZERO
+
+
+func _validate_external_movement_lock() -> void:
+	if not external_movement_locked:
+		return
+
+	if (
+		is_instance_valid(
+			external_movement_lock_source
+		)
+		and not external_movement_lock_source.is_queued_for_deletion()
+	):
+		return
+
+	# Страховка: если Бык был удалён аварийно,
+	# управление игроком автоматически возвращается.
+	_clear_external_movement_lock()
+
+
+func _clear_external_movement_lock() -> void:
+	external_movement_locked = false
+	external_movement_lock_source = null
+
+	velocity = Vector2.ZERO
+	external_force = Vector2.ZERO

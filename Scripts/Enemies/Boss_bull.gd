@@ -29,7 +29,7 @@ var boss_max_hp: int = 45
 var boss_hp_growth_per_floor: float = 0.25
 
 @export_range(10.0, 500.0, 5.0)
-var movement_speed: float = 85.0
+var movement_speed: float = 130.0
 
 @export_range(10.0, 300.0, 5.0)
 var stop_distance: float = 90.0
@@ -45,7 +45,7 @@ var stop_distance: float = 90.0
 var melee_range: float = 115.0
 
 @export_range(1, 20, 1)
-var melee_damage: int = 3
+var melee_damage: int = 1
 
 @export_range(0.1, 10.0, 0.1)
 var melee_cooldown: float = 1.0
@@ -61,10 +61,10 @@ var melee_cooldown: float = 1.0
 var first_charge_delay: float = 3.0
 
 @export_range(1.0, 30.0, 0.1)
-var charge_cooldown: float = 5.5
+var charge_cooldown: float = 5
 
 @export_range(0.1, 3.0, 0.05)
-var charge_prepare_duration: float = 0.7
+var charge_prepare_duration: float = 1
 
 @export_range(100.0, 1500.0, 10.0)
 var charge_speed: float = 760.0
@@ -96,12 +96,12 @@ var charge_hitbox_forward_offset: float = 55.0
 
 # Полное время оглушения игрока.
 @export_range(0.1, 5.0, 0.1)
-var pin_duration: float = 1.2
+var pin_duration: float = 3
 
 # Сколько Бык задерживается возле стены,
 # прежде чем начать отход.
 @export_range(0.0, 1.0, 0.01)
-var retreat_after_pin_delay: float = 0.08
+var retreat_after_pin_delay: float = 0.1
 
 
 # =========================================================
@@ -120,6 +120,31 @@ var retreat_distance: float = 200.0
 # противоположного тарану.
 @export_range(0.0, 170.0, 5.0)
 var retreat_random_angle_degrees: float = 75.0
+
+# =========================================================
+# БЛУЖДАНИЕ, ПОКА ИГРОК ОГЛУШЁН
+# =========================================================
+
+@export_group("Recovery Wander")
+
+# Скорость спокойного блуждания.
+@export_range(10.0, 500.0, 5.0)
+var recovery_wander_speed: float = 110.0
+
+# Насколько близко Бык должен подойти
+# к выбранной случайной точке.
+@export_range(5.0, 100.0, 5.0)
+var recovery_wander_reach_distance: float = 25.0
+
+# Бык старается не выбирать точку рядом
+# с прикованным игроком.
+@export_range(0.0, 600.0, 10.0)
+var recovery_wander_min_player_distance: float = 220.0
+
+# Через какое время выбирается новая точка,
+# даже если старая ещё не достигнута.
+@export_range(0.2, 5.0, 0.1)
+var recovery_wander_retarget_interval: float = 1.0
 
 
 # =========================================================
@@ -177,8 +202,10 @@ var pinned_position: Vector2 = Vector2.ZERO
 # =========================================================
 
 var retreat_direction: Vector2 = Vector2.ZERO
-
 var retreat_travelled: float = 0.0
+
+var recovery_wander_target: Vector2 = Vector2.ZERO
+var recovery_wander_retarget_left: float = 0.0
 
 
 # =========================================================
@@ -370,7 +397,7 @@ func _physics_process(
 			_process_retreat(delta)
 
 		BullState.WAIT_PLAYER_RECOVERY:
-			_process_wait_player_recovery()
+			_process_wait_player_recovery(delta)
 
 		BullState.WALL_STUN:
 			_process_wall_stun(delta)
@@ -929,7 +956,7 @@ func _choose_retreat_direction() -> Vector2:
 
 
 # =========================================================
-# ОЖИДАНИЕ ОСВОБОЖДЕНИЯ ИГРОКА
+# БЛУЖДАНИЕ ДО ОСВОБОЖДЕНИЯ ИГРОКА
 # =========================================================
 
 func _begin_wait_player_recovery() -> void:
@@ -938,18 +965,178 @@ func _begin_wait_player_recovery() -> void:
 
 	velocity = Vector2.ZERO
 
+	recovery_wander_retarget_left = 0.0
+	_choose_recovery_wander_target()
+
 	if visual != null:
 		visual.scale = visual_base_scale
 
+	print(
+		"Бык бродит по комнате, "
+		+ "пока игрок остаётся оглушённым."
+	)
 
-func _process_wait_player_recovery() -> void:
-	velocity = Vector2.ZERO
 
-	if target_is_pinned:
+func _process_wait_player_recovery(
+	delta: float
+) -> void:
+	# Игрок освободился — возвращаемся
+	# к обычному поведению.
+	if not target_is_pinned:
+		_finish_special_attack()
 		return
 
-	_finish_special_attack()
+	recovery_wander_retarget_left -= delta
 
+	var target_offset: Vector2 = (
+		recovery_wander_target
+		- global_position
+	)
+
+	var reached_target: bool = (
+		target_offset.length()
+		<= recovery_wander_reach_distance
+	)
+
+	if (
+		reached_target
+		or recovery_wander_retarget_left <= 0.0
+	):
+		_choose_recovery_wander_target()
+
+		target_offset = (
+			recovery_wander_target
+			- global_position
+		)
+
+	if target_offset.length_squared() <= 1.0:
+		velocity = Vector2.ZERO
+		return
+
+	var wander_direction: Vector2 = (
+		target_offset.normalized()
+	)
+
+	velocity = (
+		wander_direction
+		* recovery_wander_speed
+	)
+
+	var collision := move_and_collide(
+		velocity * delta
+	)
+
+	_clamp_to_room()
+
+	# Если Бык наткнулся на стену или другой
+	# физический объект, сразу ищем новую точку.
+	if collision != null:
+		velocity = Vector2.ZERO
+		_choose_recovery_wander_target()
+
+func _choose_recovery_wander_target() -> void:
+	recovery_wander_retarget_left = (
+		recovery_wander_retarget_interval
+	)
+
+	# Запасной вариант, если границы комнаты
+	# ещё не были переданы боссу.
+	if room_limits == Rect2():
+		var random_direction: Vector2 = (
+			Vector2.RIGHT.rotated(
+				randf_range(
+					0.0,
+					TAU
+				)
+			)
+		)
+
+		recovery_wander_target = (
+			global_position
+			+ random_direction
+			* randf_range(
+				100.0,
+				250.0
+			)
+		)
+
+		return
+
+	var minimum_x: float = (
+		room_limits.position.x
+		+ room_edge_margin
+	)
+
+	var maximum_x: float = (
+		room_limits.end.x
+		- room_edge_margin
+	)
+
+	var minimum_y: float = (
+		room_limits.position.y
+		+ room_edge_margin
+	)
+
+	var maximum_y: float = (
+		room_limits.end.y
+		- room_edge_margin
+	)
+
+	if (
+		minimum_x >= maximum_x
+		or minimum_y >= maximum_y
+	):
+		recovery_wander_target = (
+			room_limits.get_center()
+		)
+
+		return
+
+	var best_candidate: Vector2 = (
+		room_limits.get_center()
+	)
+
+	var best_distance_from_player: float = -1.0
+
+	# Пытаемся найти случайную точку,
+	# расположенную не слишком близко к игроку.
+	for _attempt in range(20):
+		var candidate := Vector2(
+			randf_range(
+				minimum_x,
+				maximum_x
+			),
+			randf_range(
+				minimum_y,
+				maximum_y
+			)
+		)
+
+		var distance_from_player: float = (
+			candidate.distance_to(
+				pinned_position
+			)
+		)
+
+		if (
+			distance_from_player
+			> best_distance_from_player
+		):
+			best_candidate = candidate
+			best_distance_from_player = (
+				distance_from_player
+			)
+
+		if (
+			distance_from_player
+			>= recovery_wander_min_player_distance
+		):
+			recovery_wander_target = candidate
+			return
+
+	# Если подходящую точку найти не удалось,
+	# используем самую удалённую из проверенных.
+	recovery_wander_target = best_candidate
 
 # =========================================================
 # ОГЛУШЕНИЕ ПОСЛЕ ПРОМАХА
@@ -1033,6 +1220,9 @@ func _finish_special_attack() -> void:
 
 	retreat_direction = Vector2.ZERO
 	retreat_travelled = 0.0
+	
+	recovery_wander_target = Vector2.ZERO
+	recovery_wander_retarget_left = 0.0
 
 	charge_cooldown_left = charge_cooldown
 	melee_cooldown_left = 0.4
@@ -1060,6 +1250,9 @@ func _reset_special_attack() -> void:
 
 	retreat_direction = Vector2.ZERO
 	retreat_travelled = 0.0
+	
+	recovery_wander_target = Vector2.ZERO
+	recovery_wander_retarget_left = 0.0
 
 	charge_cooldown_left = first_charge_delay
 	melee_cooldown_left = 0.3
