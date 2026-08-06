@@ -8,16 +8,30 @@
 [ext_resource type="Texture2D" uid="uid://b6jiq3sg61kog" path="res://Assets/Art/UI/scrollbar_tick.png" id="4_hgt7e"]
 [ext_resource type="Texture2D" uid="uid://cxl3j75js5bfd" path="res://Assets/Art/UI/bg_panel.png" id="4_s4v4x"]
 [ext_resource type="Texture2D" uid="uid://nimdybv21mpl" path="res://Assets/Art/UI/button_close_hover.png" id="4_v1gh5"]
+[ext_resource type="Texture2D" uid="uid://dt2bvf2sv7aot" path="res://Assets/Art/UI/scrollbar_tick_highlight.png" id="5_02iw2"]
 [ext_resource type="Texture2D" uid="uid://cp3p2ikk1tns8" path="res://Assets/Art/UI/arrow_down.png" id="5_hgt7e"]
 [ext_resource type="Texture2D" uid="uid://bi81a3d8rvn5y" path="res://Assets/Art/UI/button_menu.png" id="6_02iw2"]
 [ext_resource type="Texture2D" uid="uid://c47rd24txaw7x" path="res://Assets/Art/UI/button_menu_press.png" id="7_sfc5i"]
 [ext_resource type="Texture2D" uid="uid://ccy8td0wnwlme" path="res://Assets/Art/UI/button_menu_hover.png" id="8_byc5r"]
 
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_byc5r"]
+texture = ExtResource("4_hgt7e")
+texture_margin_left = 9.0
+texture_margin_top = 8.0
+texture_margin_right = 9.0
+texture_margin_bottom = 8.0
+axis_stretch_horizontal = 2
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_hgt7e"]
+texture = ExtResource("5_02iw2")
+texture_margin_left = 9.0
+texture_margin_top = 8.0
+texture_margin_right = 9.0
+texture_margin_bottom = 8.0
+axis_stretch_horizontal = 2
+
 [sub_resource type="AtlasTexture" id="AtlasTexture_mtjr3"]
 atlas = ExtResource("3_8vcbs")
-
-[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_s4v4x"]
-texture = ExtResource("4_hgt7e")
 
 [sub_resource type="StyleBoxTexture" id="StyleBoxTexture_1w13x"]
 content_margin_left = 60.0
@@ -141,11 +155,11 @@ vertical_alignment = 1
 [node name="MasterSlider" type="HSlider" parent="Content/SettingsVBox/MasterRow" unique_id=1205868663]
 layout_mode = 2
 size_flags_horizontal = 3
-theme_override_icons/grabber = SubResource("AtlasTexture_mtjr3")
-theme_override_icons/grabber_highlight = SubResource("AtlasTexture_mtjr3")
-theme_override_styles/slider = SubResource("StyleBoxTexture_s4v4x")
-theme_override_styles/grabber_area = SubResource("StyleBoxTexture_s4v4x")
-theme_override_styles/grabber_area_highlight = SubResource("StyleBoxTexture_s4v4x")
+theme_override_icons/grabber = ExtResource("3_8vcbs")
+theme_override_icons/grabber_highlight = ExtResource("3_8vcbs")
+theme_override_styles/slider = SubResource("StyleBoxTexture_byc5r")
+theme_override_styles/grabber_area = SubResource("StyleBoxTexture_hgt7e")
+theme_override_styles/grabber_area_highlight = SubResource("StyleBoxTexture_hgt7e")
 value = 100.0
 
 [node name="MasterValue" type="Label" parent="Content/SettingsVBox/MasterRow" unique_id=228852339]
@@ -169,6 +183,9 @@ layout_mode = 2
 size_flags_horizontal = 3
 theme_override_icons/grabber = SubResource("AtlasTexture_mtjr3")
 theme_override_icons/grabber_highlight = SubResource("AtlasTexture_mtjr3")
+theme_override_styles/slider = SubResource("StyleBoxTexture_byc5r")
+theme_override_styles/grabber_area = SubResource("StyleBoxTexture_hgt7e")
+theme_override_styles/grabber_area_highlight = SubResource("StyleBoxTexture_hgt7e")
 value = 100.0
 
 [node name="MusicValue" type="Label" parent="Content/SettingsVBox/MusicRow" unique_id=847661487]
@@ -192,6 +209,9 @@ layout_mode = 2
 size_flags_horizontal = 3
 theme_override_icons/grabber = SubResource("AtlasTexture_mtjr3")
 theme_override_icons/grabber_highlight = SubResource("AtlasTexture_mtjr3")
+theme_override_styles/slider = SubResource("StyleBoxTexture_byc5r")
+theme_override_styles/grabber_area = SubResource("StyleBoxTexture_hgt7e")
+theme_override_styles/grabber_area_highlight = SubResource("StyleBoxTexture_hgt7e")
 value = 100.0
 
 [node name="EffectsValue" type="Label" parent="Content/SettingsVBox/EffectsRow" unique_id=1401617986]
