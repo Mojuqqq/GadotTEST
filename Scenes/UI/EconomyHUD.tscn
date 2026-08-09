@@ -5,6 +5,7 @@
 [ext_resource type="Texture2D" uid="uid://t4bq3arn3sr8" path="res://Assets/Art/Interectables/Pickups/Key.png" id="2_huers"]
 [ext_resource type="Texture2D" uid="uid://b3hukkvehjmvr" path="res://Assets/Art/UI/counter_panel.png" id="2_nu5go"]
 [ext_resource type="Texture2D" uid="uid://1uqstco5br2n" path="res://Assets/Art/Interectables/Pickups/Heart.png" id="3_5gttj"]
+[ext_resource type="FontFile" uid="uid://dviftqy3jyv0m" path="res://Assets/Fonts/Rubik-VariableFont_wght.ttf" id="4_j2fbd"]
 
 [node name="EconomyHud" type="CanvasLayer" unique_id=1192681930]
 script = ExtResource("1_huers")
@@ -62,6 +63,7 @@ stretch_mode = 5
 unique_name_in_owner = true
 layout_mode = 2
 theme_override_colors/font_color = Color(0.13333334, 0.09019608, 0.043137256, 1)
+theme_override_fonts/font = ExtResource("4_j2fbd")
 text = "5/5"
 
 [node name="GoldCounter" type="Control" parent="MarginContainer/HBoxContainer" unique_id=1519670106]
@@ -107,6 +109,7 @@ stretch_mode = 5
 unique_name_in_owner = true
 layout_mode = 2
 theme_override_colors/font_color = Color(0.13333334, 0.09019608, 0.043137256, 1)
+theme_override_fonts/font = ExtResource("4_j2fbd")
 text = "0"
 
 [node name="KeysCounter" type="Control" parent="MarginContainer/HBoxContainer" unique_id=677345376]
@@ -153,4 +156,5 @@ stretch_mode = 5
 unique_name_in_owner = true
 layout_mode = 2
 theme_override_colors/font_color = Color(0.13333334, 0.09019608, 0.043137256, 1)
+theme_override_fonts/font = ExtResource("4_j2fbd")
 text = "0"

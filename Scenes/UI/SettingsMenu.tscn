@@ -6,6 +6,7 @@
 [ext_resource type="Texture2D" uid="uid://de78ilpcuffs8" path="res://Assets/Art/UI/scrollbar_grabber.png" id="3_8vcbs"]
 [ext_resource type="Texture2D" uid="uid://d0t6wp7rxo425" path="res://Assets/Art/UI/button_close_press.png" id="3_83xbh"]
 [ext_resource type="FontFile" uid="uid://cwhd7e4gvmfg5" path="res://Assets/Fonts/RubikMonoOne-Regular.ttf" id="3_v6wkx"]
+[ext_resource type="FontFile" uid="uid://dviftqy3jyv0m" path="res://Assets/Fonts/Rubik-VariableFont_wght.ttf" id="4_0344k"]
 [ext_resource type="Texture2D" uid="uid://b6jiq3sg61kog" path="res://Assets/Art/UI/scrollbar_tick.png" id="4_hgt7e"]
 [ext_resource type="Texture2D" uid="uid://cxl3j75js5bfd" path="res://Assets/Art/UI/bg_panel.png" id="4_s4v4x"]
 [ext_resource type="Texture2D" uid="uid://nimdybv21mpl" path="res://Assets/Art/UI/button_close_hover.png" id="4_v1gh5"]
@@ -161,6 +162,7 @@ layout_mode = 2
 theme_override_colors/font_color = Color(0.8392157, 0.7254902, 0.5411765, 1)
 theme_override_colors/font_outline_color = Color(0.13333334, 0.09019608, 0.043137256, 1)
 theme_override_constants/outline_size = 5
+theme_override_fonts/font = ExtResource("4_0344k")
 theme_override_font_sizes/font_size = 20
 text = "Звук"
 
@@ -172,6 +174,7 @@ layout_mode = 2
 texture_filter = 1
 custom_minimum_size = Vector2(220, 44)
 layout_mode = 2
+theme_override_fonts/font = ExtResource("4_0344k")
 text = "Общая громкость"
 vertical_alignment = 1
 
@@ -190,8 +193,9 @@ value = 100.0
 texture_filter = 1
 custom_minimum_size = Vector2(70, 44)
 layout_mode = 2
+theme_override_fonts/font = ExtResource("4_0344k")
 text = "100%"
-horizontal_alignment = 2
+horizontal_alignment = 1
 vertical_alignment = 1
 
 [node name="MusicRow" type="HBoxContainer" parent="Content/SettingsVBox" unique_id=1233348847]
@@ -202,6 +206,7 @@ layout_mode = 2
 texture_filter = 1
 custom_minimum_size = Vector2(220, 44)
 layout_mode = 2
+theme_override_fonts/font = ExtResource("4_0344k")
 text = "Музыка"
 vertical_alignment = 1
 
@@ -220,8 +225,9 @@ value = 100.0
 texture_filter = 1
 custom_minimum_size = Vector2(70, 44)
 layout_mode = 2
+theme_override_fonts/font = ExtResource("4_0344k")
 text = "100%"
-horizontal_alignment = 2
+horizontal_alignment = 1
 vertical_alignment = 1
 
 [node name="EffectsRow" type="HBoxContainer" parent="Content/SettingsVBox" unique_id=511091986]
@@ -233,6 +239,7 @@ alignment = 1
 texture_filter = 1
 custom_minimum_size = Vector2(220, 44)
 layout_mode = 2
+theme_override_fonts/font = ExtResource("4_0344k")
 text = "Эффекты"
 vertical_alignment = 1
 
@@ -251,8 +258,9 @@ value = 100.0
 texture_filter = 1
 custom_minimum_size = Vector2(70, 44)
 layout_mode = 2
+theme_override_fonts/font = ExtResource("4_0344k")
 text = "100%"
-horizontal_alignment = 2
+horizontal_alignment = 1
 vertical_alignment = 1
 
 [node name="VideoTitle" type="Label" parent="Content/SettingsVBox" unique_id=130175535]
@@ -261,6 +269,7 @@ layout_mode = 2
 theme_override_colors/font_color = Color(0.8392157, 0.7254902, 0.5411765, 1)
 theme_override_colors/font_outline_color = Color(0.13333334, 0.09019608, 0.043137256, 1)
 theme_override_constants/outline_size = 5
+theme_override_fonts/font = ExtResource("4_0344k")
 theme_override_font_sizes/font_size = 20
 text = "Экран"
 
@@ -272,11 +281,13 @@ layout_mode = 2
 texture_filter = 1
 layout_mode = 2
 size_flags_horizontal = 3
+theme_override_fonts/font = ExtResource("4_0344k")
 text = "Полноэкранный режим"
 
 [node name="FullscreenCheck" type="CheckButton" parent="Content/SettingsVBox/FullscreenRow" unique_id=1937647812]
 texture_filter = 1
 layout_mode = 2
+theme_override_fonts/font = ExtResource("4_0344k")
 theme_override_icons/checked = ExtResource("6_sfc5i")
 theme_override_icons/unchecked = ExtResource("7_byc5r")
 text = "Включено"
@@ -289,6 +300,7 @@ layout_mode = 2
 texture_filter = 1
 layout_mode = 2
 size_flags_horizontal = 3
+theme_override_fonts/font = ExtResource("4_0344k")
 text = "Разрешение"
 
 [node name="ResolutionOption" type="OptionButton" parent="Content/SettingsVBox/ResolutionRow" unique_id=679457145]
@@ -301,6 +313,7 @@ theme_override_colors/font_pressed_color = Color(0.13333334, 0.09019608, 0.04313
 theme_override_colors/font_hover_color = Color(0.13333334, 0.09019608, 0.043137256, 1)
 theme_override_colors/font_hover_pressed_color = Color(0.13333334, 0.09019608, 0.043137256, 1)
 theme_override_colors/font_disabled_color = Color(0.3328803, 0.33288088, 0.33288038, 1)
+theme_override_fonts/font = ExtResource("4_0344k")
 theme_override_styles/normal = SubResource("StyleBoxTexture_1w13x")
 theme_override_styles/pressed = SubResource("StyleBoxTexture_1w13x")
 theme_override_styles/hover = SubResource("StyleBoxTexture_1w13x")
@@ -324,6 +337,7 @@ theme_override_colors/font_pressed_color = Color(0.8392157, 0.7254902, 0.5411765
 theme_override_colors/font_hover_color = Color(0.8392157, 0.7254902, 0.5411765, 1)
 theme_override_colors/font_outline_color = Color(0.13333334, 0.09019608, 0.043137256, 1)
 theme_override_constants/outline_size = 8
+theme_override_fonts/font = ExtResource("4_0344k")
 theme_override_styles/normal = SubResource("StyleBoxTexture_2dieo")
 theme_override_styles/pressed = SubResource("StyleBoxTexture_w7bxd")
 theme_override_styles/hover = SubResource("StyleBoxTexture_gqux3")
@@ -338,6 +352,7 @@ theme_override_colors/font_pressed_color = Color(0.8392157, 0.7254902, 0.5411765
 theme_override_colors/font_hover_color = Color(0.8392157, 0.7254902, 0.5411765, 1)
 theme_override_colors/font_outline_color = Color(0.13333334, 0.09019608, 0.043137256, 1)
 theme_override_constants/outline_size = 8
+theme_override_fonts/font = ExtResource("4_0344k")
 theme_override_styles/normal = SubResource("StyleBoxTexture_v6wkx")
 theme_override_styles/pressed = SubResource("StyleBoxTexture_w7bxd")
 theme_override_styles/hover = SubResource("StyleBoxTexture_gqux3")

@@ -4,6 +4,7 @@
 [ext_resource type="Script" uid="uid://0ojlp0h0nsim" path="res://Scripts/UI/Quick_slot.gd" id="1_wq2cs"]
 [ext_resource type="Texture2D" uid="uid://dpv6x3sofbwcv" path="res://Assets/Art/UI/hotbar_normal_item.png" id="3_13l2d"]
 [ext_resource type="Texture2D" uid="uid://2krk7nh2rebu" path="res://Assets/Art/UI/hotbar_active_item.png" id="4_jpq23"]
+[ext_resource type="FontFile" uid="uid://dviftqy3jyv0m" path="res://Assets/Fonts/Rubik-VariableFont_wght.ttf" id="5_13l2d"]
 
 [node name="QuickSlot" type="Control" unique_id=677860060]
 custom_minimum_size = Vector2(62, 62)
@@ -74,6 +75,7 @@ offset_top = -24.0
 offset_right = 9.0
 offset_bottom = -1.0
 grow_horizontal = 2
+theme_override_fonts/font = ExtResource("5_13l2d")
 text = "1"
 horizontal_alignment = 1
 vertical_alignment = 1

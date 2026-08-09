@@ -4,7 +4,9 @@
 [ext_resource type="Texture2D" uid="uid://bevayswkwuuw5" path="res://Assets/Art/UI/popup_bg.png" id="2_238ko"]
 [ext_resource type="Texture2D" uid="uid://dvjno2yqygdae" path="res://Assets/Art/UI/button_continue.png" id="3_2bpff"]
 [ext_resource type="Texture2D" uid="uid://bi81a3d8rvn5y" path="res://Assets/Art/UI/button_menu.png" id="3_djuuc"]
+[ext_resource type="FontFile" uid="uid://cwhd7e4gvmfg5" path="res://Assets/Fonts/RubikMonoOne-Regular.ttf" id="3_rkfds"]
 [ext_resource type="Texture2D" uid="uid://c47rd24txaw7x" path="res://Assets/Art/UI/button_menu_press.png" id="4_85qas"]
+[ext_resource type="FontFile" uid="uid://dviftqy3jyv0m" path="res://Assets/Fonts/Rubik-VariableFont_wght.ttf" id="4_138wg"]
 [ext_resource type="Texture2D" uid="uid://gs3itu36ws3a" path="res://Assets/Art/UI/button_menu_disabled.png" id="5_85qas"]
 [ext_resource type="Texture2D" uid="uid://ccy8td0wnwlme" path="res://Assets/Art/UI/button_menu_hover.png" id="5_qjuxo"]
 [ext_resource type="Texture2D" uid="uid://cbwf6i772s76x" path="res://Assets/Art/UI/button_main_menu.png" id="7_ftuca"]
@@ -72,7 +74,8 @@ offset_bottom = 323.0
 theme_override_colors/font_color = Color(0.8392157, 0.7254902, 0.5411765, 1)
 theme_override_colors/font_outline_color = Color(0.13333334, 0.09019608, 0.043137256, 1)
 theme_override_constants/outline_size = 8
-theme_override_font_sizes/font_size = 40
+theme_override_fonts/font = ExtResource("3_rkfds")
+theme_override_font_sizes/font_size = 30
 text = "Пауза"
 horizontal_alignment = 1
 vertical_alignment = 1
@@ -87,6 +90,7 @@ theme_override_colors/font_pressed_color = Color(0.8392157, 0.7254902, 0.5411765
 theme_override_colors/font_hover_color = Color(0.8392157, 0.7254902, 0.5411765, 1)
 theme_override_colors/font_outline_color = Color(0.13333334, 0.09019608, 0.043137256, 1)
 theme_override_constants/outline_size = 8
+theme_override_fonts/font = ExtResource("4_138wg")
 theme_override_styles/normal = SubResource("StyleBoxTexture_i1ury")
 theme_override_styles/pressed = SubResource("StyleBoxTexture_iv6fc")
 theme_override_styles/hover = SubResource("StyleBoxTexture_roeo1")
@@ -105,6 +109,7 @@ theme_override_colors/font_hover_color = Color(0.8392157, 0.7254902, 0.5411765, 
 theme_override_colors/font_disabled_color = Color(0.875, 0.875, 0.875, 0.5)
 theme_override_colors/font_outline_color = Color(0.13333334, 0.09019608, 0.043137256, 1)
 theme_override_constants/outline_size = 8
+theme_override_fonts/font = ExtResource("4_138wg")
 theme_override_styles/normal = SubResource("StyleBoxTexture_i1ury")
 theme_override_styles/pressed = SubResource("StyleBoxTexture_iv6fc")
 theme_override_styles/hover = SubResource("StyleBoxTexture_roeo1")
@@ -123,6 +128,7 @@ theme_override_colors/font_pressed_color = Color(0.8392157, 0.7254902, 0.5411765
 theme_override_colors/font_hover_color = Color(0.8392157, 0.7254902, 0.5411765, 1)
 theme_override_colors/font_outline_color = Color(0.13333334, 0.09019608, 0.043137256, 1)
 theme_override_constants/outline_size = 8
+theme_override_fonts/font = ExtResource("4_138wg")
 theme_override_styles/normal = SubResource("StyleBoxTexture_i1ury")
 theme_override_styles/pressed = SubResource("StyleBoxTexture_iv6fc")
 theme_override_styles/hover = SubResource("StyleBoxTexture_roeo1")
@@ -140,6 +146,7 @@ theme_override_colors/font_pressed_color = Color(0.8392157, 0.7254902, 0.5411765
 theme_override_colors/font_hover_color = Color(0.8392157, 0.7254902, 0.5411765, 1)
 theme_override_colors/font_outline_color = Color(0.13333334, 0.09019608, 0.043137256, 1)
 theme_override_constants/outline_size = 8
+theme_override_fonts/font = ExtResource("4_138wg")
 theme_override_styles/normal = SubResource("StyleBoxTexture_i1ury")
 theme_override_styles/pressed = SubResource("StyleBoxTexture_iv6fc")
 theme_override_styles/hover = SubResource("StyleBoxTexture_roeo1")
@@ -166,6 +173,7 @@ unique_name_in_owner = true
 oversampling_override = 1.0
 
 [node name="SettingsMenu" parent="." unique_id=1734913198 instance=ExtResource("14_e6kvg")]
+visible = false
 
 [connection signal="pressed" from="ContinueButton" to="." method="_on_continue_button_pressed"]
 [connection signal="pressed" from="NextFloorButton" to="." method="_on_next_floor_button_pressed"]
