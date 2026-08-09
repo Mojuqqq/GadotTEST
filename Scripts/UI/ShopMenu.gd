@@ -1,5 +1,8 @@
 extends CanvasLayer
 
+const UI_FONT: FontFile = preload(
+	"res://Assets/Fonts/Rubik-VariableFont_wght.ttf"
+)
 
 @onready var gold_label: Label = %GoldLabel
 @onready var offer_list: VBoxContainer = %OfferList
@@ -125,6 +128,16 @@ func _create_offer_button(
 		)
 	var button := Button.new()
 
+	button.add_theme_font_override(
+		&"font",
+		UI_FONT
+	)
+
+	button.add_theme_font_size_override(
+		&"font_size",
+		18
+	)
+
 	button.custom_minimum_size = Vector2(
 		0.0,
 		54.0
@@ -202,12 +215,25 @@ func _add_information_label(
 ) -> void:
 	var label := Label.new()
 
+	label.add_theme_font_override(
+		&"font",
+		UI_FONT
+	)
+
+	label.add_theme_font_size_override(
+		&"font_size",
+		18
+	)
+
 	label.text = text
+
 	label.horizontal_alignment = (
 		HORIZONTAL_ALIGNMENT_CENTER
 	)
 
-	offer_list.add_child(label)
+	offer_list.add_child(
+		label
+	)
 
 
 func _get_item_name(item) -> String:

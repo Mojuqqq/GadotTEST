@@ -1,5 +1,9 @@
 extends CanvasLayer
 
+const UI_FONT: FontFile = preload(
+	"res://Assets/Fonts/Rubik-VariableFont_wght.ttf"
+)
+
 const PASSIVE_UPGRADE_CARD_SCENE: PackedScene = preload(
 	"res://Scenes/UI/PassiveUpgradeCard.tscn"
 )
@@ -117,7 +121,19 @@ func _refresh_inventory() -> void:
 		selected_item_id = ""
 
 		var empty_label := Label.new()
+
 		empty_label.text = "Инвентарь пуст"
+
+		empty_label.add_theme_font_override(
+			&"font",
+			UI_FONT
+		)
+
+		empty_label.add_theme_font_size_override(
+			&"font_size",
+			18
+		)
+
 		empty_label.horizontal_alignment = (
 			HORIZONTAL_ALIGNMENT_CENTER
 		)
@@ -145,6 +161,16 @@ func _refresh_inventory() -> void:
 			selected_item_exists = true
 
 		var button := Button.new()
+		
+		button.add_theme_font_override(
+			&"font",
+			UI_FONT
+		)
+
+		button.add_theme_font_size_override(
+			&"font_size",
+			18
+		)
 
 		button.text = (
 			item.name
@@ -304,6 +330,16 @@ func _create_quick_slot_buttons() -> void:
 
 	for slot_index in range(slot_count):
 		var button := Button.new()
+		
+		button.add_theme_font_override(
+			&"font",
+			UI_FONT
+		)
+
+		button.add_theme_font_size_override(
+			&"font_size",
+			16
+		)
 
 		button.custom_minimum_size = Vector2(
 			54.0,
