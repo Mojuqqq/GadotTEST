@@ -13,10 +13,6 @@ enum RoomType {
 	BOSS
 }
 
-@export_group("Generation")
-
-@export var floor_tile_set: TileSet
-
 @export_group("Room Settings")
 var room_type: RoomType = RoomType.COMBAT
 @export_group("Enemy Spawn")
@@ -82,15 +78,10 @@ func apply_location(
 
 func _generate_floor() -> void:
 	if location_profile == null:
-		return
-
-	if floor_tile_set == null:
 		push_warning(
-			"Для комнаты "
+			"Нет LocationProfile у комнаты: "
 			+ name
-			+ " не назначен floor_tile_set."
 		)
-
 		return
 
 	var floor_layer := (
@@ -104,12 +95,17 @@ func _generate_floor() -> void:
 			+ name
 			+ " нет TileMapLayer Floor."
 		)
-
 		return
 
-	floor_layer.clear()
+	var floor_tile_set: TileSet = (
+		floor_layer.tile_set
+	)
 
-	floor_layer.tile_set = floor_tile_set
+	if floor_tile_set == null:
+		push_warning(
+			"У Floor не назначен floor_tileset."
+		)
+		return
 
 	var terrain_index: int = (
 		_get_floor_terrain(
@@ -139,10 +135,23 @@ func _generate_floor() -> void:
 				Vector2i(x, y)
 			)
 
+	floor_layer.clear()
+
 	floor_layer.set_cells_terrain_connect(
 		cells,
 		0,
 		terrain_index
+	)
+
+	print(
+		"[FLOOR] ",
+		name,
+		" | ",
+		location_profile.display_name,
+		" | terrain=",
+		terrain_index,
+		" | cells=",
+		cells.size()
 	)
 
 func _apply_right_connection_state() -> void:

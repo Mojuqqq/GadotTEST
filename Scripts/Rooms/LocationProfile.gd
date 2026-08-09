@@ -8,6 +8,7 @@ enum FloorType {
 	WOOD
 }
 
+
 @export_group("Location")
 
 @export var id: StringName = &""
@@ -16,9 +17,7 @@ enum FloorType {
 
 @export_group("Floor")
 
-@export var floor_tile_set: TileSet = null
-@export var floor_terrain_set: int = 0
-@export var floor_terrain: int = 0
+@export var floor_type: FloorType = FloorType.DIRT
 
 
 # =========================================================
