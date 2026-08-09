@@ -422,48 +422,210 @@ func _route_cell_to_position(
 
 func generate_dungeon(root_node: Node) -> void:
 	_clear_existing_rooms()
+
 	generated_room_layout.clear()
 	room_by_cell.clear()
 	cell_by_room.clear()
 	room_connections.clear()
 
+	# =====================================================
+	# ПРОВЕРКИ
+	# =====================================================
+
 	if start_room_scene == null:
-		push_error("Не назначена стартовая комната.")
+		push_error(
+			"Не назначена стартовая комната."
+		)
 		return
 
 	if end_room_scene == null:
-		push_error("Не назначена конечная комната.")
+		push_error(
+			"Не назначена конечная комната."
+		)
 		return
 
 	if room_pool.is_empty():
-		push_error("Пул промежуточных комнат пуст.")
+		push_error(
+			"Пул промежуточных комнат пуст."
+		)
 		return
 
-	var intermediate_count: int = randi_range(
-		min_rooms,
-		max_rooms
+	# =====================================================
+	# ГЕНЕРАЦИЯ ГРАФА
+	# =====================================================
+
+	var requested_intermediate_count: int = (
+		randi_range(
+			min_rooms,
+			max_rooms
+		)
 	)
+
+	generated_room_layout = (
+		_generate_room_layout(
+			requested_intermediate_count
+		)
+	)
+
+	if generated_room_layout.size() < 2:
+		push_error(
+			"Генератор не создал корректный layout."
+		)
+		return
+
+	var last_entry: Dictionary = (
+		generated_room_layout[
+			generated_room_layout.size() - 1
+		]
+	)
+
+	if not bool(
+		last_entry.get(
+			"boss",
+			false
+		)
+	):
+		push_error(
+			"В конце layout отсутствует BOSS-комната."
+		)
+		return
+
+	# Реальное количество промежуточных комнат.
+	# Это надёжнее requested_intermediate_count,
+	# потому что layout является источником истины.
+	var intermediate_count: int = (
+		generated_room_layout.size() - 2
+	)
+
+	print(
+		"[DUNGEON] requested_intermediate=",
+		requested_intermediate_count,
+		" | actual_intermediate=",
+		intermediate_count
+	)
+
+	for layout_index in range(
+		generated_room_layout.size()
+	):
+		var entry: Dictionary = (
+			generated_room_layout[
+				layout_index
+			]
+		)
+
+		print(
+			"[ROOM GRAPH] ",
+			layout_index,
+			" | cell=",
+			entry["cell"],
+			" | parent=",
+			entry["parent"],
+			" | main=",
+			entry["main_path"],
+			" | boss=",
+			bool(
+				entry.get(
+					"boss",
+					false
+				)
+			)
+		)
+
+	# =====================================================
+	# ТИПЫ СПЕЦИАЛЬНЫХ КОМНАТ
+	# =====================================================
 
 	var treasure_room_index: int = -1
 
 	if intermediate_count > 0:
-		treasure_room_index = randi_range(
-			0,
-			intermediate_count - 1
+		treasure_room_index = (
+			randi_range(
+				0,
+				intermediate_count - 1
+			)
 		)
-
-	generated_room_layout = (
-		_generate_room_layout(
-			intermediate_count
-		)
-	)
 
 	var shop_room_index: int = -1
 
-	# Магазин появляется только при трёх
-	# и более промежуточных комнатах.
+	# Магазин создаём только если
+	# промежуточных комнат хотя бы три.
 	if intermediate_count >= 3:
 		var available_indices: Array[int] = []
+
+		for index in range(
+			intermediate_count
+		):
+			if index == treasure_room_index:
+				continue
+
+			available_indices.append(
+				index
+			)
+
+		if not available_indices.is_empty():
+			shop_room_index = (
+				available_indices.pick_random()
+			)
+
+	# =====================================================
+	# START ROOM
+	# layout index = 0
+	# room_instances index = 0
+	# =====================================================
+
+	var start_entry: Dictionary = (
+		generated_room_layout[0]
+	)
+
+	var start_cell: Vector2i = (
+		start_entry["cell"]
+		as Vector2i
+	)
+
+	var start_position: Vector2 = (
+		_route_cell_to_position(
+			start_cell
+		)
+	)
+
+	var start_room := _create_room(
+		start_room_scene,
+		"StartRoom",
+		root_node,
+		start_position,
+		Room.RoomType.START
+	)
+
+	if start_room == null:
+		return
+
+	room_instances.append(
+		start_room
+	)
+
+	room_by_cell[start_cell] = (
+		start_room
+	)
+
+	cell_by_room[start_room] = (
+		start_cell
+	)
+
+	room_connections[start_room] = []
+
+	spawn_enemies_for_room(
+		start_room,
+		0
+	)
+
+	# =====================================================
+	# ПРОМЕЖУТОЧНЫЕ КОМНАТЫ
+	#
+	# layout:
+	# 0            = START
+	# 1...size - 2 = обычные комнаты
+	# size - 1     = BOSS
+	# =====================================================
 
 	for layout_index in range(
 		1,
@@ -490,8 +652,6 @@ func generate_dungeon(root_node: Node) -> void:
 			room_pool.pick_random()
 		)
 
-		# Порядковый номер именно среди
-		# промежуточных комнат.
 		var intermediate_index: int = (
 			layout_index - 1
 		)
@@ -500,12 +660,18 @@ func generate_dungeon(root_node: Node) -> void:
 			Room.RoomType.COMBAT
 		)
 
-		if intermediate_index == treasure_room_index:
+		if (
+			intermediate_index
+			== treasure_room_index
+		):
 			generated_room_type = (
 				Room.RoomType.TREASURE
 			)
 
-		elif intermediate_index == shop_room_index:
+		elif (
+			intermediate_index
+			== shop_room_index
+		):
 			generated_room_type = (
 				Room.RoomType.SHOP
 			)
@@ -519,9 +685,18 @@ func generate_dungeon(root_node: Node) -> void:
 		)
 
 		if room == null:
-			continue
+			push_error(
+				"Не удалось создать комнату "
+				+ str(layout_index)
+			)
+			return
 
-		room_instances.append(room)
+		# КРИТИЧНО:
+		# порядок room_instances должен
+		# полностью совпадать с layout.
+		room_instances.append(
+			room
+		)
 
 		room_by_cell[room_cell] = room
 		cell_by_room[room] = room_cell
@@ -549,113 +724,10 @@ func generate_dungeon(root_node: Node) -> void:
 				layout_index
 			)
 
-	var start_room := _create_room(
-		start_room_scene,
-		"StartRoom",
-		root_node,
-		Vector2.ZERO,
-		Room.RoomType.START
-	)
-
-	if start_room == null:
-		return
-
-	room_instances.append(start_room)
-	
-	var start_cell := Vector2i.ZERO
-
-	room_by_cell[start_cell] = start_room
-	cell_by_room[start_room] = start_cell
-	room_connections[start_room] = []
-
-	spawn_enemies_for_room(
-		start_room,
-		0
-	)
-
-	var room_layout: Array[Dictionary] = (
-	_generate_room_layout(
-		intermediate_count
-	)
-)
-
-	for layout_index in range(
-		room_layout.size()
-	):
-		var entry: Dictionary = (
-			room_layout[layout_index]
-		)
-
-		print(
-			"[ROOM GRAPH] ",
-			layout_index,
-			" | cell=",
-			entry["cell"],
-			" | parent=",
-			entry["parent"],
-			" | main=",
-			entry["main_path"]
-		)
-
-	var _previous_room: Node2D = start_room
-
-	for index in range(intermediate_count):
-		var random_scene: PackedScene = (
-			room_pool.pick_random()
-		)
-
-		var route_cell: Vector2i = (
-			route_cells[index + 1]
-		)
-
-		var room_position: Vector2 = (
-			_route_cell_to_position(
-				route_cell
-			)
-		)
-
-		var generated_room_type: int = (
-				Room.RoomType.COMBAT
-		)
-
-		if index == treasure_room_index:
-			generated_room_type = (
-				Room.RoomType.TREASURE
-			)
-
-		elif index == shop_room_index:
-			generated_room_type = (
-				Room.RoomType.SHOP
-			)
-
-		var room := _create_room(
-			random_scene,
-			"Room" + str(index + 1),
-			root_node,
-			room_position,
-			generated_room_type
-		)
-
-		if room == null:
-			continue
-
-		room_instances.append(room)
-
-		if generated_room_type == Room.RoomType.TREASURE:
-			room.call_deferred("spawn_chest")
-
-
-		elif generated_room_type == Room.RoomType.SHOP:
-			room.call_deferred(
-				"spawn_merchant"
-			)
-
-
-		else:
-			spawn_enemies_for_room(
-				room,
-				index + 1
-			)
+	# =====================================================
+	# BOSS ROOM
+	# Последний элемент layout
+	# =====================================================
 
 	var boss_entry: Dictionary = (
 		generated_room_layout[
@@ -674,7 +746,6 @@ func generate_dungeon(root_node: Node) -> void:
 		)
 	)
 
-
 	var end_room := _create_room(
 		end_room_scene,
 		"EndRoom",
@@ -686,14 +757,55 @@ func generate_dungeon(root_node: Node) -> void:
 	if end_room == null:
 		return
 
-	room_instances.append(end_room)
+	room_instances.append(
+		end_room
+	)
 
-	_spawn_end_room_content(end_room)
-	
+	room_by_cell[end_cell] = end_room
+	cell_by_room[end_room] = end_cell
+	room_connections[end_room] = []
+
+	# =====================================================
+	# КОНТЕНТ
+	# =====================================================
+
+	_spawn_end_room_content(
+		end_room
+	)
+
 	_assign_guaranteed_key_carrier()
 
+	# =====================================================
+	# СОЕДИНЕНИЯ
+	# =====================================================
+
 	connect_rooms()
+
 	disable_unconnected_doors()
+
+	# =====================================================
+	# DEBUG ГРАФА
+	# =====================================================
+
+	for room in room_instances:
+		var connections: Array = (
+			room_connections.get(
+				room,
+				[]
+			)
+		)
+
+		print(
+			"[ROOM CONNECTIONS] ",
+			room.name,
+			" | doors=",
+			connections.size()
+		)
+
+	# =====================================================
+	# ВХОД НА ЭТАЖ
+	# =====================================================
+
 	enter_room(0)
 
 
