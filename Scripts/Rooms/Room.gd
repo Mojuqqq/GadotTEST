@@ -129,8 +129,10 @@ func _generate_floor() -> void:
 
 	var cells: Array[Vector2i] = []
 
-	for y in range(rows):
-		for x in range(columns):
+	# Временная область 12 × 10:
+	# по одному техническому тайлу вокруг комнаты.
+	for y in range(-1, rows + 1):
+		for x in range(-1, columns + 1):
 			cells.append(
 				Vector2i(x, y)
 			)
@@ -144,13 +146,33 @@ func _generate_floor() -> void:
 		true
 	)
 
+	# Удаляем техническую рамку слева и справа.
+	for y in range(-1, rows + 1):
+		floor_layer.erase_cell(
+			Vector2i(-1, y)
+		)
+
+		floor_layer.erase_cell(
+			Vector2i(columns, y)
+		)
+
+	# Удаляем техническую рамку сверху и снизу.
+	for x in range(columns):
+		floor_layer.erase_cell(
+			Vector2i(x, -1)
+		)
+
+		floor_layer.erase_cell(
+			Vector2i(x, rows)
+		)
+
 	print(
 		"[FLOOR RESULT] ",
 		name,
 		" | terrain=",
 		terrain_index,
-		" | requested=",
-		cells.size(),
+		" | target=",
+		columns * rows,
 		" | generated=",
 		floor_layer.get_used_cells().size()
 	)
