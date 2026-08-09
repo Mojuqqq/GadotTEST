@@ -14,6 +14,9 @@ var is_transitioning: bool = false
 
 var room_instances: Array[Node2D] = []
 var current_room_index: int = 0
+var room_by_cell: Dictionary = {}
+var cell_by_room: Dictionary = {}
+var room_connections: Dictionary = {}
 # Одноразовая замена следующей посещённой
 # комнаты на комнату с выбранным боссом.
 var debug_next_room_boss_scene: PackedScene = null
@@ -147,79 +150,257 @@ func _create_random_location_profile() -> LocationProfile:
 
 	return profile
 
-func _generate_route_cells(
+func _generate_room_layout(
 	intermediate_count: int
-) -> Array[Vector2i]:
-	var total_room_count: int = (
-		intermediate_count + 2
+) -> Array[Dictionary]:
+	var layout: Array[Dictionary] = []
+
+	var occupied_cells: Dictionary = {}
+
+	var start_entry: Dictionary = {
+		"cell": Vector2i.ZERO,
+		"parent": -1,
+		"main_path": true
+	}
+
+	layout.append(start_entry)
+
+	occupied_cells[
+		Vector2i.ZERO
+	] = true
+
+	# Хотя бы одну промежуточную комнату
+	# оставляем на основном пути.
+	var branch_count: int = 0
+
+	if intermediate_count >= 2:
+		branch_count = 1
+
+	if intermediate_count >= 4:
+		branch_count = randi_range(
+			1,
+			2
+		)
+
+	var main_room_count: int = (
+		intermediate_count
+		- branch_count
 	)
 
-	var max_attempts: int = 100
+	var current_cell := Vector2i.ZERO
+	var current_parent_index: int = 0
 
-	for _attempt in range(max_attempts):
-		var route: Array[Vector2i] = [
-			Vector2i.ZERO
-		]
+	# =====================================================
+	# ОСНОВНОЙ ПУТЬ
+	# =====================================================
 
-		var occupied_cells: Dictionary = {
-			Vector2i.ZERO: true
+	for _index in range(
+		main_room_count
+	):
+		var directions := (
+			_get_grid_directions()
+		)
+
+		directions.shuffle()
+
+		var new_cell := Vector2i.ZERO
+		var found: bool = false
+
+		for direction in directions:
+			var candidate: Vector2i = (
+				current_cell
+				+ direction
+			)
+
+			if not _can_place_branch_room(
+				candidate,
+				current_cell,
+				occupied_cells
+			):
+				continue
+
+			new_cell = candidate
+			found = true
+			break
+
+		if not found:
+			push_warning(
+				"Не удалось продолжить основной путь."
+			)
+			break
+
+		var new_entry: Dictionary = {
+			"cell": new_cell,
+			"parent": current_parent_index,
+			"main_path": true
 		}
 
-		var generation_failed: bool = false
+		layout.append(
+			new_entry
+		)
 
-		for _room_index in range(
+		occupied_cells[
+			new_cell
+		] = true
+
+		current_cell = new_cell
+		current_parent_index = (
+			layout.size() - 1
+		)
+
+	# =====================================================
+	# БОКОВЫЕ ВЕТКИ
+	# =====================================================
+
+	for _branch_index in range(
+		branch_count
+	):
+		var possible_parents: Array[int] = []
+
+		# Не цепляем боковую ветку
+		# к START по возможности.
+		for index in range(
 			1,
-			total_room_count
+			layout.size()
 		):
-			var directions: Array[Vector2i] = [
-				Vector2i.RIGHT,
-				Vector2i.DOWN,
-				Vector2i.UP,
-				Vector2i.LEFT
-			]
+			possible_parents.append(
+				index
+			)
+
+		possible_parents.shuffle()
+
+		var branch_created: bool = false
+
+		for parent_index in possible_parents:
+			var parent_entry: Dictionary = (
+				layout[parent_index]
+			)
+
+			var parent_cell: Vector2i = (
+				parent_entry["cell"]
+			)
+
+			var directions := (
+				_get_grid_directions()
+			)
 
 			directions.shuffle()
 
-			var previous_cell: Vector2i = (
-				route[route.size() - 1]
-			)
-
-			var cell_found: bool = false
-
-			for direction_step in directions:
+			for direction in directions:
 				var candidate: Vector2i = (
-					previous_cell
-					+ direction_step
+					parent_cell
+					+ direction
 				)
 
-				if not _can_use_route_cell(
+				if not _can_place_branch_room(
 					candidate,
-					previous_cell,
+					parent_cell,
 					occupied_cells
 				):
 					continue
 
-				route.append(candidate)
-				occupied_cells[candidate] = true
-				cell_found = true
+				var branch_entry: Dictionary = {
+					"cell": candidate,
+					"parent": parent_index,
+					"main_path": false
+				}
+
+				layout.append(
+					branch_entry
+				)
+
+				occupied_cells[
+					candidate
+				] = true
+
+				branch_created = true
 				break
 
-			if not cell_found:
-				generation_failed = true
+			if branch_created:
 				break
 
-		if not generation_failed:
-			return route
+	# =====================================================
+	# BOSS
+	# =====================================================
 
-	push_warning(
-		"Не удалось построить маршрут с поворотами. "
-		+ "Используется горизонтальный маршрут."
+	var boss_parent_index: int = (
+		current_parent_index
 	)
 
-	return _create_horizontal_route(
-		total_room_count
+	var boss_parent_cell: Vector2i = (
+		layout[
+			boss_parent_index
+		]["cell"]
 	)
 
+	var boss_directions := (
+		_get_grid_directions()
+	)
+
+	boss_directions.shuffle()
+
+	for direction in boss_directions:
+		var boss_cell: Vector2i = (
+			boss_parent_cell
+			+ direction
+		)
+
+		if not _can_place_branch_room(
+			boss_cell,
+			boss_parent_cell,
+			occupied_cells
+		):
+			continue
+
+		layout.append(
+			{
+				"cell": boss_cell,
+				"parent": boss_parent_index,
+				"main_path": true,
+				"boss": true
+			}
+		)
+
+		break
+
+	return layout
+
+func _get_grid_directions() -> Array[Vector2i]:
+	return [
+		Vector2i.UP,
+		Vector2i.RIGHT,
+		Vector2i.DOWN,
+		Vector2i.LEFT
+	]
+
+func _can_place_branch_room(
+	cell: Vector2i,
+	parent_cell: Vector2i,
+	occupied_cells: Dictionary
+) -> bool:
+	if occupied_cells.has(cell):
+		return false
+
+	var adjacent_rooms: int = 0
+
+	for direction in _get_grid_directions():
+		var neighbour: Vector2i = (
+			cell + direction
+		)
+
+		if not occupied_cells.has(
+			neighbour
+		):
+			continue
+
+		adjacent_rooms += 1
+
+		# Новая комната должна касаться
+		# только своего родителя.
+		if neighbour != parent_cell:
+			return false
+
+	return adjacent_rooms == 1
 
 func _can_use_route_cell(
 	candidate: Vector2i,
@@ -281,6 +462,9 @@ func _route_cell_to_position(
 
 func generate_dungeon(root_node: Node) -> void:
 	_clear_existing_rooms()
+	room_by_cell.clear()
+	cell_by_room.clear()
+	room_connections.clear()
 
 	if start_room_scene == null:
 		push_error("Не назначена стартовая комната.")
