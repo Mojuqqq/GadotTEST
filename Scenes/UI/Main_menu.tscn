@@ -3,6 +3,7 @@
 [ext_resource type="Script" uid="uid://cvdb8d1wxvtfw" path="res://Scripts/UI/Main_menu.gd" id="1_7sp8y"]
 [ext_resource type="Texture2D" uid="uid://dkauj83b423oc" path="res://Assets/Art/UI/main_menu_image.png" id="2_mi4od"]
 [ext_resource type="Texture2D" uid="uid://7c5e2egwx5kw" path="res://Assets/Art/UI/button_play.png" id="2_nukk0"]
+[ext_resource type="FontFile" uid="uid://dviftqy3jyv0m" path="res://Assets/Fonts/Rubik-VariableFont_wght.ttf" id="3_et2pw"]
 [ext_resource type="Texture2D" uid="uid://b4rj7h6skydxb" path="res://Assets/Art/UI/button_play_press.png" id="3_mi4od"]
 [ext_resource type="Texture2D" uid="uid://bwbfggapc0ty6" path="res://Assets/Art/UI/button_play_hover.png" id="4_cdexa"]
 [ext_resource type="Texture2D" uid="uid://cyj578cw1fmyb" path="res://Assets/Art/UI/button_play_disable.png" id="5_i4k7f"]
@@ -10,6 +11,8 @@
 [ext_resource type="Texture2D" uid="uid://cflrib13kjv45" path="res://Assets/Art/UI/button_settings.png" id="7_uhpec"]
 [ext_resource type="Texture2D" uid="uid://bgrxf40uj0lds" path="res://Assets/Art/UI/title_panel.png" id="9_cdexa"]
 [ext_resource type="PackedScene" uid="uid://c1c8qo1iqbg5u" path="res://Scenes/UI/SettingsMenu.tscn" id="10_i4k7f"]
+[ext_resource type="FontFile" uid="uid://cwhd7e4gvmfg5" path="res://Assets/Fonts/RubikMonoOne-Regular.ttf" id="10_uhpec"]
+[ext_resource type="AudioStream" uid="uid://bdkxo5kyubjwi" path="res://Assets/Audio/System/main_theme.wav" id="11_2tscw"]
 
 [sub_resource type="StyleBoxTexture" id="StyleBoxTexture_et2pw"]
 content_margin_left = 60.0
@@ -71,7 +74,8 @@ theme_override_colors/font_hover_color = Color(0.8392157, 0.7254902, 0.5411765, 
 theme_override_colors/font_disabled_color = Color(0.875, 0.875, 0.875, 0.5)
 theme_override_colors/font_outline_color = Color(0.13333334, 0.09019608, 0.043137256, 1)
 theme_override_constants/outline_size = 8
-theme_override_font_sizes/font_size = 24
+theme_override_fonts/font = ExtResource("3_et2pw")
+theme_override_font_sizes/font_size = 32
 theme_override_styles/normal = SubResource("StyleBoxTexture_et2pw")
 theme_override_styles/pressed = SubResource("StyleBoxTexture_gbwy5")
 theme_override_styles/hover = SubResource("StyleBoxTexture_llqno")
@@ -98,7 +102,8 @@ theme_override_colors/font_pressed_color = Color(0.8392157, 0.7254902, 0.5411765
 theme_override_colors/font_hover_color = Color(0.8392157, 0.7254902, 0.5411765, 1)
 theme_override_colors/font_outline_color = Color(0.13333334, 0.09019608, 0.043137256, 1)
 theme_override_constants/outline_size = 8
-theme_override_font_sizes/font_size = 24
+theme_override_fonts/font = ExtResource("3_et2pw")
+theme_override_font_sizes/font_size = 32
 theme_override_styles/normal = SubResource("StyleBoxTexture_et2pw")
 theme_override_styles/pressed = SubResource("StyleBoxTexture_gbwy5")
 theme_override_styles/hover = SubResource("StyleBoxTexture_llqno")
@@ -127,7 +132,8 @@ theme_override_colors/font_color = Color(0.8392157, 0.7254902, 0.5411765, 1)
 theme_override_colors/font_outline_color = Color(0.13333334, 0.09019608, 0.043137256, 1)
 theme_override_constants/line_spacing = -20
 theme_override_constants/outline_size = 14
-theme_override_font_sizes/font_size = 100
+theme_override_fonts/font = ExtResource("10_uhpec")
+theme_override_font_sizes/font_size = 80
 text = "Binding of Dina"
 horizontal_alignment = 1
 vertical_alignment = 1
@@ -135,6 +141,12 @@ autowrap_mode = 3
 
 [node name="SettingsMenu" parent="." unique_id=1734913198 instance=ExtResource("10_i4k7f")]
 visible = false
+
+[node name="MainMusic" type="AudioStreamPlayer" parent="." unique_id=1680239201]
+stream = ExtResource("11_2tscw")
+volume_db = -12.0
+autoplay = true
+bus = &"Music"
 
 [connection signal="pressed" from="NewGameButton" to="." method="_on_new_game_button_pressed"]
 [connection signal="pressed" from="SettingsButton" to="." method="_on_settings_button_pressed"]

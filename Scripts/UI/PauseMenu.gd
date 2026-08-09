@@ -175,7 +175,8 @@ func toggle_pause() -> void:
 
 
 func _set_pause_state(
-	paused: bool
+	paused: bool,
+	play_audio: bool = true
 ) -> void:
 	var state_changed: bool = (
 		visible != paused
@@ -185,6 +186,9 @@ func _set_pause_state(
 	get_tree().paused = paused
 
 	if not state_changed:
+		return
+
+	if not play_audio:
 		return
 
 	if paused:
@@ -225,7 +229,11 @@ func _on_next_floor_button_pressed() -> void:
 
 
 func _on_next_floor_confirmed() -> void:
-	_set_pause_state(false)
+	_set_pause_state(
+		false,
+		false
+	)
+
 	GameManager.go_to_next_floor()
 
 
@@ -285,7 +293,10 @@ func _on_menu_button_pressed() -> void:
 	exit_run_dialog.popup_centered()
 
 func _on_exit_run_confirmed() -> void:
-	_set_pause_state(false)
+	_set_pause_state(
+		false,
+		false
+	)
 
 	if exit_will_save_gold:
 		GameManager.finish_run_and_return_to_menu()

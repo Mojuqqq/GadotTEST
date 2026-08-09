@@ -41,6 +41,119 @@ func _ready() -> void:
 	update_enemies_list()  
 	set_active(false)
 
+func _get_floor_terrain(
+	floor_type: LocationProfile.FloorType
+) -> int:
+	match floor_type:
+		LocationProfile.FloorType.DIRT:
+			return 0
+
+		LocationProfile.FloorType.GRASS:
+			return 1
+
+		LocationProfile.FloorType.WOOD:
+			return 2
+
+		_:
+			return 0
+
+var location_profile: LocationProfile = null
+
+
+func apply_location(
+	profile: LocationProfile
+) -> void:
+	if profile == null:
+		push_warning(
+			"Для комнаты "
+			+ name
+			+ " не назначен LocationProfile."
+		)
+
+		return
+
+	location_profile = profile
+
+	_generate_floor()
+
+func _generate_floor() -> void:
+	if location_profile == null:
+		push_warning(
+			"Нет LocationProfile у комнаты: "
+			+ name
+		)
+		return
+
+	var floor_layer := (
+		get_node_or_null("Floor")
+		as TileMapLayer
+	)
+
+	if floor_layer == null:
+		push_warning(
+			"В комнате "
+			+ name
+			+ " нет TileMapLayer Floor."
+		)
+		return
+
+	var floor_tile_set: TileSet = (
+		floor_layer.tile_set
+	)
+
+	if floor_tile_set == null:
+		push_warning(
+			"У Floor не назначен floor_tileset."
+		)
+		return
+
+	var terrain_index: int = (
+		_get_floor_terrain(
+			location_profile.floor_type
+		)
+	)
+
+	var tile_size: Vector2i = (
+		floor_tile_set.tile_size
+	)
+
+	var columns: int = ceili(
+		float(GameManager.room_width)
+		/ float(tile_size.x)
+	)
+
+	var rows: int = ceili(
+		float(GameManager.room_height)
+		/ float(tile_size.y)
+	)
+
+	var cells: Array[Vector2i] = []
+
+	for y in range(rows):
+		for x in range(columns):
+			cells.append(
+				Vector2i(x, y)
+			)
+
+	floor_layer.clear()
+
+	floor_layer.set_cells_terrain_connect(
+		cells,
+		0,
+		terrain_index
+	)
+
+	print(
+		"[FLOOR] ",
+		name,
+		" | ",
+		location_profile.display_name,
+		" | terrain=",
+		terrain_index,
+		" | cells=",
+		cells.size()
+	)
+
 func _apply_right_connection_state() -> void:
 	var closed_socket := (
 		get_node_or_null(

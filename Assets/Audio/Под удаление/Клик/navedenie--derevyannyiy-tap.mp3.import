@@ -1,0 +1,19 @@
+[remap]
+
+importer="mp3"
+type="AudioStreamMP3"
+uid="uid://b5qsvf1u6wtte"
+path="res://.godot/imported/navedenie--derevyannyiy-tap.mp3-210bffe4bb79722b4451c0773d9b1b17.mp3str"
+
+[deps]
+
+source_file="res://Assets/Audio/Под удаление/Клик/navedenie--derevyannyiy-tap.mp3"
+dest_files=["res://.godot/imported/navedenie--derevyannyiy-tap.mp3-210bffe4bb79722b4451c0773d9b1b17.mp3str"]
+
+[params]
+
+loop=false
+loop_offset=0
+bpm=0
+beat_count=0
+bar_beats=4

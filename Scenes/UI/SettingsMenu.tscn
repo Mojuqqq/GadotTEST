@@ -3,11 +3,86 @@
 [ext_resource type="Script" uid="uid://cjfmsbvc3t6w2" path="res://Scripts/UI/SettingsMenu.gd" id="1_3hh3s"]
 [ext_resource type="Texture2D" uid="uid://bevayswkwuuw5" path="res://Assets/Art/UI/popup_bg.png" id="1_owj4x"]
 [ext_resource type="Texture2D" uid="uid://dmq2f7i6ckc5c" path="res://Assets/Art/UI/button_close.png" id="2_3hh3s"]
+[ext_resource type="Texture2D" uid="uid://de78ilpcuffs8" path="res://Assets/Art/UI/scrollbar_grabber.png" id="3_8vcbs"]
 [ext_resource type="Texture2D" uid="uid://d0t6wp7rxo425" path="res://Assets/Art/UI/button_close_press.png" id="3_83xbh"]
+[ext_resource type="FontFile" uid="uid://cwhd7e4gvmfg5" path="res://Assets/Fonts/RubikMonoOne-Regular.ttf" id="3_v6wkx"]
+[ext_resource type="FontFile" uid="uid://dviftqy3jyv0m" path="res://Assets/Fonts/Rubik-VariableFont_wght.ttf" id="4_0344k"]
+[ext_resource type="Texture2D" uid="uid://b6jiq3sg61kog" path="res://Assets/Art/UI/scrollbar_tick.png" id="4_hgt7e"]
+[ext_resource type="Texture2D" uid="uid://cxl3j75js5bfd" path="res://Assets/Art/UI/bg_panel.png" id="4_s4v4x"]
 [ext_resource type="Texture2D" uid="uid://nimdybv21mpl" path="res://Assets/Art/UI/button_close_hover.png" id="4_v1gh5"]
+[ext_resource type="Texture2D" uid="uid://dt2bvf2sv7aot" path="res://Assets/Art/UI/scrollbar_tick_highlight.png" id="5_02iw2"]
+[ext_resource type="Texture2D" uid="uid://cp3p2ikk1tns8" path="res://Assets/Art/UI/arrow_down.png" id="5_hgt7e"]
+[ext_resource type="Texture2D" uid="uid://bi81a3d8rvn5y" path="res://Assets/Art/UI/button_menu.png" id="6_02iw2"]
+[ext_resource type="Texture2D" uid="uid://dkk6ukq65e6dn" path="res://Assets/Art/UI/toggle_on.png" id="6_sfc5i"]
+[ext_resource type="Texture2D" uid="uid://dlaf4rvxn8tm" path="res://Assets/Art/UI/toggle_off.png" id="7_byc5r"]
+[ext_resource type="Texture2D" uid="uid://c47rd24txaw7x" path="res://Assets/Art/UI/button_menu_press.png" id="7_sfc5i"]
+[ext_resource type="Texture2D" uid="uid://ccy8td0wnwlme" path="res://Assets/Art/UI/button_menu_hover.png" id="8_byc5r"]
+[ext_resource type="Texture2D" uid="uid://cfqmqiqsudod5" path="res://Assets/Art/UI/bg_panel_disabled.png" id="8_sfc5i"]
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_byc5r"]
+texture = ExtResource("4_hgt7e")
+texture_margin_left = 9.0
+texture_margin_top = 8.0
+texture_margin_right = 9.0
+texture_margin_bottom = 8.0
+axis_stretch_horizontal = 2
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_hgt7e"]
+texture = ExtResource("5_02iw2")
+texture_margin_left = 9.0
+texture_margin_top = 8.0
+texture_margin_right = 9.0
+texture_margin_bottom = 8.0
+axis_stretch_horizontal = 2
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_mtjr3"]
+atlas = ExtResource("3_8vcbs")
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_1w13x"]
+content_margin_left = 60.0
+content_margin_top = 20.0
+content_margin_right = 60.0
+content_margin_bottom = 20.0
+texture = ExtResource("4_s4v4x")
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_0344k"]
+content_margin_left = 60.0
+content_margin_top = 20.0
+content_margin_right = 60.0
+content_margin_bottom = 20.0
+texture = ExtResource("8_sfc5i")
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_2dieo"]
+content_margin_left = 60.0
+content_margin_top = 18.0
+content_margin_right = 60.0
+content_margin_bottom = 18.0
+texture = ExtResource("6_02iw2")
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_w7bxd"]
+content_margin_left = 60.0
+content_margin_top = 18.0
+content_margin_right = 60.0
+content_margin_bottom = 18.0
+texture = ExtResource("7_sfc5i")
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_gqux3"]
+content_margin_left = 60.0
+content_margin_top = 18.0
+content_margin_right = 60.0
+content_margin_bottom = 18.0
+texture = ExtResource("8_byc5r")
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_v6wkx"]
+content_margin_left = 60.0
+content_margin_top = 18.0
+content_margin_right = 60.0
+content_margin_bottom = 18.0
+texture = ExtResource("6_02iw2")
 
 [node name="SettingsMenu" type="Control" unique_id=1734913198]
 process_mode = 3
+texture_filter = 1
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
@@ -18,6 +93,7 @@ script = ExtResource("1_3hh3s")
 
 [node name="DimBackground" type="Panel" parent="." unique_id=1357967448]
 self_modulate = Color(0, 0, 0, 0.25490198)
+texture_filter = 1
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -26,6 +102,7 @@ grow_horizontal = 2
 grow_vertical = 2
 
 [node name="Panel" type="TextureRect" parent="." unique_id=1193734445]
+texture_filter = 1
 layout_mode = 0
 offset_left = 138.0
 offset_top = 50.0
@@ -39,6 +116,7 @@ expand_mode = 1
 stretch_mode = 5
 
 [node name="Title" type="Label" parent="." unique_id=43734412]
+texture_filter = 1
 layout_mode = 0
 offset_left = 510.0
 offset_top = 266.0
@@ -47,11 +125,14 @@ offset_bottom = 321.0
 theme_override_colors/font_color = Color(0.8392157, 0.7254902, 0.5411765, 1)
 theme_override_colors/font_outline_color = Color(0.13333334, 0.09019608, 0.043137256, 1)
 theme_override_constants/outline_size = 8
-theme_override_font_sizes/font_size = 40
+theme_override_fonts/font = ExtResource("3_v6wkx")
+theme_override_font_sizes/font_size = 30
 text = "Настройки"
 horizontal_alignment = 1
+vertical_alignment = 1
 
 [node name="Content" type="MarginContainer" parent="." unique_id=888446821]
+texture_filter = 1
 layout_mode = 1
 anchors_preset = 8
 anchor_left = 0.5
@@ -70,128 +151,215 @@ theme_override_constants/margin_right = 20
 theme_override_constants/margin_bottom = 10
 
 [node name="SettingsVBox" type="VBoxContainer" parent="Content" unique_id=442514361]
+texture_filter = 1
 layout_mode = 2
-theme_override_constants/separation = 12
+theme_override_constants/separation = 8
+alignment = 1
 
 [node name="AudioTitle" type="Label" parent="Content/SettingsVBox" unique_id=27109698]
+texture_filter = 1
 layout_mode = 2
 theme_override_colors/font_color = Color(0.8392157, 0.7254902, 0.5411765, 1)
 theme_override_colors/font_outline_color = Color(0.13333334, 0.09019608, 0.043137256, 1)
 theme_override_constants/outline_size = 5
+theme_override_fonts/font = ExtResource("4_0344k")
 theme_override_font_sizes/font_size = 20
 text = "Звук"
 
 [node name="MasterRow" type="HBoxContainer" parent="Content/SettingsVBox" unique_id=1145493682]
+texture_filter = 1
 layout_mode = 2
 
 [node name="MasterLabel" type="Label" parent="Content/SettingsVBox/MasterRow" unique_id=1483568691]
+texture_filter = 1
 custom_minimum_size = Vector2(220, 44)
 layout_mode = 2
+theme_override_fonts/font = ExtResource("4_0344k")
 text = "Общая громкость"
 vertical_alignment = 1
 
 [node name="MasterSlider" type="HSlider" parent="Content/SettingsVBox/MasterRow" unique_id=1205868663]
+texture_filter = 1
 layout_mode = 2
 size_flags_horizontal = 3
+theme_override_icons/grabber = ExtResource("3_8vcbs")
+theme_override_icons/grabber_highlight = ExtResource("3_8vcbs")
+theme_override_styles/slider = SubResource("StyleBoxTexture_byc5r")
+theme_override_styles/grabber_area = SubResource("StyleBoxTexture_hgt7e")
+theme_override_styles/grabber_area_highlight = SubResource("StyleBoxTexture_hgt7e")
 value = 100.0
 
 [node name="MasterValue" type="Label" parent="Content/SettingsVBox/MasterRow" unique_id=228852339]
+texture_filter = 1
 custom_minimum_size = Vector2(70, 44)
 layout_mode = 2
+theme_override_fonts/font = ExtResource("4_0344k")
 text = "100%"
-horizontal_alignment = 2
+horizontal_alignment = 1
 vertical_alignment = 1
 
 [node name="MusicRow" type="HBoxContainer" parent="Content/SettingsVBox" unique_id=1233348847]
+texture_filter = 1
 layout_mode = 2
 
 [node name="MusicLabel" type="Label" parent="Content/SettingsVBox/MusicRow" unique_id=529404467]
+texture_filter = 1
 custom_minimum_size = Vector2(220, 44)
 layout_mode = 2
+theme_override_fonts/font = ExtResource("4_0344k")
 text = "Музыка"
 vertical_alignment = 1
 
 [node name="MusicSlider" type="HSlider" parent="Content/SettingsVBox/MusicRow" unique_id=595602403]
+texture_filter = 1
 layout_mode = 2
 size_flags_horizontal = 3
+theme_override_icons/grabber = SubResource("AtlasTexture_mtjr3")
+theme_override_icons/grabber_highlight = SubResource("AtlasTexture_mtjr3")
+theme_override_styles/slider = SubResource("StyleBoxTexture_byc5r")
+theme_override_styles/grabber_area = SubResource("StyleBoxTexture_hgt7e")
+theme_override_styles/grabber_area_highlight = SubResource("StyleBoxTexture_hgt7e")
 value = 100.0
 
 [node name="MusicValue" type="Label" parent="Content/SettingsVBox/MusicRow" unique_id=847661487]
+texture_filter = 1
 custom_minimum_size = Vector2(70, 44)
 layout_mode = 2
+theme_override_fonts/font = ExtResource("4_0344k")
 text = "100%"
-horizontal_alignment = 2
+horizontal_alignment = 1
 vertical_alignment = 1
 
 [node name="EffectsRow" type="HBoxContainer" parent="Content/SettingsVBox" unique_id=511091986]
+texture_filter = 1
 layout_mode = 2
+alignment = 1
 
 [node name="EffectsLabel" type="Label" parent="Content/SettingsVBox/EffectsRow" unique_id=1414762925]
+texture_filter = 1
 custom_minimum_size = Vector2(220, 44)
 layout_mode = 2
+theme_override_fonts/font = ExtResource("4_0344k")
 text = "Эффекты"
 vertical_alignment = 1
 
 [node name="EffectsSlider" type="HSlider" parent="Content/SettingsVBox/EffectsRow" unique_id=1606086440]
+texture_filter = 1
 layout_mode = 2
 size_flags_horizontal = 3
+theme_override_icons/grabber = SubResource("AtlasTexture_mtjr3")
+theme_override_icons/grabber_highlight = SubResource("AtlasTexture_mtjr3")
+theme_override_styles/slider = SubResource("StyleBoxTexture_byc5r")
+theme_override_styles/grabber_area = SubResource("StyleBoxTexture_hgt7e")
+theme_override_styles/grabber_area_highlight = SubResource("StyleBoxTexture_hgt7e")
 value = 100.0
 
 [node name="EffectsValue" type="Label" parent="Content/SettingsVBox/EffectsRow" unique_id=1401617986]
+texture_filter = 1
 custom_minimum_size = Vector2(70, 44)
 layout_mode = 2
+theme_override_fonts/font = ExtResource("4_0344k")
 text = "100%"
-horizontal_alignment = 2
+horizontal_alignment = 1
 vertical_alignment = 1
 
 [node name="VideoTitle" type="Label" parent="Content/SettingsVBox" unique_id=130175535]
+texture_filter = 1
 layout_mode = 2
 theme_override_colors/font_color = Color(0.8392157, 0.7254902, 0.5411765, 1)
 theme_override_colors/font_outline_color = Color(0.13333334, 0.09019608, 0.043137256, 1)
 theme_override_constants/outline_size = 5
+theme_override_fonts/font = ExtResource("4_0344k")
 theme_override_font_sizes/font_size = 20
 text = "Экран"
 
 [node name="FullscreenRow" type="HBoxContainer" parent="Content/SettingsVBox" unique_id=1529619509]
+texture_filter = 1
 layout_mode = 2
 
 [node name="FullscreenLabel" type="Label" parent="Content/SettingsVBox/FullscreenRow" unique_id=259281590]
+texture_filter = 1
 layout_mode = 2
 size_flags_horizontal = 3
+theme_override_fonts/font = ExtResource("4_0344k")
 text = "Полноэкранный режим"
 
 [node name="FullscreenCheck" type="CheckButton" parent="Content/SettingsVBox/FullscreenRow" unique_id=1937647812]
+texture_filter = 1
 layout_mode = 2
+theme_override_fonts/font = ExtResource("4_0344k")
+theme_override_icons/checked = ExtResource("6_sfc5i")
+theme_override_icons/unchecked = ExtResource("7_byc5r")
 text = "Включено"
 
 [node name="ResolutionRow" type="HBoxContainer" parent="Content/SettingsVBox" unique_id=1943454391]
+texture_filter = 1
 layout_mode = 2
 
 [node name="ResolutionLabel" type="Label" parent="Content/SettingsVBox/ResolutionRow" unique_id=853658029]
+texture_filter = 1
 layout_mode = 2
 size_flags_horizontal = 3
+theme_override_fonts/font = ExtResource("4_0344k")
 text = "Разрешение"
 
 [node name="ResolutionOption" type="OptionButton" parent="Content/SettingsVBox/ResolutionRow" unique_id=679457145]
+texture_filter = 1
 custom_minimum_size = Vector2(220, 48)
 layout_mode = 2
+theme_override_colors/font_color = Color(0.13333334, 0.09019608, 0.043137256, 1)
+theme_override_colors/font_focus_color = Color(0.13333334, 0.09019608, 0.043137256, 1)
+theme_override_colors/font_pressed_color = Color(0.13333334, 0.09019608, 0.043137256, 1)
+theme_override_colors/font_hover_color = Color(0.13333334, 0.09019608, 0.043137256, 1)
+theme_override_colors/font_hover_pressed_color = Color(0.13333334, 0.09019608, 0.043137256, 1)
+theme_override_colors/font_disabled_color = Color(0.3328803, 0.33288088, 0.33288038, 1)
+theme_override_fonts/font = ExtResource("4_0344k")
+theme_override_styles/normal = SubResource("StyleBoxTexture_1w13x")
+theme_override_styles/pressed = SubResource("StyleBoxTexture_1w13x")
+theme_override_styles/hover = SubResource("StyleBoxTexture_1w13x")
+theme_override_styles/hover_pressed = SubResource("StyleBoxTexture_1w13x")
+theme_override_styles/disabled = SubResource("StyleBoxTexture_0344k")
+theme_override_styles/focus = SubResource("StyleBoxTexture_1w13x")
+theme_override_icons/arrow = ExtResource("5_hgt7e")
 
 [node name="ButtonsRow" type="HBoxContainer" parent="Content/SettingsVBox" unique_id=2052814053]
+texture_filter = 1
 layout_mode = 2
 theme_override_constants/separation = 20
 alignment = 1
 
 [node name="ResetButton" type="Button" parent="Content/SettingsVBox/ButtonsRow" unique_id=1001553385]
+texture_filter = 1
 custom_minimum_size = Vector2(230, 64)
 layout_mode = 2
+theme_override_colors/font_color = Color(0.8392157, 0.7254902, 0.5411765, 1)
+theme_override_colors/font_pressed_color = Color(0.8392157, 0.7254902, 0.5411765, 1)
+theme_override_colors/font_hover_color = Color(0.8392157, 0.7254902, 0.5411765, 1)
+theme_override_colors/font_outline_color = Color(0.13333334, 0.09019608, 0.043137256, 1)
+theme_override_constants/outline_size = 8
+theme_override_fonts/font = ExtResource("4_0344k")
+theme_override_styles/normal = SubResource("StyleBoxTexture_2dieo")
+theme_override_styles/pressed = SubResource("StyleBoxTexture_w7bxd")
+theme_override_styles/hover = SubResource("StyleBoxTexture_gqux3")
 text = "Сбросить"
 
 [node name="BackButton" type="Button" parent="Content/SettingsVBox/ButtonsRow" unique_id=2142679487]
+texture_filter = 1
 custom_minimum_size = Vector2(230, 64)
 layout_mode = 2
+theme_override_colors/font_color = Color(0.8392157, 0.7254902, 0.5411765, 1)
+theme_override_colors/font_pressed_color = Color(0.8392157, 0.7254902, 0.5411765, 1)
+theme_override_colors/font_hover_color = Color(0.8392157, 0.7254902, 0.5411765, 1)
+theme_override_colors/font_outline_color = Color(0.13333334, 0.09019608, 0.043137256, 1)
+theme_override_constants/outline_size = 8
+theme_override_fonts/font = ExtResource("4_0344k")
+theme_override_styles/normal = SubResource("StyleBoxTexture_v6wkx")
+theme_override_styles/pressed = SubResource("StyleBoxTexture_w7bxd")
+theme_override_styles/hover = SubResource("StyleBoxTexture_gqux3")
 text = "Назад"
 
 [node name="CloseButton" type="TextureButton" parent="." unique_id=523184541]
+texture_filter = 1
 layout_mode = 0
 offset_left = 857.0
 offset_top = 256.0

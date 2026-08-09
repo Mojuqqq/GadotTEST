@@ -1,6 +1,8 @@
 extends CanvasLayer
 
-
+const UI_FONT: FontFile = preload(
+	"res://Assets/Fonts/Rubik-VariableFont_wght.ttf"
+)
 const QUICK_SLOT_ACTION_PREFIX: String = "quick_slot_"
 const QUICK_SLOT_SCENE: PackedScene = preload("res://Scenes/UI/QuickSlot.tscn")
 const DISPLAY_SLOT_COUNT: int = 9
@@ -49,6 +51,15 @@ func _process(
 func _create_item_warning_label() -> void:
 	item_warning_label = Label.new()
 	item_warning_label.name = "ItemUseWarningLabel"
+	item_warning_label.add_theme_font_override(
+		&"font",
+		UI_FONT
+	)
+
+	item_warning_label.add_theme_font_size_override(
+		&"font_size",
+		18
+	)
 
 	item_warning_label.set_anchors_preset(
 		Control.PRESET_CENTER_BOTTOM
@@ -642,7 +653,15 @@ func _create_effect_card(
 	)
 
 	var name_label := Label.new()
+	name_label.add_theme_font_override(
+		&"font",
+		UI_FONT
+	)
 
+	name_label.add_theme_font_size_override(
+		&"font_size",
+		14
+	)
 	name_label.text = display_name
 
 	name_label.text_overrun_behavior = (
@@ -654,6 +673,16 @@ func _create_effect_card(
 	)
 
 	var timer_label := Label.new()
+
+	timer_label.add_theme_font_override(
+		&"font",
+		UI_FONT
+	)
+
+	timer_label.add_theme_font_size_override(
+		&"font_size",
+		13
+	)
 
 	timer_label.text = "0 с"
 

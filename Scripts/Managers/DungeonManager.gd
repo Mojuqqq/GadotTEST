@@ -428,6 +428,22 @@ func _create_room(
 	root_node.add_child(room)
 	room.global_position = room_position
 
+	var test_location := LocationProfile.new()
+
+	test_location.id = &"test_farm"
+	test_location.display_name = "Тест: земля"
+	test_location.floor_type = (
+		LocationProfile.FloorType.DIRT
+	)
+
+	if room.has_method(
+		&"apply_location"
+	):
+		room.call(
+			&"apply_location",
+			test_location
+		)
+
 	return room
 
 

@@ -1,0 +1,24 @@
+[remap]
+
+importer="wav"
+type="AudioStreamWAV"
+uid="uid://3olfuboaaypu"
+path="res://.godot/imported/15419__pagancow__dorm-door-opening.wav-d685b14298e004a7a0633b96c0dd845b.sample"
+
+[deps]
+
+source_file="res://Assets/Audio/Под удаление/опен дор/15419__pagancow__dorm-door-opening.wav"
+dest_files=["res://.godot/imported/15419__pagancow__dorm-door-opening.wav-d685b14298e004a7a0633b96c0dd845b.sample"]
+
+[params]
+
+force/8_bit=false
+force/mono=false
+force/max_rate=false
+force/max_rate_hz=44100
+edit/trim=false
+edit/normalize=false
+edit/loop_mode=0
+edit/loop_begin=0
+edit/loop_end=-1
+compress/mode=2

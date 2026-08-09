@@ -2,6 +2,7 @@
 
 [ext_resource type="Texture2D" uid="uid://c31nxmbibaus2" path="res://Assets/Art/Characters/NPC/Merchant.png" id="1_63woo"]
 [ext_resource type="Script" uid="uid://ce2jbsrbm6wei" path="res://Scripts/Interactables/NPC/Merchant.gd" id="1_dmenh"]
+[ext_resource type="FontFile" uid="uid://dviftqy3jyv0m" path="res://Assets/Fonts/Rubik-VariableFont_wght.ttf" id="3_3jyg7"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_63woo"]
 size = Vector2(197.95929, 232.65323)
@@ -43,5 +44,6 @@ offset_left = -54.0
 offset_top = -134.0
 offset_right = 53.0
 offset_bottom = -111.0
+theme_override_fonts/font = ExtResource("3_3jyg7")
 text = "[E] Торговать"
 horizontal_alignment = 1

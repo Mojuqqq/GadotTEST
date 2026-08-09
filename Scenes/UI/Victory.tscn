@@ -3,6 +3,8 @@
 [ext_resource type="Script" uid="uid://c2ec0iyfka1mf" path="res://Scripts/UI/Victory.gd" id="1_w158h"]
 [ext_resource type="Texture2D" uid="uid://bevayswkwuuw5" path="res://Assets/Art/UI/popup_bg.png" id="2_5vo0r"]
 [ext_resource type="Texture2D" uid="uid://bi81a3d8rvn5y" path="res://Assets/Art/UI/button_menu.png" id="3_j8jk0"]
+[ext_resource type="FontFile" uid="uid://cwhd7e4gvmfg5" path="res://Assets/Fonts/RubikMonoOne-Regular.ttf" id="3_tsk0s"]
+[ext_resource type="FontFile" uid="uid://dviftqy3jyv0m" path="res://Assets/Fonts/Rubik-VariableFont_wght.ttf" id="4_dc284"]
 [ext_resource type="Texture2D" uid="uid://c47rd24txaw7x" path="res://Assets/Art/UI/button_menu_press.png" id="4_tsk0s"]
 [ext_resource type="Texture2D" uid="uid://ccy8td0wnwlme" path="res://Assets/Art/UI/button_menu_hover.png" id="5_dc284"]
 [ext_resource type="Texture2D" uid="uid://bg2krd3r2373y" path="res://Assets/Art/UI/button_next_floor_2.png" id="7_5vo0r"]
@@ -95,7 +97,8 @@ offset_bottom = 321.0
 theme_override_colors/font_color = Color(0.8392157, 0.7254902, 0.5411765, 1)
 theme_override_colors/font_outline_color = Color(0.13333334, 0.09019608, 0.043137256, 1)
 theme_override_constants/outline_size = 8
-theme_override_font_sizes/font_size = 40
+theme_override_fonts/font = ExtResource("3_tsk0s")
+theme_override_font_sizes/font_size = 30
 text = "Победа!"
 horizontal_alignment = 1
 vertical_alignment = 1
@@ -111,6 +114,7 @@ theme_override_colors/font_hover_color = Color(0.8392157, 0.7254902, 0.5411765, 
 theme_override_colors/font_disabled_color = Color(0.875, 0.875, 0.875, 0.5)
 theme_override_colors/font_outline_color = Color(0.13333334, 0.09019608, 0.043137256, 1)
 theme_override_constants/outline_size = 8
+theme_override_fonts/font = ExtResource("4_dc284")
 theme_override_styles/normal = SubResource("StyleBoxTexture_tw72b")
 theme_override_styles/pressed = SubResource("StyleBoxTexture_qs2ja")
 theme_override_styles/hover = SubResource("StyleBoxTexture_rs6gy")
@@ -129,6 +133,7 @@ theme_override_colors/font_pressed_color = Color(0.8392157, 0.7254902, 0.5411765
 theme_override_colors/font_hover_color = Color(0.8392157, 0.7254902, 0.5411765, 1)
 theme_override_colors/font_outline_color = Color(0.13333334, 0.09019608, 0.043137256, 1)
 theme_override_constants/outline_size = 8
+theme_override_fonts/font = ExtResource("4_dc284")
 theme_override_styles/normal = SubResource("StyleBoxTexture_tw72b")
 theme_override_styles/pressed = SubResource("StyleBoxTexture_qs2ja")
 theme_override_styles/hover = SubResource("StyleBoxTexture_rs6gy")
@@ -147,6 +152,7 @@ theme_override_colors/font_pressed_color = Color(0.8392157, 0.7254902, 0.5411765
 theme_override_colors/font_hover_color = Color(0.8392157, 0.7254902, 0.5411765, 1)
 theme_override_colors/font_outline_color = Color(0.13333334, 0.09019608, 0.043137256, 1)
 theme_override_constants/outline_size = 8
+theme_override_fonts/font = ExtResource("4_dc284")
 theme_override_styles/normal = SubResource("StyleBoxTexture_tsk0s")
 theme_override_styles/pressed = SubResource("StyleBoxTexture_dc284")
 theme_override_styles/hover = SubResource("StyleBoxTexture_sh2an")

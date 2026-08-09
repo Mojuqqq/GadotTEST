@@ -162,6 +162,15 @@ func _on_ui_button_pressed(
 	if not is_instance_valid(button):
 		return
 
+	# Эти кнопки при закрытии паузы отдельно
+	# проигрывают звук resume, поэтому обычный
+	# звук нажатия им не нужен.
+	if (
+		button.name == &"ContinueButton"
+		or button.name == &"CloseButton"
+	):
+		return
+
 	var sound_type: String = str(
 		button.get_meta(
 			&"audio_click",
@@ -208,7 +217,7 @@ func play_ui_click() -> void:
 func play_ui_hover() -> void:
 	_play_one_shot(
 		UI_HOVER,
-		-16.0,
+		-18.0,
 		0.98,
 		1.02
 	)
@@ -217,45 +226,44 @@ func play_ui_hover() -> void:
 func play_ui_cancel() -> void:
 	_play_one_shot(
 		UI_CANCEL,
-		-8.0
+		-10.0
 	)
 
 
 func play_pause() -> void:
 	_play_one_shot(
 		PAUSE_SOUND,
-		-5.0
+		-10.0
 	)
 
 
 func play_resume() -> void:
 	_play_one_shot(
 		RESUME_SOUND,
-		-5.0
+		-10.0
 	)
 
 
 func play_error() -> void:
 	_play_one_shot(
 		ERROR_SOUND,
-		-8.0
+		-10.0
 	)
 
 
 func play_bonus() -> void:
 	_play_one_shot(
 		BONUS,
-		-5.0
+		-7.0
 	)
 
 
 func play_player_attack(
-	world_position: Vector2
+	_world_position: Vector2
 ) -> void:
-	_play_world_sound(
+	_play_one_shot(
 		PLAYER_ATTACK,
-		world_position,
-		-14.0,
+		-8.0,
 		0.96,
 		1.04
 	)
@@ -267,7 +275,7 @@ func play_chest_open(
 	_play_world_sound(
 		CHEST_OPEN,
 		world_position,
-		-5.0
+		-9.0
 	)
 
 
@@ -277,7 +285,7 @@ func play_door_open(
 	_play_world_sound(
 		DOOR_OPEN,
 		world_position,
-		-7.0,
+		-12.0,
 		0.98,
 		1.02
 	)

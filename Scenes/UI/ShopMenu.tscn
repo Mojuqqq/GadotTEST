@@ -1,6 +1,8 @@
 [gd_scene format=3 uid="uid://cb3yv6vo1yn4r"]
 
 [ext_resource type="Script" uid="uid://1d83aldl2yni" path="res://Scripts/UI/ShopMenu.gd" id="1_122np"]
+[ext_resource type="FontFile" uid="uid://cwhd7e4gvmfg5" path="res://Assets/Fonts/RubikMonoOne-Regular.ttf" id="2_ghvew"]
+[ext_resource type="FontFile" uid="uid://dviftqy3jyv0m" path="res://Assets/Fonts/Rubik-VariableFont_wght.ttf" id="3_2pqp0"]
 
 [node name="ShopMenu" type="CanvasLayer" unique_id=305738762]
 layer = 50
@@ -35,11 +37,17 @@ layout_mode = 2
 
 [node name="TitleLabel" type="Label" parent="Overlay/CenterContainer/PanelContainer/MarginContainer/VBoxContainer" unique_id=953900632]
 layout_mode = 2
+theme_override_colors/font_color = Color(0.8392157, 0.7254902, 0.5411765, 1)
+theme_override_colors/font_outline_color = Color(0.13333334, 0.09019608, 0.043137256, 1)
+theme_override_constants/outline_size = 8
+theme_override_fonts/font = ExtResource("2_ghvew")
+theme_override_font_sizes/font_size = 30
 text = "Магазин"
 
 [node name="GoldLabel" type="Label" parent="Overlay/CenterContainer/PanelContainer/MarginContainer/VBoxContainer" unique_id=1090064236]
 unique_name_in_owner = true
 layout_mode = 2
+theme_override_fonts/font = ExtResource("3_2pqp0")
 text = "Золото: 0"
 
 [node name="Separator" type="HSeparator" parent="Overlay/CenterContainer/PanelContainer/MarginContainer/VBoxContainer" unique_id=1528919730]
@@ -52,8 +60,10 @@ layout_mode = 2
 [node name="StatusLabel" type="Label" parent="Overlay/CenterContainer/PanelContainer/MarginContainer/VBoxContainer" unique_id=2049610245]
 unique_name_in_owner = true
 layout_mode = 2
+theme_override_fonts/font = ExtResource("3_2pqp0")
 
 [node name="CloseButton" type="Button" parent="Overlay/CenterContainer/PanelContainer/MarginContainer/VBoxContainer" unique_id=102062365]
 unique_name_in_owner = true
 layout_mode = 2
+theme_override_fonts/font = ExtResource("3_2pqp0")
 text = "Закрыть"
