@@ -1,6 +1,7 @@
 [gd_scene format=3 uid="uid://bj2fd5o8uk871"]
 
 [ext_resource type="Script" uid="uid://cjermsexk71bp" path="res://Scripts/UI/RewardPopup.gd" id="1_pn0ow"]
+[ext_resource type="FontFile" uid="uid://dviftqy3jyv0m" path="res://Assets/Fonts/Rubik-VariableFont_wght.ttf" id="2_wo4ma"]
 
 [node name="RewardPopup" type="Node2D" unique_id=1535442634]
 script = ExtResource("1_pn0ow")
@@ -11,6 +12,7 @@ offset_left = -130.0
 offset_top = -63.5
 offset_right = 130.0
 offset_bottom = -40.5
+theme_override_fonts/font = ExtResource("2_wo4ma")
 horizontal_alignment = 1
 
 [node name="Icon" type="Sprite2D" parent="." unique_id=119467427]
@@ -22,5 +24,6 @@ offset_left = -152.0
 offset_top = 28.0
 offset_right = 148.0
 offset_bottom = 146.0
+theme_override_fonts/font = ExtResource("2_wo4ma")
 horizontal_alignment = 1
 autowrap_mode = 3

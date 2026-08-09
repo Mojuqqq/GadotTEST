@@ -116,12 +116,14 @@ text = "Выберите предмет"
 [node name="ItemAmountLabel" type="Label" parent="Overlay/CenterContainer/PanelContainer/MarginContainer/MainVBox/Content/DetailsColumn" unique_id=289958673]
 unique_name_in_owner = true
 layout_mode = 2
+theme_override_fonts/font = ExtResource("3_bn5m8")
 
 [node name="ItemDescriptionLabel" type="Label" parent="Overlay/CenterContainer/PanelContainer/MarginContainer/MainVBox/Content/DetailsColumn" unique_id=1463893655]
 unique_name_in_owner = true
 custom_minimum_size = Vector2(340, 0)
 layout_mode = 2
 size_flags_vertical = 3
+theme_override_fonts/font = ExtResource("3_bn5m8")
 autowrap_mode = 3
 
 [node name="QuickSlotsTitle" type="Label" parent="Overlay/CenterContainer/PanelContainer/MarginContainer/MainVBox/Content/DetailsColumn" unique_id=1396325024]
@@ -142,6 +144,7 @@ text = "Убрать из быстрого доступа"
 [node name="StatusLabel" type="Label" parent="Overlay/CenterContainer/PanelContainer/MarginContainer/MainVBox/Content/DetailsColumn" unique_id=43432781]
 unique_name_in_owner = true
 layout_mode = 2
+theme_override_fonts/font = ExtResource("3_bn5m8")
 
 [node name="CloseButton" type="Button" parent="Overlay/CenterContainer/PanelContainer/MarginContainer/MainVBox" unique_id=778006883]
 unique_name_in_owner = true
