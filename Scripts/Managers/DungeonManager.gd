@@ -29,6 +29,43 @@ var room_spacing: int = 50
 var min_rooms: int = 2
 var max_rooms: int = 4
 
+const LOCATION_DEFINITIONS: Array[Dictionary] = [
+	{
+		"id": &"farm_outside",
+		"name": "Ферма снаружи",
+		"floor": LocationProfile.FloorType.DIRT
+	},
+	{
+		"id": &"field",
+		"name": "Поле",
+		"floor": LocationProfile.FloorType.DIRT
+	},
+	{
+		"id": &"barn",
+		"name": "Сарай",
+		"floor": LocationProfile.FloorType.WOOD
+	},
+	{
+		"id": &"chicken_coop",
+		"name": "Курятник",
+		"floor": LocationProfile.FloorType.WOOD
+	},
+	{
+		"id": &"vegetable_garden",
+		"name": "Огород",
+		"floor": LocationProfile.FloorType.GRASS
+	},
+	{
+		"id": &"flower_garden",
+		"name": "Цветник",
+		"floor": LocationProfile.FloorType.GRASS
+	},
+	{
+		"id": &"orchard",
+		"name": "Сад",
+		"floor": LocationProfile.FloorType.GRASS
+	}
+]
 
 # =========================================================
 # СЦЕНЫ
@@ -88,6 +125,27 @@ func get_debug_next_room_boss_scene() -> PackedScene:
 # =========================================================
 # ГЕНЕРАЦИЯ КОМНАТ
 # =========================================================
+func _create_random_location_profile() -> LocationProfile:
+	var definition: Dictionary = (
+		LOCATION_DEFINITIONS.pick_random()
+	)
+
+	var profile := LocationProfile.new()
+
+	profile.id = StringName(
+		definition["id"]
+	)
+
+	profile.display_name = str(
+		definition["name"]
+	)
+
+	profile.floor_type = (
+		int(definition["floor"])
+		as LocationProfile.FloorType
+	)
+
+	return profile
 
 func _generate_route_cells(
 	intermediate_count: int
@@ -428,12 +486,8 @@ func _create_room(
 	root_node.add_child(room)
 	room.global_position = room_position
 
-	var test_location := LocationProfile.new()
-
-	test_location.id = &"test_farm"
-	test_location.display_name = "Тест: земля"
-	test_location.floor_type = (
-		LocationProfile.FloorType.DIRT
+	var location_profile: LocationProfile = (
+		_create_random_location_profile()
 	)
 
 	if room.has_method(
@@ -441,7 +495,16 @@ func _create_room(
 	):
 		room.call(
 			&"apply_location",
-			test_location
+			location_profile
+		)
+
+		print(
+			"[LOCATION] ",
+			room_name,
+			" → ",
+			location_profile.display_name,
+			" | floor=",
+			location_profile.floor_type
 		)
 
 	return room

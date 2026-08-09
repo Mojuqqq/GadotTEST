@@ -13,8 +13,6 @@ enum RoomType {
 	BOSS
 }
 
-
-
 @export_group("Room Settings")
 var room_type: RoomType = RoomType.COMBAT
 @export_group("Enemy Spawn")
@@ -35,6 +33,8 @@ var doors: Array = []
 var enemies: Array = []
 var is_cleared: bool = false
 var is_active: bool = false
+
+var location_profile: LocationProfile = null
 
 func _ready() -> void:
 	doors.clear()
@@ -59,6 +59,22 @@ func apply_location(
 	location_profile = profile
 
 	_generate_floor()
+
+func _get_floor_terrain(
+	floor_type: LocationProfile.FloorType
+) -> int:
+	match floor_type:
+		LocationProfile.FloorType.DIRT:
+			return 0
+
+		LocationProfile.FloorType.GRASS:
+			return 1
+
+		LocationProfile.FloorType.WOOD:
+			return 2
+
+		_:
+			return 0
 
 func _generate_floor() -> void:
 	if location_profile == null:
@@ -124,18 +140,19 @@ func _generate_floor() -> void:
 	floor_layer.set_cells_terrain_connect(
 		cells,
 		0,
-		terrain_index
+		terrain_index,
+		true
 	)
 
 	print(
-		"[FLOOR] ",
+		"[FLOOR RESULT] ",
 		name,
-		" | ",
-		location_profile.display_name,
 		" | terrain=",
 		terrain_index,
-		" | cells=",
-		cells.size()
+		" | requested=",
+		cells.size(),
+		" | generated=",
+		floor_layer.get_used_cells().size()
 	)
 
 func _apply_right_connection_state() -> void:
