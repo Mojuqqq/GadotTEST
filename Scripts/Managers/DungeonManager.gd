@@ -17,6 +17,7 @@ var current_room_index: int = 0
 var room_by_cell: Dictionary = {}
 var cell_by_room: Dictionary = {}
 var room_connections: Dictionary = {}
+var generated_room_layout: Array[Dictionary] = []
 # Одноразовая замена следующей посещённой
 # комнаты на комнату с выбранным боссом.
 var debug_next_room_boss_scene: PackedScene = null
@@ -149,6 +150,7 @@ func _create_random_location_profile() -> LocationProfile:
 	)
 
 	return profile
+
 
 func _generate_room_layout(
 	intermediate_count: int
@@ -402,48 +404,6 @@ func _can_place_branch_room(
 
 	return adjacent_rooms == 1
 
-func _can_use_route_cell(
-	candidate: Vector2i,
-	previous_cell: Vector2i,
-	occupied_cells: Dictionary
-) -> bool:
-	if occupied_cells.has(candidate):
-		return false
-
-	# Не даём новой комнате соприкасаться
-	# с несвязанной комнатой.
-	for occupied_key in occupied_cells.keys():
-		var occupied_cell: Vector2i = (
-			occupied_key as Vector2i
-		)
-
-		# С предыдущей комнатой маршрут
-		# соприкасаться обязан.
-		if occupied_cell == previous_cell:
-			continue
-
-		var grid_distance: int = (
-			abs(candidate.x - occupied_cell.x)
-			+ abs(candidate.y - occupied_cell.y)
-		)
-
-		if grid_distance <= 1:
-			return false
-
-	return true
-
-
-func _create_horizontal_route(
-	total_room_count: int
-) -> Array[Vector2i]:
-	var route: Array[Vector2i] = []
-
-	for index in range(total_room_count):
-		route.append(
-			Vector2i(index, 0)
-		)
-
-	return route
 
 
 func _route_cell_to_position(
@@ -462,6 +422,7 @@ func _route_cell_to_position(
 
 func generate_dungeon(root_node: Node) -> void:
 	_clear_existing_rooms()
+	generated_room_layout.clear()
 	room_by_cell.clear()
 	cell_by_room.clear()
 	room_connections.clear()
@@ -491,6 +452,12 @@ func generate_dungeon(root_node: Node) -> void:
 			intermediate_count - 1
 		)
 
+	generated_room_layout = (
+		_generate_room_layout(
+			intermediate_count
+		)
+	)
+
 	var shop_room_index: int = -1
 
 	# Магазин появляется только при трёх
@@ -498,14 +465,89 @@ func generate_dungeon(root_node: Node) -> void:
 	if intermediate_count >= 3:
 		var available_indices: Array[int] = []
 
-		for index in range(intermediate_count):
-			if index == treasure_room_index:
-				continue
+	for layout_index in range(
+		1,
+		generated_room_layout.size() - 1
+	):
+		var entry: Dictionary = (
+			generated_room_layout[
+				layout_index
+			]
+		)
 
-			available_indices.append(index)
+		var room_cell: Vector2i = (
+			entry["cell"]
+			as Vector2i
+		)
 
-		if not available_indices.is_empty():
-			shop_room_index = available_indices.pick_random()
+		var room_position: Vector2 = (
+			_route_cell_to_position(
+				room_cell
+			)
+		)
+
+		var random_scene: PackedScene = (
+			room_pool.pick_random()
+		)
+
+		# Порядковый номер именно среди
+		# промежуточных комнат.
+		var intermediate_index: int = (
+			layout_index - 1
+		)
+
+		var generated_room_type: int = (
+			Room.RoomType.COMBAT
+		)
+
+		if intermediate_index == treasure_room_index:
+			generated_room_type = (
+				Room.RoomType.TREASURE
+			)
+
+		elif intermediate_index == shop_room_index:
+			generated_room_type = (
+				Room.RoomType.SHOP
+			)
+
+		var room := _create_room(
+			random_scene,
+			"Room" + str(layout_index),
+			root_node,
+			room_position,
+			generated_room_type
+		)
+
+		if room == null:
+			continue
+
+		room_instances.append(room)
+
+		room_by_cell[room_cell] = room
+		cell_by_room[room] = room_cell
+		room_connections[room] = []
+
+		if (
+			generated_room_type
+			== Room.RoomType.TREASURE
+		):
+			room.call_deferred(
+				"spawn_chest"
+			)
+
+		elif (
+			generated_room_type
+			== Room.RoomType.SHOP
+		):
+			room.call_deferred(
+				"spawn_merchant"
+			)
+
+		else:
+			spawn_enemies_for_room(
+				room,
+				layout_index
+			)
 
 	var start_room := _create_room(
 		start_room_scene,
@@ -519,17 +561,41 @@ func generate_dungeon(root_node: Node) -> void:
 		return
 
 	room_instances.append(start_room)
+	
+	var start_cell := Vector2i.ZERO
+
+	room_by_cell[start_cell] = start_room
+	cell_by_room[start_room] = start_cell
+	room_connections[start_room] = []
 
 	spawn_enemies_for_room(
 		start_room,
 		0
 	)
 
-	var route_cells: Array[Vector2i] = (
-		_generate_route_cells(
-			intermediate_count
-		)
+	var room_layout: Array[Dictionary] = (
+	_generate_room_layout(
+		intermediate_count
 	)
+)
+
+	for layout_index in range(
+		room_layout.size()
+	):
+		var entry: Dictionary = (
+			room_layout[layout_index]
+		)
+
+		print(
+			"[ROOM GRAPH] ",
+			layout_index,
+			" | cell=",
+			entry["cell"],
+			" | parent=",
+			entry["parent"],
+			" | main=",
+			entry["main_path"]
+		)
 
 	var _previous_room: Node2D = start_room
 
@@ -591,10 +657,15 @@ func generate_dungeon(root_node: Node) -> void:
 				index + 1
 			)
 
-	var end_cell: Vector2i = (
-		route_cells[
-			route_cells.size() - 1
+	var boss_entry: Dictionary = (
+		generated_room_layout[
+			generated_room_layout.size() - 1
 		]
+	)
+
+	var end_cell: Vector2i = (
+		boss_entry["cell"]
+		as Vector2i
 	)
 
 	var end_position: Vector2 = (
@@ -602,6 +673,7 @@ func generate_dungeon(root_node: Node) -> void:
 			end_cell
 		)
 	)
+
 
 	var end_room := _create_room(
 		end_room_scene,
@@ -934,85 +1006,164 @@ func _spawn_fallback_key_carrier() -> Node:
 # =========================================================
 
 func connect_rooms() -> void:
-	for index in range(
-		room_instances.size() - 1
+	for child_index in range(
+		1,
+		generated_room_layout.size()
 	):
-		var current_room: Node2D = (
-			room_instances[index]
+		var entry: Dictionary = (
+			generated_room_layout[
+				child_index
+			]
 		)
 
-		var next_room: Node2D = (
-			room_instances[index + 1]
+		var parent_index: int = int(
+			entry["parent"]
 		)
 
-		if not is_instance_valid(current_room):
+		if parent_index < 0:
 			continue
 
-		if not is_instance_valid(next_room):
+		if (
+			child_index
+			>= room_instances.size()
+		):
 			continue
 
-		var current_direction: int = (
-			_get_direction_between_rooms(
-				current_room,
-				next_room
-			)
-		)
-
-		if current_direction == -1:
-			push_warning(
-				"Не удалось определить направление между "
-				+ current_room.name
-				+ " и "
-				+ next_room.name
-			)
+		if (
+			parent_index
+			>= room_instances.size()
+		):
 			continue
 
-		var next_direction: int = (
-			_get_opposite_direction(
-				current_direction
-			)
+		var child_room: Node2D = (
+			room_instances[
+				child_index
+			]
 		)
 
-		var current_door: Node = _get_room_door(
+		var parent_room: Node2D = (
+			room_instances[
+				parent_index
+			]
+		)
+
+		if not is_instance_valid(
+			child_room
+		):
+			continue
+
+		if not is_instance_valid(
+			parent_room
+		):
+			continue
+
+		_connect_rooms_by_position(
+			parent_room,
+			child_room
+		)
+
+		_register_room_connection(
+			parent_room,
+			child_room
+		)
+
+func _connect_rooms_by_position(
+	current_room: Node2D,
+	next_room: Node2D
+) -> void:
+	var current_direction: int = (
+		_get_direction_between_rooms(
+			current_room,
+			next_room
+		)
+	)
+
+	if current_direction == -1:
+		push_warning(
+			"Не удалось определить направление между "
+			+ current_room.name
+			+ " и "
+			+ next_room.name
+		)
+		return
+
+	var next_direction: int = (
+		_get_opposite_direction(
+			current_direction
+		)
+	)
+
+	var current_door: Node = (
+		_get_room_door(
 			current_room,
 			current_direction,
 			_get_legacy_door_name(
 				current_direction
 			)
 		)
+	)
 
-		var next_door: Node = _get_room_door(
+	var next_door: Node = (
+		_get_room_door(
 			next_room,
 			next_direction,
 			_get_legacy_door_name(
 				next_direction
 			)
 		)
+	)
 
-		if current_door == null:
-			push_warning(
-				"В комнате "
-				+ current_room.name
-				+ " не найдена дверь направления "
-				+ str(current_direction)
-			)
-			continue
-
-		if next_door == null:
-			push_warning(
-				"В комнате "
-				+ next_room.name
-				+ " не найдена дверь направления "
-				+ str(next_direction)
-			)
-			continue
-
-		_connect_door_pair(
-			current_door,
-			next_door,
-			current_room,
-			next_room
+	if current_door == null:
+		push_warning(
+			"В комнате "
+			+ current_room.name
+			+ " нет двери направления "
+			+ str(current_direction)
 		)
+		return
+
+	if next_door == null:
+		push_warning(
+			"В комнате "
+			+ next_room.name
+			+ " нет двери направления "
+			+ str(next_direction)
+		)
+		return
+
+	_connect_door_pair(
+		current_door,
+		next_door,
+		current_room,
+		next_room
+	)
+
+func _register_room_connection(
+	room_a: Node2D,
+	room_b: Node2D
+) -> void:
+	if not room_connections.has(room_a):
+		room_connections[room_a] = []
+
+	if not room_connections.has(room_b):
+		room_connections[room_b] = []
+
+	var connections_a: Array = (
+		room_connections[room_a]
+	)
+
+	var connections_b: Array = (
+		room_connections[room_b]
+	)
+
+	if not connections_a.has(room_b):
+		connections_a.append(room_b)
+
+	if not connections_b.has(room_a):
+		connections_b.append(room_a)
+
+	room_connections[room_a] = connections_a
+	room_connections[room_b] = connections_b
 
 func _get_direction_between_rooms(
 	from_room: Node2D,
