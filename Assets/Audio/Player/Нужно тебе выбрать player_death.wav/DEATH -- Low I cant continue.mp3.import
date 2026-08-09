@@ -1,0 +1,19 @@
+[remap]
+
+importer="mp3"
+type="AudioStreamMP3"
+uid="uid://b188lr1w0db32"
+path="res://.godot/imported/DEATH -- Low I cant continue.mp3-844ded3f444aeee0dd6e85a7758fd576.mp3str"
+
+[deps]
+
+source_file="res://Assets/Audio/Player/Нужно тебе выбрать player_death.wav/DEATH -- Low I cant continue.mp3"
+dest_files=["res://.godot/imported/DEATH -- Low I cant continue.mp3-844ded3f444aeee0dd6e85a7758fd576.mp3str"]
+
+[params]
+
+loop=false
+loop_offset=0
+bpm=0
+beat_count=0
+bar_beats=4

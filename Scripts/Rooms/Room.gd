@@ -13,6 +13,8 @@ enum RoomType {
 	BOSS
 }
 
+
+
 @export_group("Room Settings")
 var room_type: RoomType = RoomType.COMBAT
 @export_group("Enemy Spawn")
@@ -40,24 +42,6 @@ func _ready() -> void:
 	_apply_right_connection_state()
 	update_enemies_list()  
 	set_active(false)
-
-func _get_floor_terrain(
-	floor_type: LocationProfile.FloorType
-) -> int:
-	match floor_type:
-		LocationProfile.FloorType.DIRT:
-			return 0
-
-		LocationProfile.FloorType.GRASS:
-			return 1
-
-		LocationProfile.FloorType.WOOD:
-			return 2
-
-		_:
-			return 0
-
-var location_profile: LocationProfile = null
 
 
 func apply_location(

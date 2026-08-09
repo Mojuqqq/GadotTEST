@@ -1,0 +1,19 @@
+[remap]
+
+importer="mp3"
+type="AudioStreamMP3"
+uid="uid://dnyqs0c3o2ep1"
+path="res://.godot/imported/DEATH -- Higher Tone -- Oh No!.mp3-5aaee24adb9d9a8409ef1910b4693af4.mp3str"
+
+[deps]
+
+source_file="res://Assets/Audio/Player/Нужно тебе выбрать player_death.wav/DEATH -- Higher Tone -- Oh No!.mp3"
+dest_files=["res://.godot/imported/DEATH -- Higher Tone -- Oh No!.mp3-5aaee24adb9d9a8409ef1910b4693af4.mp3str"]
+
+[params]
+
+loop=false
+loop_offset=0
+bpm=0
+beat_count=0
+bar_beats=4

@@ -1,0 +1,19 @@
+[remap]
+
+importer="mp3"
+type="AudioStreamMP3"
+uid="uid://2bvo0ldrel7t"
+path="res://.godot/imported/DEATH -- Repeat give it to me straight.mp3-88e8c12c1974fb1bdee359f865709fdc.mp3str"
+
+[deps]
+
+source_file="res://Assets/Audio/Player/Нужно тебе выбрать player_death.wav/DEATH -- Repeat give it to me straight.mp3"
+dest_files=["res://.godot/imported/DEATH -- Repeat give it to me straight.mp3-88e8c12c1974fb1bdee359f865709fdc.mp3str"]
+
+[params]
+
+loop=false
+loop_offset=0
+bpm=0
+beat_count=0
+bar_beats=4

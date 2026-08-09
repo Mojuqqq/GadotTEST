@@ -1,0 +1,19 @@
+[remap]
+
+importer="mp3"
+type="AudioStreamMP3"
+uid="uid://b5aid7mj170xm"
+path="res://.godot/imported/DEATH -- low gurgle oh im going down.mp3-38279489da5147007050101a02a0811e.mp3str"
+
+[deps]
+
+source_file="res://Assets/Audio/Player/Нужно тебе выбрать player_death.wav/DEATH -- low gurgle oh im going down.mp3"
+dest_files=["res://.godot/imported/DEATH -- low gurgle oh im going down.mp3-38279489da5147007050101a02a0811e.mp3str"]
+
+[params]
+
+loop=false
+loop_offset=0
+bpm=0
+beat_count=0
+bar_beats=4

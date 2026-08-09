@@ -1,0 +1,19 @@
+[remap]
+
+importer="oggvorbisstr"
+type="AudioStreamOggVorbis"
+uid="uid://b3qmd78x7wuba"
+path="res://.godot/imported/No Hope.ogg-6ecc2d0af23c3a6125842125eaf40138.oggvorbisstr"
+
+[deps]
+
+source_file="res://Assets/Audio/Music/game_over_theme/No Hope.ogg"
+dest_files=["res://.godot/imported/No Hope.ogg-6ecc2d0af23c3a6125842125eaf40138.oggvorbisstr"]
+
+[params]
+
+loop=false
+loop_offset=0
+bpm=0
+beat_count=0
+bar_beats=4

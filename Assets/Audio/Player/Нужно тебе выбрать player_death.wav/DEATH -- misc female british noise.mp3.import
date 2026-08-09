@@ -1,0 +1,19 @@
+[remap]
+
+importer="mp3"
+type="AudioStreamMP3"
+uid="uid://cghm3gg0h1mps"
+path="res://.godot/imported/DEATH -- misc female british noise.mp3-be664747f0231cec855b13119936a7dc.mp3str"
+
+[deps]
+
+source_file="res://Assets/Audio/Player/Нужно тебе выбрать player_death.wav/DEATH -- misc female british noise.mp3"
+dest_files=["res://.godot/imported/DEATH -- misc female british noise.mp3-be664747f0231cec855b13119936a7dc.mp3str"]
+
+[params]
+
+loop=false
+loop_offset=0
+bpm=0
+beat_count=0
+bar_beats=4

@@ -1,0 +1,19 @@
+[remap]
+
+importer="mp3"
+type="AudioStreamMP3"
+uid="uid://c8hif4my0vero"
+path="res://.godot/imported/DEATH -- This isnt good HIGHER repeat.mp3-431b497d58081f8704e9c759624fae6b.mp3str"
+
+[deps]
+
+source_file="res://Assets/Audio/Player/Нужно тебе выбрать player_death.wav/DEATH -- This isnt good HIGHER repeat.mp3"
+dest_files=["res://.godot/imported/DEATH -- This isnt good HIGHER repeat.mp3-431b497d58081f8704e9c759624fae6b.mp3str"]
+
+[params]
+
+loop=false
+loop_offset=0
+bpm=0
+beat_count=0
+bar_beats=4

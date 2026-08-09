@@ -1,0 +1,19 @@
+[remap]
+
+importer="mp3"
+type="AudioStreamMP3"
+uid="uid://dh21oai1cti6a"
+path="res://.godot/imported/DEATH -- high gurgle this is the end.mp3-33b4d01063cb69d4eac38d38f3f303f9.mp3str"
+
+[deps]
+
+source_file="res://Assets/Audio/Player/Нужно тебе выбрать player_death.wav/DEATH -- high gurgle this is the end.mp3"
+dest_files=["res://.godot/imported/DEATH -- high gurgle this is the end.mp3-33b4d01063cb69d4eac38d38f3f303f9.mp3str"]
+
+[params]
+
+loop=false
+loop_offset=0
+bpm=0
+beat_count=0
+bar_beats=4

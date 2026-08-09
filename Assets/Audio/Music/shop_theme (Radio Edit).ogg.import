@@ -1,0 +1,19 @@
+[remap]
+
+importer="oggvorbisstr"
+type="AudioStreamOggVorbis"
+uid="uid://dykvkx5qu0ial"
+path="res://.godot/imported/shop_theme (Radio Edit).ogg-36418b6dd08a7bf5b57a46ad933f7ef2.oggvorbisstr"
+
+[deps]
+
+source_file="res://Assets/Audio/Music/shop_theme (Radio Edit).ogg"
+dest_files=["res://.godot/imported/shop_theme (Radio Edit).ogg-36418b6dd08a7bf5b57a46ad933f7ef2.oggvorbisstr"]
+
+[params]
+
+loop=false
+loop_offset=0
+bpm=0
+beat_count=0
+bar_beats=4

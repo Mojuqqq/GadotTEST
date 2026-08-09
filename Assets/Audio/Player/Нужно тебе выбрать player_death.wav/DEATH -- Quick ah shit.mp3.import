@@ -1,0 +1,19 @@
+[remap]
+
+importer="mp3"
+type="AudioStreamMP3"
+uid="uid://cdlayookys24w"
+path="res://.godot/imported/DEATH -- Quick ah shit.mp3-91f32dd74bcde2ba02fd50368174a21c.mp3str"
+
+[deps]
+
+source_file="res://Assets/Audio/Player/Нужно тебе выбрать player_death.wav/DEATH -- Quick ah shit.mp3"
+dest_files=["res://.godot/imported/DEATH -- Quick ah shit.mp3-91f32dd74bcde2ba02fd50368174a21c.mp3str"]
+
+[params]
+
+loop=false
+loop_offset=0
+bpm=0
+beat_count=0
+bar_beats=4

@@ -1,0 +1,19 @@
+[remap]
+
+importer="mp3"
+type="AudioStreamMP3"
+uid="uid://cg7gpvwe3ji03"
+path="res://.godot/imported/DEATH -- nerf this.mp3-a10e69be49ce9f3157f9c2d53c41cd44.mp3str"
+
+[deps]
+
+source_file="res://Assets/Audio/Player/Нужно тебе выбрать player_death.wav/DEATH -- nerf this.mp3"
+dest_files=["res://.godot/imported/DEATH -- nerf this.mp3-a10e69be49ce9f3157f9c2d53c41cd44.mp3str"]
+
+[params]
+
+loop=false
+loop_offset=0
+bpm=0
+beat_count=0
+bar_beats=4

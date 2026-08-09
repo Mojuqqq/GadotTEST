@@ -7,6 +7,10 @@
 
 [node name="RoomSocketTest" type="Node2D" unique_id=148011054]
 script = ExtResource("1_uesx0")
+right_connection_enabled = null
+enemy_wall_margin = null
+enemy_spawn_spacing = null
+enemy_spawn_attempts = null
 
 [node name="Floor" type="TileMapLayer" parent="." unique_id=655438323]
 texture_filter = 1
