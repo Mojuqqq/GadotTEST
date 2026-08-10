@@ -59,6 +59,265 @@ const DOOR_OPEN: AudioStream = preload(
 	"res://Assets/Audio/World/door_open.wav"
 )
 
+# =========================================================
+# ДОПОЛНИТЕЛЬНЫЕ ИГРОВЫЕ ЗВУКИ
+# =========================================================
+
+const SFX: Dictionary = {
+	# Яйца
+	&"egg_hit_enemy": preload(
+		"res://Assets/Audio/Eggs/egg_hit_enemy.wav"
+	),
+	&"egg_hit_wall": preload(
+		"res://Assets/Audio/Eggs/egg_hit_wall.mp3"
+	),
+	&"egg_break": preload(
+		"res://Assets/Audio/Eggs/egg_break.wav"
+	),
+	&"egg_splat": preload(
+		"res://Assets/Audio/Eggs/egg_splat.mp3"
+	),
+	&"golden_hit": preload(
+		"res://Assets/Audio/Eggs/golden_hit.wav"
+	),
+	&"rotten_egg_squish": preload(
+		"res://Assets/Audio/Eggs/rotten_egg_squish.wav"
+	),
+	&"poison_spawn": preload(
+		"res://Assets/Audio/Eggs/poison_spawn.wav"
+	),
+	&"poison_tick": preload(
+		"res://Assets/Audio/Eggs/poison_tick.wav"
+	),
+
+	# Игрок
+	&"player_hurt_01": preload(
+		"res://Assets/Audio/Player/player_hurt_01.wav"
+	),
+	&"player_hurt_02": preload(
+		"res://Assets/Audio/Player/player_hurt_02.wav"
+	),
+	&"player_hurt_03": preload(
+		"res://Assets/Audio/Player/player_hurt_03.wav"
+	),
+	&"player_death": preload(
+		"res://Assets/Audio/Player/player_death.mp3"
+	),
+	&"player_heal": preload(
+		"res://Assets/Audio/Player/player_heal.wav"
+	),
+	&"speed_boost": preload(
+		"res://Assets/Audio/Player/speed_boost.wav"
+	),
+	&"player_stunned": preload(
+		"res://Assets/Audio/Player/player_stunned.wav"
+	),
+	&"stun_end": preload(
+		"res://Assets/Audio/Player/stun_end.ogg"
+	),
+	&"player_knockback": preload(
+		"res://Assets/Audio/Player/player_knockback.wav"
+	),
+	&"low_hp_warning": preload(
+		"res://Assets/Audio/Player/low_hp_warning.wav"
+	),
+
+	# Предметы
+	&"item_use": preload(
+		"res://Assets/Audio/Items/item_use.wav"
+	),
+	&"item_pickup": preload(
+		"res://Assets/Audio/Items/item_pickup.wav"
+	),
+	&"effect_end": preload(
+		"res://Assets/Audio/Items/effect_end.wav"
+	),
+	&"omelet_bite": preload(
+		"res://Assets/Audio/Items/omelet_bite.mp3"
+	),
+	&"hot_sauce_use": preload(
+		"res://Assets/Audio/Items/hot_sauce_use.wav"
+	),
+
+	# Универсальные удары
+	&"impact_small": preload(
+		"res://Assets/Audio/Universal/impact_small.ogg"
+	),
+	&"impact_medium": preload(
+		"res://Assets/Audio/Universal/impact_medium.ogg"
+	),
+	&"impact_heavy": preload(
+		"res://Assets/Audio/Universal/impact_heavy.ogg"
+	),
+	&"impact_soft": preload(
+		"res://Assets/Audio/Universal/impact_soft.ogg"
+	),
+	&"impact_wood": preload(
+		"res://Assets/Audio/Universal/impact_wood.ogg"
+	),
+	&"impact_metal": preload(
+		"res://Assets/Audio/Universal/impact_metal.ogg"
+	),
+
+	# Универсальные эффекты
+	&"explosion_small": preload(
+		"res://Assets/Audio/Universal/explosion_small.wav"
+	),
+	&"whoosh_transition": preload(
+		"res://Assets/Audio/Universal/whoosh_transition.wav"
+	),
+	&"whoosh_small": preload(
+		"res://Assets/Audio/Universal/whoosh_small.wav"
+	),
+	&"whoosh_heavy": preload(
+		"res://Assets/Audio/Universal/whoosh_heavy.wav"
+	),
+	&"body_fall_heavy": preload(
+		"res://Assets/Audio/Universal/body_fall_heavy.mp3"
+	),
+	&"shockwave": preload(
+		"res://Assets/Audio/Universal/shockwave.wav"
+	),
+	&"water_splash": preload(
+		"res://Assets/Audio/Universal/water_splash.wav"
+	),
+
+	# UI
+	&"quick_slot_select": preload(
+		"res://Assets/Audio/UI/quick_slot_select.ogg"
+	),
+	&"popup_open": preload(
+		"res://Assets/Audio/UI/popup_open.ogg"
+	),
+	&"popup_close": preload(
+		"res://Assets/Audio/UI/popup_close.ogg"
+	),
+	&"confirm": preload(
+		"res://Assets/Audio/UI/confirm.ogg"
+	),
+	&"toggle_on": preload(
+		"res://Assets/Audio/UI/toggle_on.ogg"
+	),
+	&"toggle_off": preload(
+		"res://Assets/Audio/UI/toggle_off.ogg"
+	),
+	&"slider_tick": preload(
+		"res://Assets/Audio/UI/slider_tick.ogg"
+	),
+	&"warning_popup": preload(
+		"res://Assets/Audio/UI/warning_popup.ogg"
+	),
+
+	# Экономика / мир
+	&"coin_pickup": preload(
+		"res://Assets/Audio/World/coin_pickup.wav"
+	),
+	&"gold_spend": preload(
+		"res://Assets/Audio/World/gold_spend.ogg"
+	),
+	&"key_pickup": preload(
+		"res://Assets/Audio/World/key_pickup.wav"
+	),
+	&"key_turn": preload(
+		"res://Assets/Audio/World/key_turn.wav"
+	),
+	&"door_lock": preload(
+		"res://Assets/Audio/World/door_lock.wav"
+	),
+	&"shop_bell": preload(
+		"res://Assets/Audio/World/shop_bell.wav"
+	),
+
+	# Компаньоны / курицы
+	&"rooster_spawn": preload(
+		"res://Assets/Audio/Companions/rooster_spawn.wav"
+	),
+	&"bird_flap": preload(
+		"res://Assets/Audio/Companions/bird_flap.wav"
+	),
+	&"rooster_peck": preload(
+		"res://Assets/Audio/Companions/rooster_peck.wav"
+	),
+	&"companion_spawn": preload(
+		"res://Assets/Audio/Companions/companion_spawn.wav"
+	),
+	&"chick_peep": preload(
+		"res://Assets/Audio/Companions/chick_peep.wav"
+	),
+	&"companion_poof": preload(
+		"res://Assets/Audio/Companions/companion_poof.wav"
+	),
+
+	# Враги
+	&"chicken_alarm": preload(
+		"res://Assets/Audio/Enemies/chicken_alarm.wav"
+	),
+	&"chicken_death": preload(
+		"res://Assets/Audio/Enemies/chicken_death.wav"
+	),
+	&"chicken_cluck_01": preload(
+		"res://Assets/Audio/Enemies/НАРЕЗАТЬ chicken_cluck_01_02_03.wav"
+	),
+	&"chicken_cluck_02": preload(
+		"res://Assets/Audio/Enemies/НАРЕЗАТЬ chicken_cluck_01_02_03.wav"
+	),
+	&"chicken_cluck_03": preload(
+		"res://Assets/Audio/Enemies/НАРЕЗАТЬ chicken_cluck_01_02_03.wav"
+	),
+	&"onion_cry_01": preload(
+		"res://Assets/Audio/Enemies/НАРЕЗАТЬ onion_cry_01_02_03.wav"
+	),
+	&"onion_cry_02": preload(
+		"res://Assets/Audio/Enemies/НАРЕЗАТЬ onion_cry_01_02_03.wav"
+	),
+	&"onion_cry_03": preload(
+		"res://Assets/Audio/Enemies/НАРЕЗАТЬ onion_cry_01_02_03.wav"
+	),
+	&"cow_moo": preload(
+		"res://Assets/Audio/Enemies/cow_moo.wav"
+	),
+	&"bull_snort_01": preload(
+		"res://Assets/Audio/Enemies/НАРЕЗАТЬ bull_snort_01 bull_snort_02 bull_breath.wav"
+	),
+	&"bull_snort_02": preload(
+		"res://Assets/Audio/Enemies/НАРЕЗАТЬ bull_snort_01 bull_snort_02 bull_breath.wav"
+	),
+	&"bull_breath": preload(
+		"res://Assets/Audio/Enemies/НАРЕЗАТЬ bull_snort_01 bull_snort_02 bull_breath.wav"
+	),
+	&"bull_bellow": preload(
+		"res://Assets/Audio/Enemies/bull_bellow.wav"
+	),
+
+	# Боссы
+	&"bull_ring_jingle": preload(
+		"res://Assets/Audio/Bosses/bull_ring_jingle.wav"
+	),
+	&"bull_stomp": preload(
+		"res://Assets/Audio/Bosses/bull_stomp.wav"
+	),
+	&"bull_enraged_roar": preload(
+		"res://Assets/Audio/Bosses/bull_enraged_roar.wav"
+	),
+	&"boss_telegraph": preload(
+		"res://Assets/Audio/Bosses/boss_telegraph.wav"
+	),
+	&"boss_intro_sting": preload(
+		"res://Assets/Audio/Bosses/boss_intro_sting.wav"
+	),
+	&"boss_victory": preload(
+		"res://Assets/Audio/System/boss_victory.wav"
+	),
+	&"scene_transition": preload(
+		"res://Assets/Audio/System/scene_transition.mp3"
+	)
+}
+
+const PLAYER_HURT_SOUNDS: Array[StringName] = [
+	&"player_hurt_01",
+	&"player_hurt_02",
+	&"player_hurt_03"
+]
 
 func _ready() -> void:
 	# Звуки меню должны работать даже тогда,
@@ -205,6 +464,37 @@ func _on_ui_button_hovered(
 # ПУБЛИЧНЫЕ МЕТОДЫ
 # =========================================================
 
+func play_player_hurt(
+	critical: bool = false
+) -> void:
+	var sound_name: StringName = (
+		PLAYER_HURT_SOUNDS.pick_random()
+	)
+
+	if critical:
+		play_sfx(
+			sound_name,
+			-7.0,
+			0.90,
+			0.97
+		)
+
+		play_sfx(
+			&"impact_heavy",
+			-10.0,
+			0.95,
+			1.02
+		)
+
+		return
+
+	play_sfx(
+		sound_name,
+		-10.0,
+		0.97,
+		1.04
+	)
+
 func play_ui_click() -> void:
 	_play_one_shot(
 		UI_CLICK,
@@ -290,6 +580,56 @@ func play_door_open(
 		1.02
 	)
 
+func play_sfx(
+	sound_name: StringName,
+	volume_db: float = 0.0,
+	pitch_min: float = 1.0,
+	pitch_max: float = 1.0
+) -> void:
+	var stream := (
+		SFX.get(sound_name) as AudioStream
+	)
+
+	if stream == null:
+		push_warning(
+			"AudioManager: не найден звук "
+			+ str(sound_name)
+		)
+		return
+
+	_play_one_shot(
+		stream,
+		volume_db,
+		pitch_min,
+		pitch_max
+	)
+
+
+func play_world_sfx(
+	sound_name: StringName,
+	world_position: Vector2,
+	volume_db: float = 0.0,
+	pitch_min: float = 1.0,
+	pitch_max: float = 1.0
+) -> void:
+	var stream := (
+		SFX.get(sound_name) as AudioStream
+	)
+
+	if stream == null:
+		push_warning(
+			"AudioManager: не найден звук "
+			+ str(sound_name)
+		)
+		return
+
+	_play_world_sound(
+		stream,
+		world_position,
+		volume_db,
+		pitch_min,
+		pitch_max
+	)
 
 # =========================================================
 # ВНУТРЕННЕЕ ВОСПРОИЗВЕДЕНИЕ

@@ -28,7 +28,8 @@ var deactivation_requested: bool = false
 
 # Относится только к конкретному выстрелу.
 var creates_poison_cloud: bool = false
-
+var is_rotten_shot: bool = false
+var is_golden_shot: bool = false
 
 signal returned_to_pool(egg)
 
@@ -80,6 +81,7 @@ func _physics_process(delta: float) -> void:
 		rotation = direction.angle()
 
 	if total_distance_traveled >= max_range:
+		_play_range_end_sound()
 		deactivate()
 
 
@@ -109,6 +111,8 @@ func _on_body_entered(body: Node) -> void:
 			var enemy := body as BaseEnemy
 			hp_before = enemy.hp
 
+		_play_enemy_hit_sound()
+		
 		body.take_damage(damage)
 
 		var actual_damage: int = damage
@@ -161,10 +165,19 @@ func _on_body_entered(body: Node) -> void:
 		or body is TileMap
 		or body.is_in_group("Walls")
 	):
+		_play_wall_hit_sound()
 		deactivate()
 		return
 
 	# Любой другой объект.
+	AudioManager.play_world_sfx(
+		&"egg_splat",
+		global_position,
+		-16.0,
+		0.96,
+		1.04
+	)
+	
 	deactivate()
 
 
@@ -215,6 +228,8 @@ func activate(
 	damage = damage_amount
 
 	creates_poison_cloud = rotten_enabled
+	is_rotten_shot = rotten_enabled
+	is_golden_shot = golden_enabled
 
 	hit = false
 	deactivation_requested = false
@@ -316,6 +331,69 @@ func set_golden() -> void:
 		true
 	)
 
+func _play_enemy_hit_sound() -> void:
+	if is_rotten_shot:
+		AudioManager.play_world_sfx(
+			&"rotten_egg_squish",
+			global_position,
+			-12.0,
+			0.96,
+			1.04
+		)
+		return
+
+	AudioManager.play_world_sfx(
+		&"egg_hit_enemy",
+		global_position,
+		-12.0,
+		0.96,
+		1.04
+	)
+
+	if is_golden_shot:
+		AudioManager.play_world_sfx(
+			&"golden_hit",
+			global_position,
+			-18.0,
+			1.05,
+			1.12
+		)
+
+
+func _play_wall_hit_sound() -> void:
+	if is_rotten_shot:
+		AudioManager.play_world_sfx(
+			&"rotten_egg_squish",
+			global_position,
+			-14.0
+		)
+		return
+
+	AudioManager.play_world_sfx(
+		&"egg_hit_wall",
+		global_position,
+		-14.0,
+		0.96,
+		1.04
+	)
+
+
+func _play_range_end_sound() -> void:
+	if is_rotten_shot:
+		AudioManager.play_world_sfx(
+			&"rotten_egg_squish",
+			global_position,
+			-15.0
+		)
+		return
+
+	AudioManager.play_world_sfx(
+		&"egg_break",
+		global_position,
+		-15.0,
+		0.97,
+		1.03
+	)
 
 # =========================================================
 # ВОЗВРАЩЕНИЕ В ПУЛ
@@ -338,5 +416,7 @@ func _deactivate_now() -> void:
 	process_mode = Node.PROCESS_MODE_DISABLED
 
 	creates_poison_cloud = false
+	is_rotten_shot = false
+	is_golden_shot = false
 
 	returned_to_pool.emit(self)
