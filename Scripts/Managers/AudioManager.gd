@@ -101,7 +101,7 @@ const SFX: Dictionary = {
 		"res://Assets/Audio/Player/player_hurt_03.wav"
 	),
 	&"player_death": preload(
-		"res://Assets/Audio/Player/player_death.mp3"
+		"res://Assets/Audio/Player/player_death.wav"
 	),
 	&"player_heal": preload(
 		"res://Assets/Audio/Player/player_heal.wav"
@@ -173,7 +173,7 @@ const SFX: Dictionary = {
 		"res://Assets/Audio/Universal/whoosh_heavy.wav"
 	),
 	&"body_fall_heavy": preload(
-		"res://Assets/Audio/Universal/body_fall_heavy.mp3"
+		"res://Assets/Audio/Universal/body_fall_heavy.wav"
 	),
 	&"shockwave": preload(
 		"res://Assets/Audio/Universal/shockwave.wav"
@@ -256,34 +256,34 @@ const SFX: Dictionary = {
 		"res://Assets/Audio/Enemies/chicken_death.wav"
 	),
 	&"chicken_cluck_01": preload(
-		"res://Assets/Audio/Enemies/НАРЕЗАТЬ chicken_cluck_01_02_03.wav"
+		"res://Assets/Audio/Enemies/chicken_cluck_01.wav"
 	),
 	&"chicken_cluck_02": preload(
-		"res://Assets/Audio/Enemies/НАРЕЗАТЬ chicken_cluck_01_02_03.wav"
+		"res://Assets/Audio/Enemies/chicken_cluck_02.wav"
 	),
 	&"chicken_cluck_03": preload(
-		"res://Assets/Audio/Enemies/НАРЕЗАТЬ chicken_cluck_01_02_03.wav"
+		"res://Assets/Audio/Enemies/chicken_cluck_03.wav"
 	),
 	&"onion_cry_01": preload(
-		"res://Assets/Audio/Enemies/НАРЕЗАТЬ onion_cry_01_02_03.wav"
+		"res://Assets/Audio/Enemies/onion_cry_01.wav"
 	),
 	&"onion_cry_02": preload(
-		"res://Assets/Audio/Enemies/НАРЕЗАТЬ onion_cry_01_02_03.wav"
+		"res://Assets/Audio/Enemies/onion_cry_02.wav"
 	),
 	&"onion_cry_03": preload(
-		"res://Assets/Audio/Enemies/НАРЕЗАТЬ onion_cry_01_02_03.wav"
+		"res://Assets/Audio/Enemies/onion_cry_03.wav"
 	),
 	&"cow_moo": preload(
 		"res://Assets/Audio/Enemies/cow_moo.wav"
 	),
 	&"bull_snort_01": preload(
-		"res://Assets/Audio/Enemies/НАРЕЗАТЬ bull_snort_01 bull_snort_02 bull_breath.wav"
+		"res://Assets/Audio/Enemies/bull_snort_01.wav"
 	),
 	&"bull_snort_02": preload(
-		"res://Assets/Audio/Enemies/НАРЕЗАТЬ bull_snort_01 bull_snort_02 bull_breath.wav"
+		"res://Assets/Audio/Enemies/bull_snort_02.wav"
 	),
 	&"bull_breath": preload(
-		"res://Assets/Audio/Enemies/НАРЕЗАТЬ bull_snort_01 bull_snort_02 bull_breath.wav"
+		"res://Assets/Audio/Enemies/bull_breath.wav"
 	),
 	&"bull_bellow": preload(
 		"res://Assets/Audio/Enemies/bull_bellow.wav"
