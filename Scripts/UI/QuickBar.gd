@@ -255,8 +255,17 @@ func _activate_quick_slot(
 			)
 		)
 
+
 		_show_item_use_warning(
 			message
+		)
+
+	if success:
+		AudioManager.play_sfx(
+			&"item_use",
+			-17.0,
+			0.98,
+			1.02
 		)
 
 	_refresh_quick_bar()
@@ -500,9 +509,19 @@ func _on_quick_slots_changed(
 
 
 func _on_selected_quick_slot_changed(
-	_slot_index: int
+	slot_index: int
 ) -> void:
 	_refresh_quick_bar()
+
+	if slot_index < 0:
+		return
+
+	AudioManager.play_sfx(
+		&"quick_slot_select",
+		-14.0,
+		0.98,
+		1.02
+	)
 
 
 func _on_inventory_item_amount_changed(

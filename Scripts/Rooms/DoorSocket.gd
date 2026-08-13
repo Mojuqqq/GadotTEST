@@ -595,6 +595,14 @@ func _on_transition_area_body_entered(
 	# Когда связанная дверь старая, передаём позицию
 	# текущей двери. Main.gd распознает её как старый
 	# переход и использует SpawnPoint.
+	
+	AudioManager.play_sfx(
+		&"whoosh_transition",
+		-16.0,
+		0.98,
+		1.02
+	)
+
 	main.call(
 		&"move_player_to_room",
 		target_room_node,

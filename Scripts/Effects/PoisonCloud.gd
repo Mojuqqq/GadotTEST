@@ -83,6 +83,15 @@ func _ready() -> void:
 	)
 
 	visual.play(&"appear")
+
+	AudioManager.play_world_sfx(
+		&"poison_spawn",
+		global_position,
+		-12.0,
+		0.97,
+		1.03
+	)
+
 	life_timer.start()
 
 
@@ -173,6 +182,8 @@ func _on_damage_timer_timeout() -> void:
 		damage_timer.stop()
 		return
 
+	var had_valid_target: bool = false
+
 	for body in bodies_inside.duplicate():
 		if not is_instance_valid(body):
 			bodies_inside.erase(body)
@@ -183,6 +194,16 @@ func _on_damage_timer_timeout() -> void:
 			continue
 
 		_apply_damage(body)
+		had_valid_target = true
+
+	if had_valid_target:
+		AudioManager.play_world_sfx(
+			&"poison_tick",
+			global_position,
+			-26.0,
+			0.94,
+			1.06
+		)
 
 	if bodies_inside.is_empty():
 		damage_timer.stop()

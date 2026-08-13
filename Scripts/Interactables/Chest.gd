@@ -198,6 +198,14 @@ func _try_open_chest() -> void:
 
 			_show_no_key_feedback()
 			return
+		
+	AudioManager.play_world_sfx(
+		&"key_turn",
+		global_position,
+		-12.0,
+		0.98,
+		1.02
+	)
 	open(added_amount)
 
 func open(added_amount: int) -> void:

@@ -260,6 +260,14 @@ func take_damage(
 
 	if amount <= 0:
 		return
+	
+	AudioManager.play_world_sfx(
+		&"impact_soft",
+		global_position,
+		-20.0,
+		0.94,
+		1.06
+	)
 
 	var actual_damage: int = mini(
 		amount,

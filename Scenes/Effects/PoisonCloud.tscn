@@ -2,6 +2,7 @@
 
 [ext_resource type="Script" uid="uid://3kx5kuidso4k" path="res://Scripts/Effects/PoisonCloud.gd" id="1_u5wov"]
 [ext_resource type="Texture2D" uid="uid://c5or2grpn74ol" path="res://Assets/Art/Effects/RottenEgg_Sheet_1.png" id="2_fpt6b"]
+[ext_resource type="AudioStream" uid="uid://ie3pb7mwtmri" path="res://Assets/Audio/Eggs/poison_loop.wav" id="3_6i04r"]
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_g4v7s"]
 radius = 61.03278
@@ -78,3 +79,10 @@ animation = &"appear"
 [node name="DamageTimer" type="Timer" parent="." unique_id=289552696]
 
 [node name="LifeTimer" type="Timer" parent="." unique_id=460887576]
+
+[node name="PoisonLoop" type="AudioStreamPlayer2D" parent="." unique_id=1241917786]
+stream = ExtResource("3_6i04r")
+volume_db = -26.0
+autoplay = true
+max_distance = 650.0
+bus = &"SFX"

@@ -391,6 +391,13 @@ func receive_healing(
 	if healed_amount <= 0:
 		return 0
 
+	AudioManager.play_sfx(
+		&"player_heal",
+		-10.0,
+		0.98,
+		1.02
+	)
+
 	var telemetry: Node = (
 		get_tree().get_first_node_in_group(
 			&"BalanceTelemetry"
@@ -439,8 +446,20 @@ func activate_completed_floor_speed_boost() -> void:
 	)
 
 
-func apply_push(force: Vector2):
+func apply_push(
+	force: Vector2
+) -> void:
 	external_force += force
+
+	if force.length() < 250.0:
+		return
+
+	AudioManager.play_sfx(
+		&"player_knockback",
+		-11.0,
+		0.97,
+		1.04
+	)
 
 func shoot() -> void:
 	if is_dead:
@@ -662,6 +681,13 @@ func _use_omelet() -> Dictionary:
 			true
 		)
 
+	AudioManager.play_sfx(
+		&"omelet_bite",
+		-8.0,
+		0.97,
+		1.03
+	)
+
 	return {
 		"success": true,
 		"message": (
@@ -703,6 +729,12 @@ func _use_hot_sauce() -> Dictionary:
 		new_duration
 	)
 
+	AudioManager.play_sfx(
+		&"hot_sauce_use",
+		-9.0,
+		0.98,
+		1.03
+	)
 
 	return {
 		"success": true,
@@ -729,6 +761,10 @@ func _use_hot_sauce() -> Dictionary:
 func _on_hot_sauce_effect_ended() -> void:
 	current_egg_speed_multiplier = 1.0
 	hot_sauce_effect_total_duration = 0.0
+	AudioManager.play_sfx(
+		&"effect_end",
+		-14.0
+	)
 
 func apply_tear_effect(duration: float):
 	is_crying = true
@@ -740,6 +776,10 @@ func apply_tear_effect(duration: float):
 func _on_tear_effect_end():
 	is_crying = false
 	modulate = Color.WHITE
+	AudioManager.play_sfx(
+		&"effect_end",
+		-14.0
+	)
 
 func take_damage(
 	damage: int
@@ -762,6 +802,15 @@ func take_damage(
 	
 	if actual_damage <= 0:
 		return
+
+	var will_die: bool = (
+		actual_damage >= current_hp
+	)
+
+	if not will_die:
+		AudioManager.play_player_hurt(
+			actual_damage >= 2
+		)
 
 	var telemetry: Node = (
 		get_tree().get_first_node_in_group(
@@ -973,6 +1022,11 @@ func die() -> void:
 		return
 
 	is_dead = true
+	
+	AudioManager.play_sfx(
+		&"player_death",
+		-6.0
+	)
 
 	if is_instance_valid(footsteps):
 		footsteps.stop()
@@ -1087,6 +1141,14 @@ func _spawn_rooster() -> Node2D:
 		return null
 
 	current_scene.add_child(instance)
+	
+	AudioManager.play_world_sfx(
+		&"rooster_spawn",
+		global_position,
+		-10.0,
+		0.98,
+		1.02
+	)
 
 	instance.global_position = (
 		global_position
@@ -1171,6 +1233,14 @@ func _spawn_chick_bomb() -> Node2D:
 		return null
 
 	current_scene.add_child(instance)
+	
+	AudioManager.play_world_sfx(
+		&"companion_spawn",
+		global_position,
+		-13.0,
+		1.02,
+		1.08
+	)
 
 	instance.global_position = (
 		global_position
@@ -1330,12 +1400,23 @@ func set_external_movement_lock(
 	source: Node,
 	locked: bool
 ) -> void:
+	
+	var was_locked: bool = (
+		external_movement_locked
+	)
+
 	if locked:
 		if not is_instance_valid(source):
 			return
 
 		external_movement_lock_source = source
 		external_movement_locked = true
+		
+		if not was_locked:
+			AudioManager.play_sfx(
+				&"player_stunned",
+				-10.0
+			)
 
 		velocity = Vector2.ZERO
 		external_force = Vector2.ZERO
@@ -1401,11 +1482,21 @@ func _validate_external_movement_lock() -> void:
 
 
 func _clear_external_movement_lock() -> void:
+	var was_locked: bool = (
+		external_movement_locked
+	)
+
 	external_movement_locked = false
 	external_movement_lock_source = null
 
 	velocity = Vector2.ZERO
 	external_force = Vector2.ZERO
+
+	if was_locked:
+		AudioManager.play_sfx(
+			&"stun_end",
+			-12.0
+		)
 	
 func _play_healing_ground_ring() -> void:
 	if not is_instance_valid(

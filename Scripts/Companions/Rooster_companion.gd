@@ -150,8 +150,24 @@ func _attack_target() -> void:
 			hp_before
 		)
 
+	AudioManager.play_world_sfx(
+		&"bird_flap",
+		global_position,
+		-19.0,
+		0.98,
+		1.05
+	)
+
 	target_enemy.take_damage(
 		damage
+	)
+	
+	AudioManager.play_world_sfx(
+		&"rooster_peck",
+		target_enemy.global_position,
+		-14.0,
+		0.96,
+		1.06
 	)
 
 	var killed_by_companion: bool = (
@@ -286,6 +302,14 @@ func take_damage(
 
 	if current_health <= 0:
 		die()
+		
+	AudioManager.play_world_sfx(
+		&"chicken_alarm",
+		global_position,
+		-17.0,
+		1.04,
+		1.10
+	)
 
 
 func die() -> void:
@@ -293,6 +317,20 @@ func die() -> void:
 		return
 
 	is_dying = true
+	
+	AudioManager.play_world_sfx(
+		&"chicken_death",
+		global_position,
+		-12.0,
+		1.02,
+		1.08
+	)
+
+	AudioManager.play_world_sfx(
+		&"companion_poof",
+		global_position,
+		-16.0
+	)
 
 	velocity = Vector2.ZERO
 	can_attack = false

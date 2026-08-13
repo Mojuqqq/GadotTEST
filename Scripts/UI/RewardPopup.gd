@@ -30,6 +30,8 @@ func setup(
 ) -> void:
 	if item == null:
 		
+		AudioManager.play_bonus()
+		
 		queue_free()
 		return
 

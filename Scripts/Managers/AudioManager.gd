@@ -249,6 +249,12 @@ const SFX: Dictionary = {
 	),
 
 	# Враги
+	&"bomb_warning": preload(
+		"res://Assets/Audio/Enemies/bomb_warning.wav"
+	),
+	&"cartoon_pop": preload(
+		"res://Assets/Audio/Enemies/cartoon_pop.wav"
+	),
 	&"chicken_alarm": preload(
 		"res://Assets/Audio/Enemies/chicken_alarm.wav"
 	),
@@ -319,6 +325,8 @@ const PLAYER_HURT_SOUNDS: Array[StringName] = [
 	&"player_hurt_03"
 ]
 
+var low_hp_warning_armed: bool = true
+
 func _ready() -> void:
 	# Звуки меню должны работать даже тогда,
 	# когда SceneTree находится на паузе.
@@ -336,6 +344,13 @@ func _ready() -> void:
 	call_deferred(
 		&"_connect_existing_buttons"
 	)
+	
+	if not GameManager.player_hp_changed.is_connected(
+		_on_player_hp_changed
+	):
+		GameManager.player_hp_changed.connect(
+			_on_player_hp_changed
+		)
 
 
 # =========================================================
@@ -699,3 +714,29 @@ func _play_world_sound(
 	)
 
 	player.play()
+
+func _on_player_hp_changed(
+	hp: int,
+	max_hp: int
+) -> void:
+	if max_hp <= 0 or hp <= 0:
+		low_hp_warning_armed = true
+		return
+
+	var warning_hp: int = maxi(
+		ceili(float(max_hp) * 0.25),
+		1
+	)
+
+	if hp <= warning_hp:
+		if low_hp_warning_armed:
+			play_sfx(
+				&"low_hp_warning",
+				-12.0
+			)
+
+			low_hp_warning_armed = false
+
+		return
+
+	low_hp_warning_armed = true

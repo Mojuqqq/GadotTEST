@@ -129,6 +129,14 @@ func _hatch() -> void:
 
 	egg_sprite.visible = false
 	chick_sprite.visible = true
+	
+	AudioManager.play_world_sfx(
+		&"chick_peep",
+		global_position,
+		-13.0,
+		0.98,
+		1.06
+	)
 
 	scale = Vector2(0.7, 0.7)
 
@@ -270,6 +278,15 @@ func _explode() -> void:
 		return
 
 	is_exploding = true
+	
+	AudioManager.play_world_sfx(
+		&"explosion_small",
+		global_position,
+		-9.0,
+		0.96,
+		1.04
+	)
+	
 	velocity = Vector2.ZERO
 
 	search_timer.stop()

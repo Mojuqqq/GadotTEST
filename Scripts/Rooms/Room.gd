@@ -372,10 +372,17 @@ func on_room_entered() -> void:
 
 	set_active(true)
 
-func lock_doors():
+func lock_doors() -> void:
 	for door in doors:
 		if door.has_method("set_open"):
 			door.set_open(false)
+
+	AudioManager.play_sfx(
+		&"door_lock",
+		-11.0,
+		0.98,
+		1.02
+	)
 
 func unlock_doors():
 	for door in doors:
