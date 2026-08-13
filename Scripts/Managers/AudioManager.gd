@@ -69,13 +69,13 @@ const SFX: Dictionary = {
 		"res://Assets/Audio/Eggs/egg_hit_enemy.wav"
 	),
 	&"egg_hit_wall": preload(
-		"res://Assets/Audio/Eggs/egg_hit_wall.mp3"
+		"res://Assets/Audio/Eggs/egg_hit_wall.wav"
 	),
 	&"egg_break": preload(
 		"res://Assets/Audio/Eggs/egg_break.wav"
 	),
 	&"egg_splat": preload(
-		"res://Assets/Audio/Eggs/egg_splat.mp3"
+		"res://Assets/Audio/Eggs/egg_splat.wav"
 	),
 	&"golden_hit": preload(
 		"res://Assets/Audio/Eggs/golden_hit.wav"
@@ -133,7 +133,7 @@ const SFX: Dictionary = {
 		"res://Assets/Audio/Items/effect_end.wav"
 	),
 	&"omelet_bite": preload(
-		"res://Assets/Audio/Items/omelet_bite.mp3"
+		"res://Assets/Audio/Items/omelet_bite.wav"
 	),
 	&"hot_sauce_use": preload(
 		"res://Assets/Audio/Items/hot_sauce_use.wav"
