@@ -196,6 +196,65 @@ func _generate_room_layout(
 	# ОСНОВНОЙ ПУТЬ
 	# =====================================================
 
+# =====================================================
+	# ЗАРАНЕЕ РЕЗЕРВИРУЕМ МЕСТО ДЛЯ BOSS
+	# =====================================================
+
+	var boss_parent_index: int = (
+		current_parent_index
+	)
+
+	var boss_parent_cell: Vector2i = (
+		layout[
+			boss_parent_index
+		]["cell"]
+	)
+
+	var reserved_boss_cell: Vector2i = (
+		Vector2i.ZERO
+	)
+
+	var boss_cell_reserved: bool = false
+
+	var boss_directions := (
+		_get_grid_directions()
+	)
+
+	boss_directions.shuffle()
+
+	for direction in boss_directions:
+		var candidate: Vector2i = (
+			boss_parent_cell
+			+ direction
+		)
+
+		if not _can_place_branch_room(
+			candidate,
+			boss_parent_cell,
+			occupied_cells
+		):
+			continue
+
+		reserved_boss_cell = candidate
+		boss_cell_reserved = true
+
+		# Временно отмечаем клетку занятой,
+		# чтобы боковые ветки не заняли её
+		# и не прижались к будущей BOSS-комнате.
+		occupied_cells[
+			reserved_boss_cell
+		] = true
+
+		break
+
+	if not boss_cell_reserved:
+		push_warning(
+			"Не удалось зарезервировать "
+			+ "клетку для BOSS-комнаты."
+		)
+
+		return layout
+		
 	for _index in range(
 		main_room_count
 	):
@@ -325,45 +384,15 @@ func _generate_room_layout(
 	# BOSS
 	# =====================================================
 
-	var boss_parent_index: int = (
-		current_parent_index
-	)
-
-	var boss_parent_cell: Vector2i = (
-		layout[
-			boss_parent_index
-		]["cell"]
-	)
-
-	var boss_directions := (
-		_get_grid_directions()
-	)
-
-	boss_directions.shuffle()
-
-	for direction in boss_directions:
-		var boss_cell: Vector2i = (
-			boss_parent_cell
-			+ direction
-		)
-
-		if not _can_place_branch_room(
-			boss_cell,
-			boss_parent_cell,
-			occupied_cells
-		):
-			continue
-
+	if boss_cell_reserved:
 		layout.append(
 			{
-				"cell": boss_cell,
+				"cell": reserved_boss_cell,
 				"parent": boss_parent_index,
 				"main_path": true,
 				"boss": true
 			}
 		)
-
-		break
 
 	return layout
 
@@ -461,11 +490,69 @@ func generate_dungeon(root_node: Node) -> void:
 		)
 	)
 
-	generated_room_layout = (
-		_generate_room_layout(
-			requested_intermediate_count
+	const MAX_LAYOUT_ATTEMPTS: int = 20
+
+	var layout_created: bool = false
+
+	for attempt in range(
+		MAX_LAYOUT_ATTEMPTS
+	):
+		var candidate_layout: Array[Dictionary] = (
+			_generate_room_layout(
+				requested_intermediate_count
+			)
 		)
-	)
+
+		if candidate_layout.size() < 2:
+			continue
+
+		var candidate_last: Dictionary = (
+			candidate_layout[
+				candidate_layout.size() - 1
+			]
+		)
+
+		var has_boss_at_end: bool = bool(
+			candidate_last.get(
+				"boss",
+				false
+			)
+		)
+
+		if not has_boss_at_end:
+			print(
+				"[DUNGEON] Неудачная попытка layout: ",
+				attempt + 1,
+				"/",
+				MAX_LAYOUT_ATTEMPTS
+			)
+
+			continue
+
+		generated_room_layout = (
+			candidate_layout
+		)
+
+		layout_created = true
+
+		if attempt > 0:
+			print(
+				"[DUNGEON] Layout создан "
+				+ "с попытки ",
+				attempt + 1
+			)
+
+		break
+
+	if not layout_created:
+		push_error(
+			"Не удалось создать layout "
+			+ "с BOSS-комнатой после "
+			+ str(MAX_LAYOUT_ATTEMPTS)
+			+ " попыток."
+		)
+
+		return
 
 	if generated_room_layout.size() < 2:
 		push_error(
