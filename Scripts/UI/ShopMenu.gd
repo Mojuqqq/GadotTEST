@@ -187,6 +187,16 @@ func _on_offer_pressed(index: int) -> void:
 		index
 	)
 
+	var success: bool = bool(
+		result.get(
+			"success",
+			false
+		)
+	)
+
+	if not success:
+		AudioManager.play_error()
+
 	status_label.text = str(
 		result.get(
 			"message",
@@ -260,6 +270,11 @@ func close_menu() -> void:
 		return
 
 	is_closing = true
+	
+	AudioManager.play_sfx(
+		&"popup_close",
+		-18.0
+	)
 
 	if GameManager.total_gold_changed.is_connected(
 		_on_total_gold_changed

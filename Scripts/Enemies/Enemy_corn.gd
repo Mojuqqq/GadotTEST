@@ -498,3 +498,11 @@ func _shoot_at_target(
 		bullet_speed,
 		damage
 	)
+	
+	AudioManager.play_world_sfx(
+		&"cartoon_pop",
+		global_position,
+		-13.0,
+		0.96,
+		1.08
+	)

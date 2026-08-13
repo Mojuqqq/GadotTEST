@@ -12,7 +12,7 @@ dest_files=["res://.godot/imported/farm_theme.wav-7fbbcf2acd3fb9170178bb4b11fdc2
 
 [params]
 
-force/8_bit=false
+force/8_bit=true
 force/mono=false
 force/max_rate=false
 force/max_rate_hz=44100

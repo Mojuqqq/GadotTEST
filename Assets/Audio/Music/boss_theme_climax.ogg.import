@@ -12,7 +12,7 @@ dest_files=["res://.godot/imported/boss_theme_climax.ogg-9a4f086bbceea3bc568fcf1
 
 [params]
 
-loop=false
+loop=true
 loop_offset=0
 bpm=0
 beat_count=0

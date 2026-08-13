@@ -1,5 +1,10 @@
 extends BaseEnemy
 
+const CRY_SOUNDS: Array[StringName] = [
+	&"onion_cry_01",
+	&"onion_cry_02",
+	&"onion_cry_03"
+]
 
 # =========================================================
 # ПАРАМЕТРЫ
@@ -266,6 +271,18 @@ func _get_valid_player() -> Node2D:
 
 	return player
 
+func _play_random_cry() -> void:
+	var sound_name: StringName = (
+		CRY_SOUNDS.pick_random()
+	)
+
+	AudioManager.play_world_sfx(
+		sound_name,
+		global_position,
+		-16.0,
+		0.96,
+		1.04
+	)
 
 # =========================================================
 # СМЕРТЬ И ЭФФЕКТ СЛЁЗ
@@ -277,6 +294,8 @@ func die() -> void:
 
 	if is_instance_valid(walk_timer):
 		walk_timer.stop()
+
+	_play_random_cry()
 
 	_apply_tear_effect_to_player()
 

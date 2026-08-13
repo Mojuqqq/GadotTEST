@@ -215,9 +215,15 @@ func _on_attack_timer_timeout() -> void:
 		attack_timer.stop()
 		return
 
+	AudioManager.play_world_sfx(
+		&"bird_flap",
+		global_position,
+		-20.0,
+		0.98,
+		1.05
+	)
+
 	target.take_damage(damage)
-
-
 
 func _find_nearest_attack_target() -> Node2D:
 	var nearest_target: Node2D = null
@@ -243,3 +249,41 @@ func _find_nearest_attack_target() -> Node2D:
 		nearest_target = target
 
 	return nearest_target
+
+func take_damage(
+	amount: int
+) -> void:
+	if is_dead:
+		return
+
+	if amount <= 0:
+		return
+
+	var will_die: bool = (
+		amount >= hp
+	)
+
+	if not will_die:
+		AudioManager.play_world_sfx(
+			&"chicken_alarm",
+			global_position,
+			-18.0,
+			1.02,
+			1.10
+		)
+
+	super(amount)
+	
+func die() -> void:
+	if is_dead:
+		return
+
+	AudioManager.play_world_sfx(
+		&"chicken_death",
+		global_position,
+		-13.0,
+		1.03,
+		1.10
+	)
+
+	super()

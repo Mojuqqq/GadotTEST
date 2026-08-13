@@ -416,6 +416,14 @@ func _process_takeoff(
 	flight_damage_dealt = false
 
 	movement_state = MovementState.FLYING
+	
+	AudioManager.play_world_sfx(
+		&"whoosh_heavy",
+		global_position,
+		-13.0,
+		0.78,
+		0.88
+	)
 
 	state_elapsed = 0.0
 	flight_elapsed = 0.0
@@ -536,6 +544,14 @@ func _process_landing(
 	if progress < 1.0:
 		return
 
+	AudioManager.play_world_sfx(
+		&"impact_heavy",
+		global_position,
+		-12.0,
+		0.88,
+		0.96
+	)
+
 	_reset_movement_state()
 
 
@@ -556,6 +572,19 @@ func _start_flight() -> void:
 	state_elapsed = 0.0
 
 	velocity = Vector2.ZERO
+	
+	AudioManager.play_sfx(
+		&"boss_telegraph",
+		-11.0
+	)
+
+	AudioManager.play_world_sfx(
+		&"bird_flap",
+		global_position,
+		-12.0,
+		0.72,
+		0.84
+	)
 
 
 
@@ -626,6 +655,14 @@ func _clamp_to_room() -> void:
 func _on_attack_timer_timeout() -> void:
 	if not is_active or is_dead:
 		return
+
+	AudioManager.play_world_sfx(
+		&"bird_flap",
+		global_position,
+		-16.0,
+		0.78,
+		0.90
+	)
 
 	current_target = _find_nearest_target()
 
@@ -713,6 +750,22 @@ func _summon_chickens() -> void:
 			"Босс-курица не находится внутри комнаты."
 		)
 		return
+
+	AudioManager.play_world_sfx(
+		&"chicken_alarm",
+		global_position,
+		-13.0,
+		0.72,
+		0.82
+	)
+
+	AudioManager.play_world_sfx(
+		&"companion_spawn",
+		global_position,
+		-17.0,
+		0.88,
+		0.96
+	)
 
 	for index in range(spawn_count):
 		var chicken_instance: Node = (
@@ -916,3 +969,25 @@ func _is_valid_target(
 		return false
 
 	return is_player_side_target(target)
+
+func die() -> void:
+	if is_dead:
+		return
+
+	AudioManager.play_world_sfx(
+		&"chicken_death",
+		global_position,
+		-8.0,
+		0.68,
+		0.78
+	)
+
+	AudioManager.play_world_sfx(
+		&"body_fall_heavy",
+		global_position,
+		-9.0,
+		0.92,
+		1.0
+	)
+
+	super()

@@ -165,6 +165,23 @@ func _update_phase_two() -> void:
 		return
 
 	phase_two_active = true
+	
+	MusicManager.play_boss_climax()
+	
+	AudioManager.play_sfx(
+		&"boss_telegraph",
+		-9.0,
+		0.90,
+		0.96
+	)
+
+	AudioManager.play_world_sfx(
+		&"rooster_spawn",
+		global_position,
+		-9.0,
+		0.78,
+		0.88
+	)
 
 	speed = (
 		initial_speed
@@ -422,6 +439,22 @@ func melee_attack(
 	if distance > melee_range:
 		return
 
+	AudioManager.play_world_sfx(
+		&"bird_flap",
+		global_position,
+		-15.0,
+		0.88,
+		0.98
+	)
+
+	AudioManager.play_world_sfx(
+		&"whoosh_heavy",
+		global_position,
+		-18.0,
+		0.92,
+		1.02
+	)
+
 	target.take_damage(melee_damage)
 
 
@@ -431,6 +464,14 @@ func ranged_attack(
 ) -> void:
 	if not _is_valid_target(target):
 		return
+
+	AudioManager.play_world_sfx(
+		&"chicken_cluck_02",
+		global_position,
+		-17.0,
+		0.85,
+		0.95
+	)
 
 	var direction_to_target: Vector2 = (
 		target.global_position
@@ -521,3 +562,25 @@ func _spawn_ranged_bullet(
 		bullet_speed,
 		ranged_damage
 	)
+
+func die() -> void:
+	if is_dead:
+		return
+
+	AudioManager.play_world_sfx(
+		&"chicken_death",
+		global_position,
+		-9.0,
+		0.82,
+		0.92
+	)
+
+	AudioManager.play_world_sfx(
+		&"body_fall_heavy",
+		global_position,
+		-15.0,
+		1.05,
+		1.12
+	)
+
+	super()

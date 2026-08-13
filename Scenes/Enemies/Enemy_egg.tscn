@@ -2,6 +2,7 @@
 
 [ext_resource type="Script" uid="uid://bsylrmwfvf15o" path="res://Scripts/Enemies/Enemy_egg.gd" id="1_mylxb"]
 [ext_resource type="Texture2D" uid="uid://conk3cfsvgw8p" path="res://Assets/Art/Characters/Enemies/Enemy_egg.png" id="2_mylxb"]
+[ext_resource type="AudioStream" uid="uid://g027uxw6p56b" path="res://Assets/Audio/Enemies/walking_egg_wobble.wav" id="3_gcbyx"]
 
 [sub_resource type="CapsuleShape2D" id="CapsuleShape2D_benfh"]
 radius = 19.0
@@ -22,3 +23,9 @@ texture = ExtResource("2_mylxb")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=731214316]
 shape = SubResource("CapsuleShape2D_benfh")
+
+[node name="WobbleLoop" type="AudioStreamPlayer2D" parent="." unique_id=812629795]
+stream = ExtResource("3_gcbyx")
+volume_db = -27.0
+max_distance = 550.0
+bus = &"SFX"

@@ -496,6 +496,28 @@ func _begin_charge_prepare() -> void:
 
 	charge_direction = Vector2.ZERO
 	velocity = Vector2.ZERO
+	
+	AudioManager.play_sfx(
+		&"boss_telegraph",
+		-9.0
+	)
+
+	AudioManager.play_world_sfx(
+		&"bull_snort_01",
+		global_position,
+		-10.0,
+		0.88,
+		0.96
+	)
+
+	if randf() <= 0.25:
+		AudioManager.play_world_sfx(
+			&"bull_ring_jingle",
+			global_position,
+			-22.0,
+			0.96,
+			1.03
+		)
 
 	print("Бык готовится к тарану.")
 
@@ -569,6 +591,22 @@ func _process_charge_prepare(
 func _begin_charging() -> void:
 	current_state = BullState.CHARGING
 	state_elapsed = 0.0
+	
+	AudioManager.play_world_sfx(
+		&"bull_bellow",
+		global_position,
+		-9.0,
+		0.86,
+		0.94
+	)
+
+	AudioManager.play_world_sfx(
+		&"bull_stomp",
+		global_position,
+		-14.0,
+		0.86,
+		0.94
+	)
 
 	captured_target = null
 
@@ -718,6 +756,14 @@ func _try_capture_target(
 	captured_target.call(
 		&"take_damage",
 		charge_damage
+	)
+	
+	AudioManager.play_world_sfx(
+		&"impact_heavy",
+		global_position,
+		-7.0,
+		0.88,
+		0.96
 	)
 
 	if not _is_valid_player(captured_target):
@@ -1150,6 +1196,22 @@ func _begin_wall_stun() -> void:
 	state_elapsed = 0.0
 
 	velocity = Vector2.ZERO
+	
+	AudioManager.play_world_sfx(
+		&"impact_heavy",
+		global_position,
+		-6.0,
+		0.82,
+		0.92
+	)
+
+	AudioManager.play_world_sfx(
+		&"shockwave",
+		global_position,
+		-13.0,
+		0.88,
+		0.96
+	)
 
 	if visual != null:
 		visual.scale = Vector2(
@@ -1423,7 +1485,26 @@ func _is_position_inside_room(
 # =========================================================
 
 func die() -> void:
+	if is_dead:
+		return
+
 	_release_captured_target()
 	_set_charge_hitbox_enabled(false)
+
+	AudioManager.play_world_sfx(
+		&"bull_bellow",
+		global_position,
+		-7.0,
+		0.68,
+		0.78
+	)
+
+	AudioManager.play_world_sfx(
+		&"body_fall_heavy",
+		global_position,
+		-6.0,
+		0.82,
+		0.90
+	)
 
 	super()

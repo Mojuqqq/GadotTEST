@@ -459,6 +459,14 @@ func _on_attack_timer_timeout() -> void:
 
 	if damage <= 0:
 		return
+		
+	AudioManager.play_world_sfx(
+		&"whoosh_small",
+		global_position,
+		-15.0,
+		1.06,
+		1.14
+	)
 
 	target.call(
 		&"take_damage",
@@ -512,6 +520,14 @@ func start_dash() -> void:
 
 	is_dashing = true
 	self_modulate = dash_color
+	
+	AudioManager.play_world_sfx(
+		&"whoosh_small",
+		global_position,
+		-15.0,
+		1.06,
+		1.14
+	)
 
 	if is_instance_valid(dash_timer):
 		dash_timer.start(

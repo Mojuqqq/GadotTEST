@@ -354,6 +354,20 @@ func purchase_offer(index: int) -> Dictionary:
 			"message": "Не удалось списать золото."
 		}
 
+	AudioManager.play_sfx(
+		&"gold_spend",
+		-10.0,
+		0.98,
+		1.02
+	)
+
+	AudioManager.play_sfx(
+		&"confirm",
+		-17.0,
+		1.02,
+		1.06
+	)
+
 	offer["sold"] = true
 	offers[index] = offer
 
@@ -411,6 +425,18 @@ func _open_shop() -> void:
 	set_process_unhandled_input(false)
 
 	current_scene.add_child(menu)
+	
+	AudioManager.play_sfx(
+		&"shop_bell",
+		-11.0
+	)
+	
+	MusicManager.play_shop()
+
+	AudioManager.play_sfx(
+		&"popup_open",
+		-18.0
+	)
 
 	if menu.has_method("setup"):
 		menu.call("setup", self)
@@ -424,6 +450,7 @@ func _open_shop() -> void:
 
 
 func on_shop_closed() -> void:
+	MusicManager.play_farm()
 	shop_open = false
 
 	if player_near:

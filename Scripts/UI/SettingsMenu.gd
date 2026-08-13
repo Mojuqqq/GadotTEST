@@ -71,11 +71,19 @@ signal closed
 
 
 var is_updating_ui: bool = false
+var last_slider_tick_msec: int = 0
+
+const SLIDER_TICK_INTERVAL_MSEC: int = 70
 
 
 func _ready() -> void:
 	process_mode = Node.PROCESS_MODE_ALWAYS
 	visible = false
+	
+	fullscreen_check.set_meta(
+		&"audio_click",
+		"none"
+	)
 
 	_connect_signals()
 	_fill_resolution_options()
@@ -93,6 +101,11 @@ func open_menu() -> void:
 	_refresh_from_manager()
 
 	visible = true
+	
+	AudioManager.play_sfx(
+		&"popup_open",
+		-18.0
+	)
 
 	Input.set_mouse_mode(
 		Input.MOUSE_MODE_VISIBLE
@@ -108,6 +121,12 @@ func close_menu() -> void:
 	get_viewport().gui_release_focus()
 
 	visible = false
+	
+	AudioManager.play_sfx(
+		&"popup_close",
+		-18.0
+	)
+	
 	closed.emit()
 
 
@@ -317,7 +336,8 @@ func _on_master_slider_value_changed(
 
 	if is_updating_ui:
 		return
-
+	_play_slider_tick()
+	
 	SettingsManager.set_master_volume(
 		_percent_to_linear(value)
 	)
@@ -333,6 +353,7 @@ func _on_music_slider_value_changed(
 
 	if is_updating_ui:
 		return
+	_play_slider_tick()
 
 	SettingsManager.set_music_volume(
 		_percent_to_linear(value)
@@ -349,6 +370,7 @@ func _on_effects_slider_value_changed(
 
 	if is_updating_ui:
 		return
+	_play_slider_tick()
 
 	SettingsManager.set_sfx_volume(
 		_percent_to_linear(value)
@@ -378,6 +400,13 @@ func _on_fullscreen_check_toggled(
 
 	if is_updating_ui:
 		return
+		
+	AudioManager.play_sfx(
+		&"toggle_on"
+		if enabled
+		else &"toggle_off",
+		-16.0
+	)
 
 	SettingsManager.set_fullscreen(
 		enabled
@@ -389,6 +418,13 @@ func _on_resolution_option_item_selected(
 ) -> void:
 	if is_updating_ui:
 		return
+		
+	AudioManager.play_sfx(
+		&"quick_slot_select",
+		-18.0,
+		0.98,
+		1.02
+	)
 
 	SettingsManager.set_resolution_index(
 		index
@@ -443,3 +479,27 @@ func _on_dim_background_gui_input(
 		if touch_event.pressed:
 			dim_background.accept_event()
 			close_menu()
+
+func _play_slider_tick() -> void:
+	if is_updating_ui:
+		return
+
+	var current_time: int = (
+		Time.get_ticks_msec()
+	)
+
+	if (
+		current_time
+		- last_slider_tick_msec
+		< SLIDER_TICK_INTERVAL_MSEC
+	):
+		return
+
+	last_slider_tick_msec = current_time
+
+	AudioManager.play_sfx(
+		&"slider_tick",
+		-24.0,
+		0.98,
+		1.02
+	)

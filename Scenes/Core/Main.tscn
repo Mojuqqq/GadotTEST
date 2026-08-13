@@ -19,6 +19,10 @@
 [ext_resource type="Script" uid="uid://b4wp3f70s1114" path="res://Scripts/Debug/Debug.gd" id="17_346fj"]
 [ext_resource type="PackedScene" uid="uid://bbrstd1ll3ice" path="res://Scenes/UI/EconomyHUD.tscn" id="17_e8w2b"]
 [ext_resource type="PackedScene" uid="uid://cn15litic46sq" path="res://Scenes/UI/QuickBar.tscn" id="19_lijq2"]
+[ext_resource type="AudioStream" uid="uid://bqo8o4ekliryi" path="res://Assets/Audio/Ambience/farm_wind.wav" id="20_p1b62"]
+[ext_resource type="AudioStream" uid="uid://bndby6qb1uaqd" path="res://Assets/Audio/Ambience/farm_birds.wav" id="21_cn72a"]
+[ext_resource type="AudioStream" uid="uid://dq4405rmyt6r5" path="res://Assets/Audio/Ambience/farm_chickens.wav" id="22_mjwtp"]
+[ext_resource type="AudioStream" uid="uid://tkipotldovok" path="res://Assets/Audio/Ambience/crickets.wav" id="23_ij3x7"]
 
 [node name="Main" type="Node2D" unique_id=248219871]
 script = ExtResource("1_vy5pj")
@@ -61,3 +65,29 @@ script = ExtResource("17_346fj")
 script = ExtResource("16_ki3rp")
 
 [node name="QuickBar" parent="." unique_id=1780697905 instance=ExtResource("19_lijq2")]
+
+[node name="FarmAmbience" type="Node" parent="." unique_id=1632155704]
+
+[node name="FarmWind" type="AudioStreamPlayer" parent="FarmAmbience" unique_id=1541494504]
+stream = ExtResource("20_p1b62")
+volume_db = -30.0
+autoplay = true
+bus = &"SFX"
+
+[node name="FarmBirds" type="AudioStreamPlayer" parent="FarmAmbience" unique_id=198843411]
+stream = ExtResource("21_cn72a")
+volume_db = -35.0
+autoplay = true
+bus = &"SFX"
+
+[node name="FarmChickens" type="AudioStreamPlayer" parent="FarmAmbience" unique_id=450676617]
+stream = ExtResource("22_mjwtp")
+volume_db = -39.0
+autoplay = true
+bus = &"SFX"
+
+[node name="Crickets" type="AudioStreamPlayer" parent="FarmAmbience" unique_id=1712361555]
+stream = ExtResource("23_ij3x7")
+volume_db = -40.0
+autoplay = true
+bus = &"SFX"

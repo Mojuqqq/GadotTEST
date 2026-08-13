@@ -24,6 +24,10 @@ var is_exploding: bool = false
 var explosion_timer: Timer = null
 var detection_area: Area2D = null
 
+@onready var wobble_loop: AudioStreamPlayer2D = (
+	$WobbleLoop
+)
+
 
 # =========================================================
 # ИНИЦИАЛИЗАЦИЯ
@@ -193,6 +197,17 @@ func set_active(
 ) -> void:
 	super(active)
 
+	if is_instance_valid(wobble_loop):
+		if (
+			active
+			and not is_dead
+			and not is_exploding
+		):
+			if not wobble_loop.playing:
+				wobble_loop.play()
+		else:
+			wobble_loop.stop()
+
 	if active:
 		current_target = _find_nearest_target()
 		return
@@ -231,6 +246,14 @@ func _on_detection_area_body_entered(
 	# Не перезапускаем отсчёт при входе второй цели.
 	if not explosion_timer.is_stopped():
 		return
+
+	AudioManager.play_world_sfx(
+		&"bomb_warning",
+		global_position,
+		-12.0,
+		0.98,
+		1.04
+	)
 
 	explosion_timer.start()
 
@@ -298,6 +321,25 @@ func explode() -> void:
 
 	is_exploding = true
 	is_dead = true
+	
+	if is_instance_valid(wobble_loop):
+		wobble_loop.stop()
+
+	AudioManager.play_world_sfx(
+		&"explosion_small",
+		global_position,
+		-8.0,
+		0.95,
+		1.03
+	)
+
+	AudioManager.play_world_sfx(
+		&"egg_splat",
+		global_position,
+		-14.0,
+		0.92,
+		1.02
+	)
 
 	velocity = Vector2.ZERO
 	set_physics_process(false)

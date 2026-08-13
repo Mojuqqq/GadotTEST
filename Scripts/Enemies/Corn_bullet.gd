@@ -33,14 +33,31 @@ func _on_body_entered(
 		and body.has_method("take_damage")
 	):
 		body.take_damage(damage)
+
+		AudioManager.play_world_sfx(
+			&"impact_small",
+			global_position,
+			-18.0,
+			0.96,
+			1.05
+		)
+
 		queue_free()
-		return
+	return
 
 	if (
 		body is StaticBody2D
 		or body is TileMap
 		or body.is_in_group("Walls")
 	):
+		AudioManager.play_world_sfx(
+			&"impact_small",
+			global_position,
+			-20.0,
+			0.94,
+			1.04
+		)
+
 		queue_free()
 		return
 

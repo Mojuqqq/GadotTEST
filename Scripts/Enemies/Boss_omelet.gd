@@ -318,6 +318,11 @@ func _begin_prepare() -> void:
 	current_state = State.PREPARE
 	state_elapsed = 0.0
 	velocity = Vector2.ZERO
+	
+	AudioManager.play_sfx(
+		&"boss_telegraph",
+		-11.0
+	)
 
 
 func _process_prepare(
@@ -360,6 +365,22 @@ func _begin_ascending() -> void:
 
 	is_airborne = true
 	velocity = Vector2.ZERO
+	
+	AudioManager.play_world_sfx(
+		&"egg_splat",
+		global_position,
+		-17.0,
+		0.85,
+		0.95
+	)
+
+	AudioManager.play_world_sfx(
+		&"whoosh_heavy",
+		global_position,
+		-17.0,
+		0.88,
+		0.98
+	)
 
 	_set_body_collision_enabled(false)
 
@@ -444,6 +465,13 @@ func _lock_landing_position() -> void:
 	state_elapsed = 0.0
 
 	_show_landing_marker()
+	
+	AudioManager.play_sfx(
+		&"boss_telegraph",
+		-10.0,
+		1.07,
+		1.12
+	)
 
 
 func _process_air_locked(
@@ -525,6 +553,22 @@ func _land() -> void:
 	_set_body_collision_enabled(true)
 
 	is_airborne = false
+
+	AudioManager.play_world_sfx(
+		&"water_splash",
+		global_position,
+		-9.0,
+		0.85,
+		0.95
+	)
+
+	AudioManager.play_world_sfx(
+		&"impact_heavy",
+		global_position,
+		-12.0,
+		0.90,
+		0.98
+	)
 
 	_deal_landing_damage()
 
@@ -610,6 +654,7 @@ func _try_activate_rain_phase() -> void:
 		return
 
 	rain_phase_active = true
+	MusicManager.play_boss_climax()
 	rain_cooldown_left = first_rain_delay
 
 	print(
@@ -1084,7 +1129,26 @@ func _reset_jump_state() -> void:
 # =========================================================
 
 func die() -> void:
+	if is_dead:
+		return
+
 	_hide_landing_marker()
 	_stop_rain_runtime(true)
+
+	AudioManager.play_world_sfx(
+		&"rotten_egg_squish",
+		global_position,
+		-7.0,
+		0.72,
+		0.82
+	)
+
+	AudioManager.play_world_sfx(
+		&"water_splash",
+		global_position,
+		-11.0,
+		0.80,
+		0.90
+	)
 
 	super()

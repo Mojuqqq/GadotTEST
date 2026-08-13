@@ -3,12 +3,12 @@
 importer="wav"
 type="AudioStreamWAV"
 uid="uid://blgnuq5a7swp4"
-path="res://.godot/imported/Retro_No hope.wav-c1f152c9a89a99f94fbdb3ba7bb00bbc.sample"
+path="res://.godot/imported/game_over_theme.wav-783986cece00a96dad7638abdaa74ff4.sample"
 
 [deps]
 
-source_file="res://Assets/Audio/Music/game_over_theme/Retro_No hope.wav"
-dest_files=["res://.godot/imported/Retro_No hope.wav-c1f152c9a89a99f94fbdb3ba7bb00bbc.sample"]
+source_file="res://Assets/Audio/Music/game_over_theme.wav"
+dest_files=["res://.godot/imported/game_over_theme.wav-783986cece00a96dad7638abdaa74ff4.sample"]
 
 [params]
 

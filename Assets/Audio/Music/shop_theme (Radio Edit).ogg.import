@@ -12,7 +12,7 @@ dest_files=["res://.godot/imported/shop_theme (Radio Edit).ogg-36418b6dd08a7bf5b
 
 [params]
 
-loop=false
+loop=true
 loop_offset=0
 bpm=0
 beat_count=0

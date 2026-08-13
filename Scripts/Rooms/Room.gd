@@ -33,6 +33,7 @@ var doors: Array = []
 var enemies: Array = []
 var is_cleared: bool = false
 var is_active: bool = false
+var boss_intro_played: bool = false
 
 var location_profile: LocationProfile = null
 
@@ -352,6 +353,32 @@ func _request_enemy_counter_refresh() -> void:
 func on_room_entered() -> void:
 
 	update_enemies_list()
+	
+	if (
+		is_boss_room()
+		and not enemies.is_empty()
+		and not boss_intro_played
+	):
+		boss_intro_played = true
+
+		AudioManager.play_sfx(
+			&"boss_intro_sting",
+			-8.0
+		)
+
+	if is_boss_room():
+		MusicManager.play_boss()
+
+	elif (
+		not enemies.is_empty()
+		and not is_start_room()
+		and not is_treasure_room()
+		and not is_shop_room()
+	):
+		MusicManager.play_combat()
+
+	else:
+		MusicManager.play_farm()
 
 	# Стартовая комната и сокровищница
 	# не запускают боевую блокировку дверей.
@@ -410,6 +437,15 @@ func _on_enemy_died(
 		return
 
 	is_cleared = true
+	
+	if not is_boss_room():
+		MusicManager.play_farm()
+	
+	if is_boss_room():
+		AudioManager.play_sfx(
+			&"boss_victory",
+			-7.0
+		)
 
 	if is_boss_room():
 		minimap_marker_changed.emit()

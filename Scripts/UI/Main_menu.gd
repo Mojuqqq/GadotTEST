@@ -11,6 +11,7 @@ extends CanvasLayer
 
 
 func _ready() -> void:
+	MusicManager.stop_music()
 	Input.set_mouse_mode(
 		Input.MOUSE_MODE_VISIBLE
 	)
