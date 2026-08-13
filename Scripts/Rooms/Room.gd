@@ -437,18 +437,19 @@ func _on_enemy_died(
 		return
 
 	is_cleared = true
-	
-	if not is_boss_room():
-		MusicManager.play_farm()
-	
+
 	if is_boss_room():
+		# Босс убит = этаж уже считается завершённым.
+		# Сундук является дополнительной наградой,
+		# а не условием перехода дальше.
+		GameManager.complete_floor()
+
 		AudioManager.play_sfx(
 			&"boss_victory",
 			-7.0
 		)
-
-	if is_boss_room():
-		minimap_marker_changed.emit()
+	else:
+		MusicManager.play_farm()
 
 	unlock_doors()
 
@@ -736,6 +737,8 @@ func spawn_chest() -> void:
 			GameManager.room_width * 0.5,
 			GameManager.room_height * 0.5
 		)
+		
+	minimap_marker_changed.emit()
 
 func _on_room_chest_opened() -> void:
 	minimap_marker_changed.emit()
@@ -744,40 +747,41 @@ func _on_boss_reward_collected(
 	_item: ItemData,
 	_amount: int
 ) -> void:
-	
-	if GameManager.floor_completed:
-		return
+	if not GameManager.floor_completed:
+		GameManager.complete_floor()
 
-	GameManager.complete_floor()
-	
-
+	# Получение награды из босс-сундука
+	# открывает экран победы.
 	GameManager.trigger_game_over(
 		true
+	)
+
+func _has_uncollected_room_chest() -> bool:
+	var chest: Node = get_node_or_null(
+		"GeneratedChest"
+	)
+
+	if not is_instance_valid(chest):
+		return false
+
+	if chest.is_queued_for_deletion():
+		return false
+
+	if not chest.has_method(
+		&"has_uncollected_reward"
+	):
+		return false
+
+	return bool(
+		chest.call(
+			&"has_uncollected_reward"
+		)
 	)
 
 func has_active_minimap_marker() -> bool:
 	match room_type:
 		RoomType.TREASURE:
-			var chest: Node = get_node_or_null(
-				"GeneratedChest"
-			)
-
-			if not is_instance_valid(chest):
-				return false
-
-			if chest.is_queued_for_deletion():
-				return false
-
-			if not chest.has_method(
-				&"has_uncollected_reward"
-			):
-				return false
-
-			return bool(
-				chest.call(
-					&"has_uncollected_reward"
-				)
-			)
+			return _has_uncollected_room_chest()
 
 		RoomType.SHOP:
 			var merchant: Node = get_node_or_null(
@@ -802,7 +806,16 @@ func has_active_minimap_marker() -> bool:
 			)
 
 		RoomType.BOSS:
-			return not is_cleared
+			# Пока босс жив —
+			# показываем маркер босса.
+			if not is_cleared:
+				return true
+
+			# После победы над боссом
+			# маркер остаётся активным,
+			# пока в комнате есть
+			# несобранный сундук.
+			return _has_uncollected_room_chest()
 
 		_:
 			return false

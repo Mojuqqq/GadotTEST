@@ -28,10 +28,6 @@ var healing_ring_base_scale: Vector2 = (
 	Vector2.ONE
 )
 
-@export_group("Completed Floor Boost")
-
-@export_range(1.0, 4.0, 0.05)
-var completed_floor_speed_multiplier: float = 3.0
 @onready var animated_sprite: AnimatedSprite2D = ($AnimatedSprite2D)
 @onready var footsteps: AudioStreamPlayer2D = (
 	$Footsteps
@@ -44,7 +40,6 @@ var external_force: Vector2 = Vector2.ZERO
 @export_range(0.1, 20.0, 0.1)
 var push_decay_rate: float = 6.3
 var current_speed: float = 300.0
-var completed_floor_speed_boost_active: bool = false
 var time_since_last_shot: float = 0.0
 var is_dead: bool = false
 # =========================================================
@@ -345,19 +340,11 @@ func _update_movement_animation(
 func update_speed(
 	new_speed: float
 ) -> void:
-	var final_speed: float = maxf(
+	current_speed = maxf(
 		new_speed,
 		0.0
 	)
 
-	if completed_floor_speed_boost_active:
-		final_speed *= maxf(
-			completed_floor_speed_multiplier,
-			1.0
-		)
-
-	current_speed = final_speed
-	
 	GameManager.notify_player_speed_changed(
 		current_speed
 	)
@@ -427,24 +414,6 @@ func receive_healing(
 
 func get_current_speed() -> float:
 	return current_speed
-
-func activate_completed_floor_speed_boost() -> void:
-	if completed_floor_speed_boost_active:
-		return
-
-	completed_floor_speed_boost_active = true
-
-	var base_current_speed: float = base_speed
-
-	if GameManager.player_stats != null:
-		base_current_speed = (
-			GameManager.player_stats.speed
-		)
-
-	update_speed(
-		base_current_speed
-	)
-
 
 func apply_push(
 	force: Vector2

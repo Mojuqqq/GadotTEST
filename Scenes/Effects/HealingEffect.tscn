@@ -1,6 +1,6 @@
 [gd_scene format=3 uid="uid://dd63xygckjltt"]
 
-[ext_resource type="Script" uid="uid://cmhi6uq37djbv" path="res://Scripts/HealingEffect.gd" id="1_av8wx"]
+[ext_resource type="Script" uid="uid://cmhi6uq37djbv" path="res://Scripts/Effects/HealingEffect.gd" id="1_av8wx"]
 [ext_resource type="Texture2D" uid="uid://cgqo0c128jp7e" path="res://Assets/Art/Effects/heal_particle.png" id="2_qu5db"]
 
 [sub_resource type="Gradient" id="Gradient_mu3u0"]

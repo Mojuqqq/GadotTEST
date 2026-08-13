@@ -713,26 +713,6 @@ func resume_after_floor_victory() -> void:
 			+ "и все товары куплены."
 		)
 		return
-		
-	var current_player: Node2D = (
-		_run_state.player
-	)
-
-	if (
-		is_instance_valid(current_player)
-		and not current_player.is_queued_for_deletion()
-	):
-		if current_player.has_method(
-			&"activate_completed_floor_speed_boost"
-		):
-			current_player.call(
-				&"activate_completed_floor_speed_boost"
-			)
-		else:
-			push_warning(
-				"У игрока отсутствует метод "
-				+ "activate_completed_floor_speed_boost()."
-			)
 
 	game_over_started = false
 	state = GameState.PLAYING

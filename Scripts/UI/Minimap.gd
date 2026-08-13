@@ -682,7 +682,10 @@ func _draw_room_type_icon(
 			icon = shop_room_icon
 
 		Room.RoomType.BOSS:
-			icon = boss_room_icon
+			if typed_room.is_cleared:
+				icon = treasure_room_icon
+			else:
+				icon = boss_room_icon
 
 		_:
 			return

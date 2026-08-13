@@ -28,6 +28,7 @@ func _on_body_entered(
 		or body.is_in_group("Companions")
 	)
 
+	# Попали в игрока или компаньона.
 	if (
 		is_damage_target
 		and body.has_method("take_damage")
@@ -43,8 +44,9 @@ func _on_body_entered(
 		)
 
 		queue_free()
-	return
+		return
 
+	# Попали в стену или препятствие.
 	if (
 		body is StaticBody2D
 		or body is TileMap
@@ -61,4 +63,5 @@ func _on_body_entered(
 		queue_free()
 		return
 
+	# Любое другое столкновение.
 	queue_free()
