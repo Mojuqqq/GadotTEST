@@ -198,6 +198,212 @@ func _generate_walls() -> void:
 		]
 	)
 
+	# Проверяем, что у выбранного типа стен
+	# заполнены все необходимые тайлы.
+	var required_keys: Array[String] = [
+		"top",
+		"bottom",
+		"left",
+		"right",
+		"top_left",
+		"top_right",
+		"bottom_left",
+		"bottom_right"
+	]
+
+	for key in required_keys:
+		if not tiles.has(key):
+			push_warning(
+				"У типа стен "
+				+ str(location_profile.wall_type)
+				+ " не настроен тайл: "
+				+ key
+			)
+			return
+
+	var walls_layer := (
+		get_node_or_null("Walls")
+		as TileMapLayer
+	)
+
+	if walls_layer == null:
+		push_warning(
+			"В комнате "
+			+ name
+			+ " нет TileMapLayer Walls."
+		)
+		return
+
+	if walls_layer.tile_set == null:
+		push_warning(
+			"У Walls не назначен TileSet."
+		)
+		return
+
+	if walls_layer.tile_set.get_source_count() == 0:
+		push_warning(
+			"В walls_tileset нет Atlas Source."
+		)
+		return
+
+	# В walls_tileset сейчас один Atlas Source.
+	# Поэтому ID получаем автоматически,
+	# а не хардкодим число 1.
+	var source_id: int = (
+		walls_layer.tile_set.get_source_id(0)
+	)
+
+	var tile_size: Vector2i = (
+		walls_layer.tile_set.tile_size
+	)
+
+	var columns: int = ceili(
+		float(GameManager.room_width)
+		/ float(tile_size.x)
+	)
+
+	var rows: int = ceili(
+		float(GameManager.room_height)
+		/ float(tile_size.y)
+	)
+
+	if columns < 2 or rows < 2:
+		push_warning(
+			"Размер комнаты слишком маленький "
+			+ "для генерации стен."
+		)
+		return
+
+	# Определяем клетки, в которых находятся двери.
+	var top_door_cell := _get_door_cell(
+		walls_layer,
+		^"DoorTop"
+	)
+
+	var right_door_cell := _get_door_cell(
+		walls_layer,
+		^"DoorRight"
+	)
+
+	var bottom_door_cell := _get_door_cell(
+		walls_layer,
+		^"DoorBottom"
+	)
+
+	var left_door_cell := _get_door_cell(
+		walls_layer,
+		^"DoorLeft"
+	)
+
+	walls_layer.clear()
+
+	# =====================================================
+	# УГЛЫ
+	# =====================================================
+
+	walls_layer.set_cell(
+		Vector2i(0, 0),
+		source_id,
+		tiles["top_left"]
+	)
+
+	walls_layer.set_cell(
+		Vector2i(columns - 1, 0),
+		source_id,
+		tiles["top_right"]
+	)
+
+	walls_layer.set_cell(
+		Vector2i(0, rows - 1),
+		source_id,
+		tiles["bottom_left"]
+	)
+
+	walls_layer.set_cell(
+		Vector2i(columns - 1, rows - 1),
+		source_id,
+		tiles["bottom_right"]
+	)
+
+	# =====================================================
+	# ВЕРХ / НИЗ
+	# =====================================================
+
+	for x in range(1, columns - 1):
+		if x != top_door_cell.x:
+			walls_layer.set_cell(
+				Vector2i(x, 0),
+				source_id,
+				tiles["top"]
+			)
+
+		if x != bottom_door_cell.x:
+			walls_layer.set_cell(
+				Vector2i(x, rows - 1),
+				source_id,
+				tiles["bottom"]
+			)
+
+	# =====================================================
+	# ЛЕВО / ПРАВО
+	# =====================================================
+
+	for y in range(1, rows - 1):
+		if y != left_door_cell.y:
+			walls_layer.set_cell(
+				Vector2i(0, y),
+				source_id,
+				tiles["left"]
+			)
+
+		if y != right_door_cell.y:
+			walls_layer.set_cell(
+				Vector2i(columns - 1, y),
+				source_id,
+				tiles["right"]
+			)
+
+	print(
+		"[WALLS RESULT] ",
+		name,
+		" | type=",
+		location_profile.wall_type,
+		" | size=",
+		columns,
+		"x",
+		rows,
+		" | top door=",
+		top_door_cell,
+		" | right door=",
+		right_door_cell,
+		" | bottom door=",
+		bottom_door_cell,
+		" | left door=",
+		left_door_cell
+	)
+
+func _get_door_cell(
+	walls_layer: TileMapLayer,
+	socket_path: NodePath
+) -> Vector2i:
+	var socket := (
+		get_node_or_null(socket_path)
+		as Node2D
+	)
+
+	if socket == null:
+		return Vector2i(-9999, -9999)
+
+	var local_position: Vector2 = (
+		walls_layer.to_local(
+			socket.global_position
+		)
+	)
+
+	return walls_layer.local_to_map(
+		local_position
+	)
+
 func _apply_right_connection_state() -> void:
 	var closed_socket := (
 		get_node_or_null(
