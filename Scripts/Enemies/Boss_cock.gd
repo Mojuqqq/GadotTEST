@@ -167,9 +167,11 @@ func _update_phase_two() -> void:
 		return
 
 	phase_two_active = true
-	
-	sprite.visible = false
-	phase_two_sprite.visible = true
+
+	if sprite != null and phase_two_sprite != null:
+		phase_two_sprite.flip_h = sprite.flip_h
+		sprite.visible = false
+		phase_two_sprite.visible = true
 	
 	MusicManager.play_boss_climax()
 	
@@ -251,6 +253,22 @@ func _update_phase_two() -> void:
 		bullet_speed
 	)
 
+func _update_phase_two_facing() -> void:
+	if not phase_two_active:
+		return
+
+	if phase_two_sprite == null:
+		return
+
+	if absf(velocity.x) <= facing_velocity_threshold:
+		return
+
+	var moving_right: bool = velocity.x > 0.0
+
+	phase_two_sprite.flip_h = (
+		moving_right != visual_faces_right
+	)
+
 func _physics_process(
 	_delta: float
 ) -> void:
@@ -284,6 +302,8 @@ func _physics_process(
 		velocity = direction * speed * 0.3
 	else:
 		velocity = direction * speed
+
+	_update_phase_two_facing()
 
 	move_and_slide()
 

@@ -603,7 +603,7 @@ func _on_transition_area_body_entered(
 		1.02
 	)
 
-	main.call(
+	main.call_deferred(
 		&"move_player_to_room",
 		target_room_node,
 		arrival_position
