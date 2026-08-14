@@ -32,7 +32,7 @@ enum WallType {
 # =========================================================
 
 @export_group("Walls")
-
+@export var wall_theme: WallTheme
 @export var wall_tile_set: TileSet = null
 
 const WALL_TILES := {
@@ -56,17 +56,7 @@ const WALL_TILES := {
 	},
 }
 
-func _generate_walls(room, wall_type: LocationProfile.WallType) -> void:
-	var tiles: Dictionary = WALL_TILES[wall_type]
 
-	# дальше существующая генерация
-	# только вместо захардкоженного atlas_coords:
-
-	walls.set_cell(
-		position,
-		WALL_SOURCE_ID,
-		tiles["top"]
-	)
 
 @export_group("Doors")
 

@@ -1,5 +1,6 @@
-class_name WallTheme
 extends Resource
+class_name WallTheme
+
 
 @export var source_id: int = 0
 

@@ -60,6 +60,7 @@ func apply_location(
 	location_profile = profile
 
 	_generate_floor()
+	_generate_walls()
 
 func _get_floor_terrain(
 	floor_type: LocationProfile.FloorType
@@ -177,6 +178,16 @@ func _generate_floor() -> void:
 		" | generated=",
 		floor_layer.get_used_cells().size()
 	)
+
+func _generate_walls() -> void:
+	if location_profile == null:
+		return
+
+	var theme: WallTheme = location_profile.wall_theme
+
+	if theme == null:
+		push_warning("LocationProfile has no WallTheme")
+		return
 
 func _apply_right_connection_state() -> void:
 	var closed_socket := (
