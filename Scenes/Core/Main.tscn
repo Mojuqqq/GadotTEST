@@ -1,9 +1,13 @@
-[gd_scene format=3 uid="uid://dly3t3uvgx1as"]
+[gd_scene format=4 uid="uid://dly3t3uvgx1as"]
 
 [ext_resource type="PackedScene" uid="uid://d0eu2fyd2sbyv" path="res://Scenes/Player/Player.tscn" id="1_idj7w"]
 [ext_resource type="Script" uid="uid://30tiqpvilvbe" path="res://Scripts/Core/Main.gd" id="1_vy5pj"]
-[ext_resource type="PackedScene" uid="uid://brl45hnxy74g5" path="res://Scenes/Rooms/Room_Socket_Test.tscn" id="4_e8w2b"]
+[ext_resource type="Script" uid="uid://eqd8pyeats75" path="res://Scripts/Rooms/Room.gd" id="2_1mmyk"]
+[ext_resource type="TileSet" uid="uid://bljb7f3khxvmi" path="res://Assets/Tilesets/floor_tileset.tres" id="3_kgwlr"]
+[ext_resource type="TileSet" uid="uid://bfntpbasvpw8j" path="res://Assets/Tilesets/bg_tileset.tres" id="4_dwwgh"]
 [ext_resource type="PackedScene" uid="uid://nqq6as3gyh7a" path="res://Scenes/Enemies/Enemy_chicken.tscn" id="4_rgh2o"]
+[ext_resource type="PackedScene" uid="uid://b5out7n8cdnue" path="res://Scenes/Rooms/Doors/DoorSocket.tscn" id="5_p3vfs"]
+[ext_resource type="PackedScene" uid="uid://dnfsg2q4bs3e1" path="res://Scenes/Rooms/Room_Socket.tscn" id="6_x4wx4"]
 [ext_resource type="PackedScene" uid="uid://bfltle5inqqhr" path="res://Scenes/Enemies/Enemy_cow.tscn" id="8_bmxlf"]
 [ext_resource type="PackedScene" uid="uid://dfh1vkyscefxw" path="res://Scenes/Enemies/Enemy_egg.tscn" id="9_grg3l"]
 [ext_resource type="PackedScene" uid="uid://bmw7di788gna0" path="res://Scenes/Enemies/Boss_bull.tscn" id="9_ki3rp"]
@@ -24,11 +28,26 @@
 [ext_resource type="AudioStream" uid="uid://dq4405rmyt6r5" path="res://Assets/Audio/Ambience/farm_chickens.wav" id="22_mjwtp"]
 [ext_resource type="AudioStream" uid="uid://tkipotldovok" path="res://Assets/Audio/Ambience/crickets.wav" id="23_ij3x7"]
 
+[sub_resource type="PackedScene" id="PackedScene_xddps"]
+_bundled = {
+"conn_count": 0,
+"conns": PackedInt32Array(),
+"editable_instances": [],
+"id_paths": [PackedInt32Array(), PackedInt32Array(), PackedInt32Array(), PackedInt32Array(), PackedInt32Array(), PackedInt32Array(), PackedInt32Array(), PackedInt32Array(), PackedInt32Array(), PackedInt32Array(), PackedInt32Array()],
+"names": PackedStringArray("RoomSocketTest", "Node2D", "script", "Floor", "TileMapLayer", "texture_filter", "use_parent_material", "tile_set", "rendering_quadrant_size", "Plants", "TileMapLayer", "use_parent_material", "position", "tile_set", "rendering_quadrant_size", "Walls", "TileMapLayer", "use_parent_material", "position", "tile_map_data", "tile_set", "rendering_quadrant_size", "Decor", "TileMapLayer", "use_parent_material", "position", "tile_set", "rendering_quadrant_size", "DoorTop", "position", "direction", "DoorRight", "position", "direction", "DoorBottom", "position", "DoorLeft", "position", "direction", "SpawnPoint", "Marker2D", "position", "ReturnSpawnPoint", "Marker2D", "position", "ChestSpawnPoint", "Marker2D", "position"),
+"node_count": 12,
+"node_ids": PackedInt32Array(148011054, 655438323, 163387796, 822809161, 342617787, 760714407, 820739027, 1954041546, 584235124, 1794341211, 2143240022, 1002416639),
+"node_paths": [NodePath("."), NodePath("."), NodePath("."), NodePath("."), NodePath("."), NodePath("."), NodePath("."), NodePath("."), NodePath("."), NodePath("."), NodePath(".")],
+"nodes": PackedInt32Array(-1, -1, 1, 0, -1, 1, 2, 0, 0, 1073741824, 0, 4, 3, -1, 4, 5, 1, 6, 2, 7, 3, 8, 4, 0, 1073741825, 0, 10, 9, -1, 4, 11, 5, 12, 6, 13, 7, 14, 8, 0, 1073741826, 0, 16, 15, -1, 5, 17, 9, 18, 10, 19, 11, 20, 12, 21, 13, 0, 1073741827, 0, 23, 22, -1, 4, 24, 14, 25, 15, 26, 16, 27, 17, 0, 1073741828, 0, 2147483647, 28, 18, 2, 29, 19, 30, 20, 0, 1073741829, 0, 2147483647, 31, 21, 2, 32, 22, 33, 23, 0, 1073741830, 0, 2147483647, 34, 24, 1, 35, 25, 0, 1073741831, 0, 2147483647, 36, 26, 2, 37, 27, 38, 28, 0, 1073741832, 0, 40, 39, -1, 1, 41, 29, 0, 1073741833, 0, 43, 42, -1, 1, 44, 30, 0, 1073741834, 0, 46, 45, -1, 1, 47, 31, 0),
+"variants": [ExtResource("2_1mmyk"), 1, true, ExtResource("3_kgwlr"), 128, true, Vector2(546, 333), ExtResource("4_dwwgh"), 128, true, Vector2(1092, 666), PackedByteArray("AAC+/9n/AAACAAIAAAAIANn/AAAaAAIAAADK/9n/AAAHAAkAAAD8/9n/AAAHAAkAAADz/9n/AAAjAAkAAAAKANn/AAAjAAkAAAAFANn/AAAjAAkAAAC9/97/AAAEABIAAAC9/+X/AAAEABIAAAC9/+z/AAAEABIAAAC9/wEAAAAEABIAAAC9/wgAAAAEABIAAAC9/w8AAAAEABIAAADG/xMAAAAHAAkAAAD8/xMAAAAHAAkAAAABABMAAAAHAAkAAAAKAN3/AAAEABIAAAAKAOT/AAAEABIAAAAKAOv/AAAEABIAAADP/9n/AAAjAAkAAADB/9n/AAAjAAkAAAC9/9n/AAAjAAkAAAC9//f/BgADAAAAAAAKAAEAAAAEABIAAAAKAAgAAAAEABIAAAAKAA8AAAAEABIAAADQ/xMAAAACAAIAAADU/xMAAAAaAAIAAADX/xMAAAACAAIAAADb/xMAAAAaAAIAAADe/xMAAAACAAIAAADp/xMAAAACAAIAAADt/xMAAAAaAAIAAADx/xMAAAAaAAIAAADx/9n/AAAaAAIAAADt/9n/AAACAAIAAADp/9n/AAACAAIAAADV/9n/AAACAAIAAADZ/9n/AAAaAAIAAADc/9n/AAACAAIAAAA="), ExtResource("4_dwwgh"), 128, true, Vector2(546, 333), ExtResource("4_dwwgh"), 128, ExtResource("5_p3vfs"), Vector2(616, 49), 0, ExtResource("5_p3vfs"), Vector2(1249, 512), 1, ExtResource("5_p3vfs"), Vector2(648, 976), ExtResource("5_p3vfs"), Vector2(28, 528), 3, Vector2(131, 509), Vector2(1206, 522), Vector2(938, 313)],
+"version": 3
+}
+
 [node name="Main" type="Node2D" unique_id=248219871]
 script = ExtResource("1_vy5pj")
-start_room_scene = ExtResource("4_e8w2b")
-end_room_scene = ExtResource("4_e8w2b")
-room_pool = Array[PackedScene]([ExtResource("4_e8w2b")])
+start_room_scene = SubResource("PackedScene_xddps")
+end_room_scene = SubResource("PackedScene_xddps")
+room_pool = Array[PackedScene]([ExtResource("6_x4wx4")])
 enemy_pool = Array[PackedScene]([ExtResource("10_frkhe"), ExtResource("4_rgh2o"), ExtResource("11_1p5hy"), ExtResource("8_bmxlf"), ExtResource("9_grg3l"), ExtResource("12_h1m7h")])
 min_rooms = 4
 max_rooms = 5

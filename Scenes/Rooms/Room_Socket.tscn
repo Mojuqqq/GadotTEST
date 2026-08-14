@@ -1,0 +1,57 @@
+[gd_scene format=3 uid="uid://dnfsg2q4bs3e1"]
+
+[ext_resource type="Script" uid="uid://eqd8pyeats75" path="res://Scripts/Rooms/Room.gd" id="1_yxr5j"]
+[ext_resource type="TileSet" uid="uid://bljb7f3khxvmi" path="res://Assets/Tilesets/floor_tileset.tres" id="2_ptnqw"]
+[ext_resource type="TileSet" uid="uid://bfntpbasvpw8j" path="res://Assets/Tilesets/bg_tileset.tres" id="3_t1fxy"]
+[ext_resource type="PackedScene" uid="uid://b5out7n8cdnue" path="res://Scenes/Rooms/Doors/DoorSocket.tscn" id="4_kwwyi"]
+[ext_resource type="TileSet" uid="uid://bducawqxxvrau" path="res://Assets/Tilesets/walls_tileset.tres" id="4_ptnqw"]
+
+[node name="RoomSocket" type="Node2D" unique_id=148011054]
+script = ExtResource("1_yxr5j")
+
+[node name="Floor" type="TileMapLayer" parent="." unique_id=655438323]
+texture_filter = 1
+use_parent_material = true
+tile_set = ExtResource("2_ptnqw")
+rendering_quadrant_size = 128
+
+[node name="Plants" type="TileMapLayer" parent="." unique_id=163387796]
+use_parent_material = true
+position = Vector2(546, 333)
+tile_set = ExtResource("3_t1fxy")
+rendering_quadrant_size = 128
+
+[node name="Walls" type="TileMapLayer" parent="." unique_id=822809161]
+use_parent_material = true
+tile_set = ExtResource("4_ptnqw")
+rendering_quadrant_size = 128
+
+[node name="Decor" type="TileMapLayer" parent="." unique_id=342617787]
+use_parent_material = true
+position = Vector2(546, 333)
+tile_set = ExtResource("3_t1fxy")
+rendering_quadrant_size = 128
+
+[node name="DoorTop" parent="." unique_id=760714407 instance=ExtResource("4_kwwyi")]
+position = Vector2(616, 49)
+direction = 0
+
+[node name="DoorRight" parent="." unique_id=820739027 instance=ExtResource("4_kwwyi")]
+position = Vector2(1249, 512)
+direction = 1
+
+[node name="DoorBottom" parent="." unique_id=1954041546 instance=ExtResource("4_kwwyi")]
+position = Vector2(648, 976)
+
+[node name="DoorLeft" parent="." unique_id=584235124 instance=ExtResource("4_kwwyi")]
+position = Vector2(28, 528)
+direction = 3
+
+[node name="SpawnPoint" type="Marker2D" parent="." unique_id=1794341211]
+position = Vector2(131, 509)
+
+[node name="ReturnSpawnPoint" type="Marker2D" parent="." unique_id=2143240022]
+position = Vector2(1206, 522)
+
+[node name="ChestSpawnPoint" type="Marker2D" parent="." unique_id=1002416639]
+position = Vector2(938, 313)
