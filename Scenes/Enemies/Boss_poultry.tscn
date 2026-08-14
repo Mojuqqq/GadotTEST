@@ -2,6 +2,7 @@
 
 [ext_resource type="Script" uid="uid://b0wi6mebjgjkx" path="res://Scripts/Enemies/Boss_poultry.gd" id="1_dpccn"]
 [ext_resource type="Texture2D" uid="uid://8rbg6b8psfgi" path="res://Assets/Art/Characters/Enemies/Enemy_boss_laying_hen.png" id="2_odng6"]
+[ext_resource type="Texture2D" uid="uid://btf5ntper51sn" path="res://Assets/Art/Characters/Enemies/Enemy_boss_laying_hen_attack.png" id="3_odng6"]
 
 [sub_resource type="CapsuleShape2D" id="CapsuleShape2D_q8716"]
 radius = 101.0
@@ -22,6 +23,12 @@ flight_speed = 450.0
 [node name="Sprite2D" type="Sprite2D" parent="." unique_id=1048545208]
 scale = Vector2(1.0718765, 0.9509423)
 texture = ExtResource("2_odng6")
+
+[node name="FlightSprite" type="Sprite2D" parent="." unique_id=425912529]
+visible = false
+position = Vector2(-5, -4)
+scale = Vector2(0.20414671, 0.1606798)
+texture = ExtResource("3_odng6")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=731214316]
 position = Vector2(3, 0)

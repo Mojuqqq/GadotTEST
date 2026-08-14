@@ -58,6 +58,8 @@ var phase_two_bullet_speed_multiplier: float = 1.3
 @export_range(5.0, 45.0, 1.0)
 var phase_two_spread_angle_degrees: float = 14.0
 
+@onready var sprite: Sprite2D = $Sprite2D
+@onready var phase_two_sprite: Sprite2D = $PhaseTwoSprite
 
 # =========================================================
 # СОСТОЯНИЕ
@@ -165,6 +167,9 @@ func _update_phase_two() -> void:
 		return
 
 	phase_two_active = true
+	
+	sprite.visible = false
+	phase_two_sprite.visible = true
 	
 	MusicManager.play_boss_climax()
 	

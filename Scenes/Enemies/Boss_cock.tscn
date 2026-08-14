@@ -2,6 +2,7 @@
 
 [ext_resource type="Script" uid="uid://d3bl6alqmmis" path="res://Scripts/Enemies/Boss_cock.gd" id="1_bjciw"]
 [ext_resource type="PackedScene" uid="uid://b4hjmxhbxyu7a" path="res://Scenes/Enemies/Big-Egg.tscn" id="2_mq6l2"]
+[ext_resource type="Texture2D" uid="uid://ckektf242ms3s" path="res://Assets/Art/Characters/Enemies/Enemy_boss_cock_2_stage.png" id="3_mq6l2"]
 
 [sub_resource type="CompressedTexture2D" id="CompressedTexture2D_8kp35"]
 load_path = "res://.godot/imported/Enemy_boss_cock.png-caf897af9b1b736dcec550ad5044fd11.ctex"
@@ -24,6 +25,11 @@ hp = 24
 [node name="Sprite2D" type="Sprite2D" parent="." unique_id=1048545208]
 scale = Vector2(1.0718765, 0.9509423)
 texture = SubResource("CompressedTexture2D_8kp35")
+
+[node name="PhaseTwoSprite" type="Sprite2D" parent="." unique_id=1696090371]
+position = Vector2(-8.499999, -0.37442327)
+scale = Vector2(0.20334928, 0.16005214)
+texture = ExtResource("3_mq6l2")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=731214316]
 shape = SubResource("CapsuleShape2D_q8716")

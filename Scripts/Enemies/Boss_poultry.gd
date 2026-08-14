@@ -1,6 +1,5 @@
 extends BaseBoss
 
-
 # =========================================================
 # СОСТОЯНИЯ ДВИЖЕНИЯ
 # =========================================================
@@ -35,6 +34,9 @@ var speed: float = 95.0
 @export_range(10.0, 200.0, 5.0)
 var stop_distance: float = 65.0
 
+
+@onready var sprite: Sprite2D = $Sprite2D
+@onready var flight_sprite: Sprite2D = $FlightSprite
 
 # =========================================================
 # БЛИЖНЯЯ АТАКА
@@ -172,9 +174,7 @@ var summoned_chickens: Array[Node2D] = []
 var base_sprite_position: Vector2 = Vector2.ZERO
 var base_sprite_z_index: int = 0
 
-@onready var sprite: Node2D = (
-	get_node_or_null("Sprite2D") as Node2D
-)
+
 
 
 # =========================================================
@@ -361,10 +361,27 @@ func _process_chase() -> void:
 	move_and_slide()
 	_clamp_to_room()
 
+func _set_flight_visual(active: bool) -> void:
+	if sprite == null or flight_sprite == null:
+		return
+
+	if active:
+		flight_sprite.flip_h = sprite.flip_h
+
+	sprite.visible = not active
+	flight_sprite.visible = active
+
+func _sync_flight_facing() -> void:
+	if sprite == null or flight_sprite == null:
+		return
+
+	flight_sprite.flip_h = sprite.flip_h
+
 
 func _process_takeoff(
 	delta: float
 ) -> void:
+	_set_flight_visual(true)
 	velocity = Vector2.ZERO
 	state_elapsed += delta
 
@@ -389,6 +406,7 @@ func _process_takeoff(
 
 	if not _is_valid_target(current_target):
 		_reset_movement_state()
+		_set_flight_visual(false)
 		return
 
 	var target_offset: Vector2 = (
@@ -451,6 +469,7 @@ func _process_flight(
 	var previous_position: Vector2 = global_position
 
 	velocity = flight_direction * current_speed
+	_sync_flight_facing()
 
 	move_and_slide()
 	_clamp_to_room()
@@ -597,6 +616,8 @@ func _begin_landing() -> void:
 
 func _reset_movement_state() -> void:
 	movement_state = MovementState.CHASE
+
+	_set_flight_visual(false)
 
 	state_elapsed = 0.0
 	flight_elapsed = 0.0
