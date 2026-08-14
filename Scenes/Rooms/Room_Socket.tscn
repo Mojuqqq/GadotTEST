@@ -2,7 +2,6 @@
 
 [ext_resource type="Script" uid="uid://eqd8pyeats75" path="res://Scripts/Rooms/Room.gd" id="1_yxr5j"]
 [ext_resource type="TileSet" uid="uid://bljb7f3khxvmi" path="res://Assets/Tilesets/floor_tileset.tres" id="2_ptnqw"]
-[ext_resource type="TileSet" uid="uid://bfntpbasvpw8j" path="res://Assets/Tilesets/bg_tileset.tres" id="3_t1fxy"]
 [ext_resource type="PackedScene" uid="uid://b5out7n8cdnue" path="res://Scenes/Rooms/Doors/DoorSocket.tscn" id="4_kwwyi"]
 [ext_resource type="TileSet" uid="uid://bducawqxxvrau" path="res://Assets/Tilesets/walls_tileset.tres" id="4_ptnqw"]
 
@@ -15,12 +14,6 @@ use_parent_material = true
 tile_set = ExtResource("2_ptnqw")
 rendering_quadrant_size = 128
 
-[node name="Plants" type="TileMapLayer" parent="." unique_id=163387796]
-use_parent_material = true
-position = Vector2(546, 333)
-tile_set = ExtResource("3_t1fxy")
-rendering_quadrant_size = 128
-
 [node name="Walls" type="TileMapLayer" parent="." unique_id=822809161]
 use_parent_material = true
 tile_set = ExtResource("4_ptnqw")
@@ -29,7 +22,6 @@ rendering_quadrant_size = 128
 [node name="Decor" type="TileMapLayer" parent="." unique_id=342617787]
 use_parent_material = true
 position = Vector2(546, 333)
-tile_set = ExtResource("3_t1fxy")
 rendering_quadrant_size = 128
 
 [node name="SpawnPoint" type="Marker2D" parent="." unique_id=1794341211]

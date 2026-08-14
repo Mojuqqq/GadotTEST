@@ -1,28 +1,6 @@
 [gd_scene format=3 uid="uid://b5out7n8cdnue"]
 
 [ext_resource type="Script" uid="uid://fc0oess32oqh" path="res://Scripts/Rooms/DoorSocket.gd" id="1_nufgy"]
-[ext_resource type="Texture2D" path="res://Assets/Art/Environment/Doors/Doors_top.png" id="2_kgb56"]
-[ext_resource type="Texture2D" path="res://Assets/Art/Environment/Doors/Doors_right.png" id="2_qfw4g"]
-[ext_resource type="Texture2D" path="res://Assets/Art/Environment/Doors/Doors_left.png" id="3_kgb56"]
-[ext_resource type="Texture2D" path="res://Assets/Art/Environment/Doors/Doors_bottom.png" id="4_cidsq"]
-[ext_resource type="Texture2D" path="res://Assets/Art/Environment/Doors/Doors_top_open.png" id="6_jm2li"]
-[ext_resource type="Texture2D" path="res://Assets/Art/Environment/Doors/Doors_right_open.png" id="7_onn0b"]
-[ext_resource type="Texture2D" path="res://Assets/Art/Environment/Doors/Doors_bottom_open.png" id="8_dksp3"]
-[ext_resource type="Texture2D" path="res://Assets/Art/Environment/Doors/Doors_left_open.png" id="9_jdrqy"]
-
-[sub_resource type="AtlasTexture" id="AtlasTexture_nufgy"]
-atlas = ExtResource("2_kgb56")
-
-[sub_resource type="AtlasTexture" id="AtlasTexture_gg4mo"]
-atlas = ExtResource("2_qfw4g")
-region = Rect2(0, 0, 52, 224)
-
-[sub_resource type="AtlasTexture" id="AtlasTexture_qfw4g"]
-atlas = ExtResource("4_cidsq")
-
-[sub_resource type="AtlasTexture" id="AtlasTexture_6m3xu"]
-atlas = ExtResource("3_kgb56")
-region = Rect2(0, 0, 52, 224)
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_kgb56"]
 resource_local_to_scene = true
@@ -35,21 +13,11 @@ size = Vector2(84, 80)
 [node name="DoorSocket" type="Node2D" unique_id=760714407]
 script = ExtResource("1_nufgy")
 direction = 2
-top_texture = SubResource("AtlasTexture_nufgy")
-right_texture = SubResource("AtlasTexture_gg4mo")
-bottom_texture = SubResource("AtlasTexture_qfw4g")
-left_texture = SubResource("AtlasTexture_6m3xu")
-top_open_texture = ExtResource("6_jm2li")
-right_open_texture = ExtResource("7_onn0b")
-bottom_open_texture = ExtResource("8_dksp3")
-left_open_texture = ExtResource("9_jdrqy")
 
 [node name="OpenDoorSprite" type="Sprite2D" parent="." unique_id=502971391]
 visible = false
-texture = ExtResource("8_dksp3")
 
 [node name="DoorSprite" type="Sprite2D" parent="." unique_id=1124883201]
-texture = SubResource("AtlasTexture_qfw4g")
 
 [node name="TransitionArea" type="Area2D" parent="." unique_id=1263355912]
 collision_layer = 128

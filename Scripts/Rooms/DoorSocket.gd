@@ -129,10 +129,6 @@ var direction: int = Direction.RIGHT:
 	$OpenDoorSprite
 )
 
-@onready var wall_cover_sprite: Sprite2D = (
-	$WallCoverSprite
-)
-
 @onready var transition_area: Area2D = (
 	$TransitionArea
 )
