@@ -439,15 +439,9 @@ func _on_enemy_died(
 	is_cleared = true
 
 	if is_boss_room():
-		# Босс убит = этаж уже считается завершённым.
-		# Сундук является дополнительной наградой,
-		# а не условием перехода дальше.
 		GameManager.complete_floor()
 
-		AudioManager.play_sfx(
-			&"boss_victory",
-			-7.0
-		)
+		MusicManager.play_boss_victory()
 	else:
 		MusicManager.play_farm()
 

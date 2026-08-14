@@ -39,7 +39,7 @@ var player_b: AudioStreamPlayer = null
 var active_player: AudioStreamPlayer = null
 
 var fade_tween: Tween = null
-
+var return_to_farm_after_finish: bool = false
 
 func _ready() -> void:
 	process_mode = Node.PROCESS_MODE_ALWAYS
@@ -75,8 +75,32 @@ func _create_music_player(
 
 	add_child(player)
 
+	player.finished.connect(
+		_on_music_player_finished.bind(player)
+	)
+
 	return player
 
+func play_boss_victory() -> void:
+	_play_track(
+		VICTORY_THEME,
+		-9.0,
+		0.35,
+		true
+	)
+
+func _on_music_player_finished(
+	player: AudioStreamPlayer
+) -> void:
+	if player != active_player:
+		return
+
+	if not return_to_farm_after_finish:
+		return
+
+	return_to_farm_after_finish = false
+
+	play_farm()
 
 func play_farm() -> void:
 	_play_track(
@@ -132,10 +156,13 @@ func play_game_over() -> void:
 func _play_track(
 	stream: AudioStream,
 	target_volume_db: float,
-	fade_duration: float = 0.5
+	fade_duration: float = 0.5,
+	resume_farm_after_finish: bool = false
 ) -> void:
 	if stream == null:
 		return
+
+	return_to_farm_after_finish = resume_farm_after_finish
 
 	if (
 		active_player != null
