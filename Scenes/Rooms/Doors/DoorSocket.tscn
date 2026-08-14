@@ -9,10 +9,6 @@
 [ext_resource type="Texture2D" path="res://Assets/Art/Environment/Doors/Doors_right_open.png" id="7_onn0b"]
 [ext_resource type="Texture2D" path="res://Assets/Art/Environment/Doors/Doors_bottom_open.png" id="8_dksp3"]
 [ext_resource type="Texture2D" path="res://Assets/Art/Environment/Doors/Doors_left_open.png" id="9_jdrqy"]
-[ext_resource type="Texture2D" path="res://Assets/Art/Environment/Doors/Doors_top_walls.png" id="10_p60ra"]
-[ext_resource type="Texture2D" path="res://Assets/Art/Environment/Doors/Doors_right_walls.png" id="11_v8p12"]
-[ext_resource type="Texture2D" path="res://Assets/Art/Environment/Doors/Doors_bottom_walls.png" id="12_y7tad"]
-[ext_resource type="Texture2D" path="res://Assets/Art/Environment/Doors/Doors_left_walls.png" id="13_nnds3"]
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_nufgy"]
 atlas = ExtResource("2_kgb56")
@@ -47,10 +43,6 @@ top_open_texture = ExtResource("6_jm2li")
 right_open_texture = ExtResource("7_onn0b")
 bottom_open_texture = ExtResource("8_dksp3")
 left_open_texture = ExtResource("9_jdrqy")
-top_wall_texture = ExtResource("10_p60ra")
-right_wall_texture = ExtResource("11_v8p12")
-bottom_wall_texture = ExtResource("12_y7tad")
-left_wall_texture = ExtResource("13_nnds3")
 
 [node name="OpenDoorSprite" type="Sprite2D" parent="." unique_id=502971391]
 visible = false
