@@ -522,6 +522,19 @@ func set_open(open: bool) -> void:
 			global_position
 		)
 
+	var other_socket := (
+		linked_socket as DoorSocket
+	)
+
+	if other_socket == null:
+		return
+
+	if not is_instance_valid(other_socket):
+		return
+
+	other_socket._set_open_local(open)
+
+
 func apply_visuals(
 	closed_texture: Texture2D,
 	opened_texture: Texture2D
@@ -544,17 +557,6 @@ func apply_visuals(
 			left_open_texture = opened_texture
 
 	_refresh_configuration()
-	var other_socket := (
-		linked_socket as DoorSocket
-	)
-
-	if other_socket == null:
-		return
-
-	if not is_instance_valid(other_socket):
-		return
-
-	other_socket._set_open_local(open)
 
 func _on_transition_area_body_entered(
 	body: Node2D
