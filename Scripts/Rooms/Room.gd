@@ -183,11 +183,20 @@ func _generate_walls() -> void:
 	if location_profile == null:
 		return
 
-	var theme: WallTheme = location_profile.wall_theme
-
-	if theme == null:
-		push_warning("LocationProfile has no WallTheme")
+	if not LocationProfile.WALL_TILES.has(
+		location_profile.wall_type
+	):
+		push_warning(
+			"Для местности не настроены тайлы стен: "
+			+ str(location_profile.wall_type)
+		)
 		return
+
+	var tiles: Dictionary = (
+		LocationProfile.WALL_TILES[
+			location_profile.wall_type
+		]
+	)
 
 func _apply_right_connection_state() -> void:
 	var closed_socket := (
