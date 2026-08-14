@@ -33,41 +33,49 @@ var room_spacing: int = 50
 var min_rooms: int = 2
 var max_rooms: int = 4
 
+
 const LOCATION_DEFINITIONS: Array[Dictionary] = [
 	{
 		"id": &"farm_outside",
 		"name": "Ферма снаружи",
-		"floor": LocationProfile.FloorType.DIRT
+		"floor": LocationProfile.FloorType.DIRT,
+		"walls": LocationProfile.WallType.FARM
 	},
 	{
 		"id": &"field",
 		"name": "Поле",
-		"floor": LocationProfile.FloorType.DIRT
+		"floor": LocationProfile.FloorType.DIRT,
+		"walls": LocationProfile.WallType.FARM
 	},
 	{
 		"id": &"barn",
 		"name": "Сарай",
-		"floor": LocationProfile.FloorType.WOOD
+		"floor": LocationProfile.FloorType.WOOD,
+		"walls": LocationProfile.WallType.BARN
 	},
 	{
 		"id": &"chicken_coop",
 		"name": "Курятник",
-		"floor": LocationProfile.FloorType.WOOD
+		"floor": LocationProfile.FloorType.WOOD,
+		"walls": LocationProfile.WallType.BARN
 	},
 	{
 		"id": &"vegetable_garden",
 		"name": "Огород",
-		"floor": LocationProfile.FloorType.GRASS
+		"floor": LocationProfile.FloorType.GRASS,
+		"walls": LocationProfile.WallType.GARDEN
 	},
 	{
 		"id": &"flower_garden",
 		"name": "Цветник",
-		"floor": LocationProfile.FloorType.GRASS
+		"floor": LocationProfile.FloorType.GRASS,
+		"walls": LocationProfile.WallType.GARDEN
 	},
 	{
 		"id": &"orchard",
 		"name": "Сад",
-		"floor": LocationProfile.FloorType.GRASS
+		"floor": LocationProfile.FloorType.GRASS,
+		"walls": LocationProfile.WallType.GARDEN
 	}
 ]
 
@@ -147,6 +155,11 @@ func _create_random_location_profile() -> LocationProfile:
 	profile.floor_type = (
 		int(definition["floor"])
 		as LocationProfile.FloorType
+	)
+
+	profile.wall_type = (
+		int(definition["walls"])
+		as LocationProfile.WallType
 	)
 
 	return profile
