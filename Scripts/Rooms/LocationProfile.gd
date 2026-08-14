@@ -103,7 +103,97 @@ const WALL_TILES := {
 	},
 }
 
+const DOOR_TEXTURES := {
+	WallType.FARM: {
+		"top_closed": preload(
+			"res://Assets/Art/Environment/Doors/farm_dt.png"
+		),
+		"top_open": preload(
+			"res://Assets/Art/Environment/Doors/farm_odt.png"
+		),
 
+		"right_closed": preload(
+			"res://Assets/Art/Environment/Doors/farm_dr.png"
+		),
+		"right_open": preload(
+			"res://Assets/Art/Environment/Doors/farm_odr.png"
+		),
+
+		"bottom_closed": preload(
+			"res://Assets/Art/Environment/Doors/farm_db.png"
+		),
+		"bottom_open": preload(
+			"res://Assets/Art/Environment/Doors/farm_odb.png"
+		),
+
+		"left_closed": preload(
+			"res://Assets/Art/Environment/Doors/farm_dl.png"
+		),
+		"left_open": preload(
+			"res://Assets/Art/Environment/Doors/farm_odl.png"
+		),
+	},
+
+	WallType.BARN: {
+		"top_closed": preload(
+			"res://Assets/Art/Environment/Doors/barn_dt.png"
+		),
+		"top_open": preload(
+			"res://Assets/Art/Environment/Doors/barn_odt.png"
+		),
+
+		"right_closed": preload(
+			"res://Assets/Art/Environment/Doors/barn_dr.png"
+		),
+		"right_open": preload(
+			"res://Assets/Art/Environment/Doors/barn_odr.png"
+		),
+
+		"bottom_closed": preload(
+			"res://Assets/Art/Environment/Doors/barn_db.png"
+		),
+		"bottom_open": preload(
+			"res://Assets/Art/Environment/Doors/barn_odb.png"
+		),
+
+		"left_closed": preload(
+			"res://Assets/Art/Environment/Doors/barn_dl.png"
+		),
+		"left_open": preload(
+			"res://Assets/Art/Environment/Doors/barn_odl.png"
+		),
+	},
+
+	WallType.GARDEN: {
+		"top_closed": preload(
+			"res://Assets/Art/Environment/Doors/garden_dt.png"
+		),
+		"top_open": preload(
+			"res://Assets/Art/Environment/Doors/garden_odt.png"
+		),
+
+		"right_closed": preload(
+			"res://Assets/Art/Environment/Doors/garden_dr.png"
+		),
+		"right_open": preload(
+			"res://Assets/Art/Environment/Doors/garden_odr.png"
+		),
+
+		"bottom_closed": preload(
+			"res://Assets/Art/Environment/Doors/garden_db.png"
+		),
+		"bottom_open": preload(
+			"res://Assets/Art/Environment/Doors/garden_odb.png"
+		),
+
+		"left_closed": preload(
+			"res://Assets/Art/Environment/Doors/garden_dl.png"
+		),
+		"left_open": preload(
+			"res://Assets/Art/Environment/Doors/garden_odl.png"
+		),
+	},
+}
 
 @export_group("Doors")
 

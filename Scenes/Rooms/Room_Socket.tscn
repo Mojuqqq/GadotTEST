@@ -33,7 +33,7 @@ tile_set = ExtResource("3_t1fxy")
 rendering_quadrant_size = 128
 
 [node name="DoorTop" parent="." unique_id=760714407 instance=ExtResource("4_kwwyi")]
-position = Vector2(616, 64)
+position = Vector2(640, 64)
 direction = 0
 
 [node name="DoorRight" parent="." unique_id=820739027 instance=ExtResource("4_kwwyi")]

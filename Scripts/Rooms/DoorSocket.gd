@@ -409,14 +409,15 @@ func _apply_visual_state() -> void:
 
 	visible = true
 
-	# Нет соединения — показываем стену.
+	# Нет соединения — DoorSocket визуально ничего
+	# не показывает. Там остаётся обычная стена.
 	if not connection_enabled:
 		door_sprite.visible = false
 		open_door_sprite.visible = false
-		wall_cover_sprite.visible = true
+		wall_cover_sprite.visible = false
 		return
 
-	# Есть соединение.
+	# Есть соединение — показываем дверь.
 	wall_cover_sprite.visible = false
 	door_sprite.visible = not is_open
 	open_door_sprite.visible = is_open
@@ -521,6 +522,28 @@ func set_open(open: bool) -> void:
 			global_position
 		)
 
+func apply_visuals(
+	closed_texture: Texture2D,
+	opened_texture: Texture2D
+) -> void:
+	match direction:
+		Direction.TOP:
+			top_texture = closed_texture
+			top_open_texture = opened_texture
+
+		Direction.RIGHT:
+			right_texture = closed_texture
+			right_open_texture = opened_texture
+
+		Direction.BOTTOM:
+			bottom_texture = closed_texture
+			bottom_open_texture = opened_texture
+
+		Direction.LEFT:
+			left_texture = closed_texture
+			left_open_texture = opened_texture
+
+	_refresh_configuration()
 	var other_socket := (
 		linked_socket as DoorSocket
 	)

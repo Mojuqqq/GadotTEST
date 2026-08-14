@@ -40,10 +40,10 @@ var location_profile: LocationProfile = null
 func _ready() -> void:
 	doors.clear()
 	find_doors_recursive(self)
+	_connect_door_socket_signals()
 	_apply_right_connection_state()
 	update_enemies_list()  
 	set_active(false)
-
 
 func apply_location(
 	profile: LocationProfile
@@ -61,6 +61,142 @@ func apply_location(
 
 	_generate_floor()
 	_generate_walls()
+	_apply_door_visuals()
+
+func _connect_door_socket_signals() -> void:
+	for door in doors:
+		var socket := door as DoorSocket
+
+		if socket == null:
+			continue
+
+		if not socket.state_changed.is_connected(
+			_on_door_socket_state_changed
+		):
+			socket.state_changed.connect(
+				_on_door_socket_state_changed
+			)
+
+func _on_door_socket_state_changed(
+	socket: DoorSocket,
+	_is_open: bool
+) -> void:
+	_update_door_gap(socket)
+
+func _update_door_gap(
+	socket: DoorSocket
+) -> void:
+	if location_profile == null:
+		return
+
+	var walls_layer := (
+		get_node_or_null(^"Walls")
+		as TileMapLayer
+	)
+
+	if walls_layer == null:
+		return
+
+	if walls_layer.tile_set == null:
+		return
+
+	var tiles: Dictionary = (
+		LocationProfile.WALL_TILES[
+			location_profile.wall_type
+		]
+	)
+
+	var source_id: int = (
+		walls_layer.tile_set.get_source_id(0)
+	)
+
+	var tile_size: Vector2i = (
+		walls_layer.tile_set.tile_size
+	)
+
+	var columns: int = ceili(
+		float(GameManager.room_width)
+		/ float(tile_size.x)
+	)
+
+	var rows: int = ceili(
+		float(GameManager.room_height)
+		/ float(tile_size.y)
+	)
+
+	var horizontal_right: int = floori(
+		float(columns) / 2.0
+	)
+
+	var horizontal_left: int = (
+		horizontal_right - 1
+	)
+
+	var vertical_bottom: int = floori(
+		float(rows) / 2.0
+	)
+
+	var vertical_top: int = (
+		vertical_bottom - 1
+	)
+
+	var gap_cells: Array[Vector2i] = []
+	var wall_key: String = ""
+
+	match socket.direction:
+		DoorSocket.Direction.TOP:
+			gap_cells = [
+				Vector2i(horizontal_left, 0),
+				Vector2i(horizontal_right, 0)
+			]
+			wall_key = "top"
+
+		DoorSocket.Direction.RIGHT:
+			gap_cells = [
+				Vector2i(columns - 1, vertical_top),
+				Vector2i(columns - 1, vertical_bottom)
+			]
+			wall_key = "right"
+
+		DoorSocket.Direction.BOTTOM:
+			gap_cells = [
+				Vector2i(
+					horizontal_left,
+					rows - 1
+				),
+				Vector2i(
+					horizontal_right,
+					rows - 1
+				)
+			]
+			wall_key = "bottom"
+
+		DoorSocket.Direction.LEFT:
+			gap_cells = [
+				Vector2i(0, vertical_top),
+				Vector2i(0, vertical_bottom)
+			]
+			wall_key = "left"
+
+		_:
+			return
+
+	# Есть соседняя комната:
+	# убираем две клетки стены.
+	if socket.connection_enabled:
+		for cell in gap_cells:
+			walls_layer.erase_cell(cell)
+
+		return
+
+	# Соединения нет:
+	# возвращаем обычную стену.
+	for cell in gap_cells:
+		walls_layer.set_cell(
+			cell,
+			source_id,
+			tiles[wall_key]
+		)
 
 func _get_floor_terrain(
 	floor_type: LocationProfile.FloorType
@@ -394,6 +530,55 @@ func _generate_walls() -> void:
 		",",
 		vertical_door_bottom
 	)
+
+func _apply_door_visuals() -> void:
+	if location_profile == null:
+		return
+
+	if not LocationProfile.DOOR_TEXTURES.has(
+		location_profile.wall_type
+	):
+		return
+
+	var textures: Dictionary = (
+		LocationProfile.DOOR_TEXTURES[
+			location_profile.wall_type
+		]
+	)
+
+	for door in doors:
+		var socket := door as DoorSocket
+
+		if socket == null:
+			continue
+
+		var closed_key: String = ""
+		var open_key: String = ""
+
+		match socket.direction:
+			DoorSocket.Direction.TOP:
+				closed_key = "top_closed"
+				open_key = "top_open"
+
+			DoorSocket.Direction.RIGHT:
+				closed_key = "right_closed"
+				open_key = "right_open"
+
+			DoorSocket.Direction.BOTTOM:
+				closed_key = "bottom_closed"
+				open_key = "bottom_open"
+
+			DoorSocket.Direction.LEFT:
+				closed_key = "left_closed"
+				open_key = "left_open"
+
+			_:
+				continue
+
+		socket.apply_visuals(
+			textures[closed_key],
+			textures[open_key]
+		)
 
 func _apply_right_connection_state() -> void:
 	var closed_socket := (
