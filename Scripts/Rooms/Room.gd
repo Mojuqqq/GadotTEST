@@ -274,28 +274,33 @@ func _generate_walls() -> void:
 		)
 		return
 
-	# Определяем клетки, в которых находятся двери.
-	var top_door_cell := _get_door_cell(
-		walls_layer,
-		^"DoorTop"
+	# =====================================================
+	# ЦЕНТРАЛЬНЫЕ ПРОЁМЫ ДЛЯ ДВЕРЕЙ
+	# =====================================================
+
+	# При размере 10 × 8:
+	#
+	# TOP / BOTTOM:
+	# x = 4 и 5
+	#
+	# LEFT / RIGHT:
+	# y = 3 и 4
+
+	var horizontal_door_right: int = (
+		columns / 2
 	)
 
-	var right_door_cell := _get_door_cell(
-		walls_layer,
-		^"DoorRight"
+	var horizontal_door_left: int = (
+		horizontal_door_right - 1
 	)
 
-	var bottom_door_cell := _get_door_cell(
-		walls_layer,
-		^"DoorBottom"
+	var vertical_door_bottom: int = (
+		rows / 2
 	)
 
-	var left_door_cell := _get_door_cell(
-		walls_layer,
-		^"DoorLeft"
+	var vertical_door_top: int = (
+		vertical_door_bottom - 1
 	)
-
-	walls_layer.clear()
 
 	# =====================================================
 	# УГЛЫ
@@ -330,14 +335,18 @@ func _generate_walls() -> void:
 	# =====================================================
 
 	for x in range(1, columns - 1):
-		if x != top_door_cell.x:
+		var is_door_gap: bool = (
+			x == horizontal_door_left
+			or x == horizontal_door_right
+		)
+
+		if not is_door_gap:
 			walls_layer.set_cell(
 				Vector2i(x, 0),
 				source_id,
 				tiles["top"]
 			)
 
-		if x != bottom_door_cell.x:
 			walls_layer.set_cell(
 				Vector2i(x, rows - 1),
 				source_id,
@@ -349,14 +358,18 @@ func _generate_walls() -> void:
 	# =====================================================
 
 	for y in range(1, rows - 1):
-		if y != left_door_cell.y:
+		var is_door_gap: bool = (
+			y == vertical_door_top
+			or y == vertical_door_bottom
+		)
+
+		if not is_door_gap:
 			walls_layer.set_cell(
 				Vector2i(0, y),
 				source_id,
 				tiles["left"]
 			)
 
-		if y != right_door_cell.y:
 			walls_layer.set_cell(
 				Vector2i(columns - 1, y),
 				source_id,
@@ -372,36 +385,14 @@ func _generate_walls() -> void:
 		columns,
 		"x",
 		rows,
-		" | top door=",
-		top_door_cell,
-		" | right door=",
-		right_door_cell,
-		" | bottom door=",
-		bottom_door_cell,
-		" | left door=",
-		left_door_cell
-	)
-
-func _get_door_cell(
-	walls_layer: TileMapLayer,
-	socket_path: NodePath
-) -> Vector2i:
-	var socket := (
-		get_node_or_null(socket_path)
-		as Node2D
-	)
-
-	if socket == null:
-		return Vector2i(-9999, -9999)
-
-	var local_position: Vector2 = (
-		walls_layer.to_local(
-			socket.global_position
-		)
-	)
-
-	return walls_layer.local_to_map(
-		local_position
+		" | horizontal gap=",
+		horizontal_door_left,
+		",",
+		horizontal_door_right,
+		" | vertical gap=",
+		vertical_door_top,
+		",",
+		vertical_door_bottom
 	)
 
 func _apply_right_connection_state() -> void:
@@ -751,9 +742,6 @@ func spawn_enemies(
 			)
 		)
 
-		# Позицию задаём ДО add_child().
-		# Так коллизия не появляется сначала
-		# в углу комнаты внутри стены.
 		enemy.position = spawn_position
 
 		add_child(enemy)

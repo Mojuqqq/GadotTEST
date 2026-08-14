@@ -33,18 +33,18 @@ tile_set = ExtResource("3_t1fxy")
 rendering_quadrant_size = 128
 
 [node name="DoorTop" parent="." unique_id=760714407 instance=ExtResource("4_kwwyi")]
-position = Vector2(616, 49)
+position = Vector2(616, 64)
 direction = 0
 
 [node name="DoorRight" parent="." unique_id=820739027 instance=ExtResource("4_kwwyi")]
-position = Vector2(1249, 512)
+position = Vector2(1216, 512)
 direction = 1
 
 [node name="DoorBottom" parent="." unique_id=1954041546 instance=ExtResource("4_kwwyi")]
-position = Vector2(648, 976)
+position = Vector2(640, 960)
 
 [node name="DoorLeft" parent="." unique_id=584235124 instance=ExtResource("4_kwwyi")]
-position = Vector2(28, 528)
+position = Vector2(64, 512)
 direction = 3
 
 [node name="SpawnPoint" type="Marker2D" parent="." unique_id=1794341211]
