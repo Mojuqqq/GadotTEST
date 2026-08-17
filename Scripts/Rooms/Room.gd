@@ -29,6 +29,11 @@ var enemy_spawn_spacing: float = 100.0
 @export_range(1, 50, 1)
 var enemy_spawn_attempts: int = 20
 
+@onready var tutorial_graphic: Sprite2D = (
+	get_node_or_null("TutorialGraphic")
+	as Sprite2D
+)
+
 var doors: Array = []
 var enemies: Array = []
 var is_cleared: bool = false
@@ -42,7 +47,10 @@ func _ready() -> void:
 	find_doors_recursive(self)
 	_connect_door_socket_signals()
 	_apply_right_connection_state()
-	update_enemies_list()  
+	update_enemies_list()
+
+	_update_tutorial_graphic()
+
 	set_active(false)
 
 func apply_location(
@@ -717,6 +725,20 @@ func get_door_socket(
 			return socket
 
 	return null
+
+func _update_tutorial_graphic() -> void:
+	if tutorial_graphic == null:
+		return
+
+	var should_show: bool = (
+		room_type == RoomType.START
+		and SettingsManager.should_show_tutorial()
+	)
+
+	tutorial_graphic.visible = should_show
+
+	if should_show:
+		SettingsManager.mark_tutorial_seen()
 
 func update_enemies_list():
 	enemies.clear()

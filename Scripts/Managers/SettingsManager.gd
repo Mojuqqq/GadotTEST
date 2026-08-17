@@ -47,6 +47,7 @@ const RESOLUTIONS: Array[Vector2i] = [
 	Vector2i(1920, 1080)
 ]
 
+var tutorial_seen: bool = false
 
 var master_volume: float = (
 	DEFAULT_MASTER_VOLUME
@@ -160,6 +161,14 @@ func load_settings() -> void:
 		0,
 		RESOLUTIONS.size() - 1
 	)
+	
+	tutorial_seen = bool(
+		config.get_value(
+			"gameplay",
+			"tutorial_seen",
+			false
+		)
+	)
 
 
 func save_settings() -> void:
@@ -194,6 +203,12 @@ func save_settings() -> void:
 		"resolution_index",
 		resolution_index
 	)
+	
+	config.set_value(
+		"gameplay",
+		"tutorial_seen",
+		tutorial_seen
+	)
 
 	var error: Error = config.save(
 		SAVE_PATH
@@ -213,6 +228,7 @@ func _set_default_values() -> void:
 	sfx_volume = DEFAULT_SFX_VOLUME
 	fullscreen = DEFAULT_FULLSCREEN
 	resolution_index = DEFAULT_RESOLUTION_INDEX
+	tutorial_seen = false
 
 
 # =========================================================
@@ -583,3 +599,33 @@ func get_resolution_label(
 		+ " × "
 		+ str(resolution.y)
 	)
+
+func should_show_tutorial() -> bool:
+	return not tutorial_seen
+
+
+func mark_tutorial_seen() -> void:
+	if tutorial_seen:
+		return
+
+	tutorial_seen = true
+	save_settings()
+
+
+func debug_reset_progress() -> void:
+	tutorial_seen = false
+	save_settings()
+
+	print("[DEBUG] Прогресс сброшен: туториал снова будет показан.")
+
+func _unhandled_key_input(event: InputEvent) -> void:
+	if not OS.is_debug_build():
+		return
+
+	if (
+		event is InputEventKey
+		and event.pressed
+		and not event.echo
+		and event.keycode == KEY_F4
+	):
+		debug_reset_progress()

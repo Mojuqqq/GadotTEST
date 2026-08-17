@@ -824,6 +824,13 @@ func _begin_pinning() -> void:
 
 	pinned_target_time_left = pin_duration
 	target_is_pinned = true
+	
+	if captured_target.has_method(
+		&"start_stun_animation"
+	):
+		captured_target.call(
+			&"start_stun_animation"
+		)
 
 	captured_target.call(
 		&"force_external_position",
@@ -1244,6 +1251,13 @@ func _process_wall_stun(
 
 func _release_captured_target() -> void:
 	if is_instance_valid(captured_target):
+		if captured_target.has_method(
+			&"stop_stun_animation"
+		):
+			captured_target.call(
+				&"stop_stun_animation"
+			)
+
 		if captured_target.has_method(
 			&"set_external_movement_lock"
 		):

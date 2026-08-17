@@ -28,6 +28,9 @@ var healing_ring_base_scale: Vector2 = (
 	Vector2.ONE
 )
 
+@onready var stun_animation_player: AnimationPlayer = (
+	$AnimationPlayer
+)
 @onready var animated_sprite: AnimatedSprite2D = ($AnimatedSprite2D)
 @onready var footsteps: AudioStreamPlayer2D = (
 	$Footsteps
@@ -1360,6 +1363,40 @@ func _spawn_healing_effect() -> void:
 
 	effect.position = Vector2.ZERO
 
+# =========================================================
+# АНИМАЦИЯ ОГЛУШЕНИЯ
+# =========================================================
+
+func start_stun_animation() -> void:
+	if is_dead:
+		return
+
+	if not stun_animation_player.has_animation(
+		&"stun"
+	):
+		push_warning(
+			"Player: в AnimationPlayer нет анимации stun."
+		)
+		return
+
+	stun_animation_player.play(
+		&"stun"
+	)
+
+
+func stop_stun_animation() -> void:
+	if stun_animation_player.is_playing():
+		stun_animation_player.stop()
+
+	if stun_animation_player.has_animation(
+		&"RESET"
+	):
+		stun_animation_player.play(
+			&"RESET"
+		)
+		stun_animation_player.advance(
+			0.0
+		)
 
 # =========================================================
 # ВНЕШНЕЕ УПРАВЛЕНИЕ ПОЛОЖЕНИЕМ

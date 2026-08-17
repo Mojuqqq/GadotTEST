@@ -4,6 +4,7 @@
 [ext_resource type="TileSet" uid="uid://bljb7f3khxvmi" path="res://Assets/Tilesets/floor_tileset.tres" id="2_ptnqw"]
 [ext_resource type="PackedScene" uid="uid://b5out7n8cdnue" path="res://Scenes/Rooms/Doors/DoorSocket.tscn" id="4_kwwyi"]
 [ext_resource type="TileSet" uid="uid://bducawqxxvrau" path="res://Assets/Tilesets/walls_tileset.tres" id="4_ptnqw"]
+[ext_resource type="Texture2D" uid="uid://cg5llyrsuk1vh" path="res://Assets/Art/UI/tutor_image.png" id="5_ptnqw"]
 
 [node name="RoomSocket" type="Node2D" unique_id=148011054]
 script = ExtResource("1_yxr5j")
@@ -13,6 +14,11 @@ texture_filter = 1
 use_parent_material = true
 tile_set = ExtResource("2_ptnqw")
 rendering_quadrant_size = 128
+
+[node name="TutorialGraphic" type="Sprite2D" parent="." unique_id=1022104420]
+position = Vector2(640, 512)
+scale = Vector2(0.51953125, 0.51953125)
+texture = ExtResource("5_ptnqw")
 
 [node name="Walls" type="TileMapLayer" parent="." unique_id=822809161]
 use_parent_material = true
@@ -36,14 +42,18 @@ position = Vector2(938, 313)
 [node name="DoorTop" parent="." unique_id=760714407 instance=ExtResource("4_kwwyi")]
 position = Vector2(640, 64)
 direction = 0
+collision_inset = -40.0
 
 [node name="DoorRight" parent="." unique_id=1365908023 instance=ExtResource("4_kwwyi")]
 position = Vector2(1216, 512)
+collision_inset = -40.0
 
 [node name="DoorBottom" parent="." unique_id=1417754712 instance=ExtResource("4_kwwyi")]
 position = Vector2(640, 960)
 direction = 2
+collision_inset = -40.0
 
 [node name="DoorLeft" parent="." unique_id=1923931277 instance=ExtResource("4_kwwyi")]
 position = Vector2(64, 512)
 direction = 3
+collision_inset = -40.0
