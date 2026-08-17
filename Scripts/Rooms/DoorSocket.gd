@@ -115,6 +115,11 @@ var direction: int = Direction.RIGHT:
 		_refresh_configuration()
 
 
+@export var collision_inset: float = -40.0:
+	set(value):
+		collision_inset = value
+		_refresh_configuration()
+
 @export_group("Initial State")
 
 
@@ -264,6 +269,8 @@ func _refresh_configuration() -> void:
 	var collision_size: Vector2 = (
 		side_collision_size
 	)
+	
+	var collision_position := Vector2.ZERO
 
 	match direction:
 		Direction.TOP:
@@ -279,6 +286,13 @@ func _refresh_configuration() -> void:
 				top_bottom_collision_size
 			)
 
+			# Верхняя дверь смещается вниз,
+			# внутрь комнаты.
+			collision_position = Vector2(
+				0.0,
+				collision_inset
+			)
+
 		Direction.RIGHT:
 			closed_texture = right_texture
 			opened_texture = right_open_texture
@@ -289,6 +303,13 @@ func _refresh_configuration() -> void:
 			)
 
 			collision_size = side_collision_size
+
+			# Правая дверь смещается влево,
+			# внутрь комнаты.
+			collision_position = Vector2(
+				-collision_inset,
+				0.0
+			)
 
 		Direction.BOTTOM:
 			closed_texture = bottom_texture
@@ -303,6 +324,12 @@ func _refresh_configuration() -> void:
 				top_bottom_collision_size
 			)
 
+			# Нижняя дверь смещается вверх.
+			collision_position = Vector2(
+				0.0,
+				-collision_inset
+			)
+
 		Direction.LEFT:
 			closed_texture = left_texture
 			opened_texture = left_open_texture
@@ -313,6 +340,15 @@ func _refresh_configuration() -> void:
 			)
 
 			collision_size = side_collision_size
+
+			# Левая дверь смещается вправо.
+			collision_position = Vector2(
+				collision_inset,
+				0.0
+			)
+
+			collision_size = side_collision_size
+			
 
 	closed_sprite.texture = closed_texture
 
@@ -339,6 +375,9 @@ func _refresh_configuration() -> void:
 		blocker_rectangle.size = (
 			collision_size
 		)
+
+	transition.position = collision_position
+	blocker.position = collision_position
 
 	# В редакторе показываем закрытую дверь.
 	if Engine.is_editor_hint():

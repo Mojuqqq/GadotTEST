@@ -39,10 +39,10 @@ direction = 0
 
 [node name="DoorRight" parent="." unique_id=1365908023 instance=ExtResource("4_kwwyi")]
 position = Vector2(1216, 512)
-direction = 1
 
 [node name="DoorBottom" parent="." unique_id=1417754712 instance=ExtResource("4_kwwyi")]
 position = Vector2(640, 960)
+direction = 2
 
 [node name="DoorLeft" parent="." unique_id=1923931277 instance=ExtResource("4_kwwyi")]
 position = Vector2(64, 512)
