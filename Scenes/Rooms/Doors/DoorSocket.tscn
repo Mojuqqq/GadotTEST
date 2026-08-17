@@ -13,6 +13,8 @@ size = Vector2(84, 80)
 [node name="DoorSocket" type="Node2D" unique_id=760714407]
 script = ExtResource("1_nufgy")
 direction = 2
+side_collision_size = Vector2(29, 84)
+top_bottom_collision_size = Vector2(84, 80)
 
 [node name="OpenDoorSprite" type="Sprite2D" parent="." unique_id=502971391]
 visible = false
