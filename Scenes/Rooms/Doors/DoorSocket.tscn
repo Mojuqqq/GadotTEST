@@ -4,15 +4,14 @@
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_kgb56"]
 resource_local_to_scene = true
-size = Vector2(84, 80)
+size = Vector2(29, 84)
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_aeyec"]
 resource_local_to_scene = true
-size = Vector2(84, 80)
+size = Vector2(29, 84)
 
 [node name="DoorSocket" type="Node2D" unique_id=760714407]
 script = ExtResource("1_nufgy")
-direction = 2
 side_collision_size = Vector2(29, 84)
 top_bottom_collision_size = Vector2(84, 80)
 
@@ -37,4 +36,4 @@ disabled = true
 debug_color = Color(0.8996578, 0.00017442585, 0.7667549, 0.41960785)
 
 [node name="ArrivalPoint" type="Marker2D" parent="." unique_id=485608281]
-position = Vector2(0, -70)
+position = Vector2(-70, 0)

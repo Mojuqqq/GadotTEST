@@ -441,9 +441,14 @@ func _set_open_local(open: bool) -> void:
 	# Блокиратор включён:
 	# — у закрытой двери;
 	# — у стены без соединения.
+	var blocker_enabled: bool = (
+		connection_enabled
+		and not is_open
+	)
+
 	blocker_shape.set_deferred(
 		&"disabled",
-		transition_enabled
+		not blocker_enabled
 	)
 	
 	state_changed.emit(

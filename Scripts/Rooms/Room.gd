@@ -422,16 +422,16 @@ func _generate_walls() -> void:
 	# LEFT / RIGHT:
 	# y = 3 и 4
 
-	var horizontal_door_right: int = (
-		columns / 2
+	var horizontal_door_right: int = floori(
+		float(columns) / 2.0
 	)
 
 	var horizontal_door_left: int = (
 		horizontal_door_right - 1
 	)
 
-	var vertical_door_bottom: int = (
-		rows / 2
+	var vertical_door_bottom: int = floori(
+		float(rows) / 2.0
 	)
 
 	var vertical_door_top: int = (
