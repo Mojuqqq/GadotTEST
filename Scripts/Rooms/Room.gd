@@ -62,7 +62,6 @@ func apply_location(
 			+ name
 			+ " не назначен LocationProfile."
 		)
-
 		return
 
 	location_profile = profile
@@ -70,6 +69,7 @@ func apply_location(
 	_generate_floor()
 	_generate_walls()
 	_apply_door_visuals()
+	_generate_decor()
 
 func _connect_door_socket_signals() -> void:
 	for door in doors:
@@ -1319,3 +1319,259 @@ func spawn_merchant() -> void:
 
 func _on_shop_stock_changed() -> void:
 	minimap_marker_changed.emit()
+
+func _generate_decor() -> void:
+	if location_profile == null:
+		return
+
+	var decor_layer := (
+		get_node_or_null("Decor")
+		as TileMapLayer
+	)
+
+	if decor_layer == null:
+		push_warning(
+			"В комнате "
+			+ name
+			+ " нет TileMapLayer Decor."
+		)
+		return
+
+	decor_layer.clear()
+
+	if location_profile.decor_tile_set == null:
+		return
+
+	decor_layer.tile_set = (
+		location_profile.decor_tile_set
+	)
+
+	var tile_set := decor_layer.tile_set
+
+	var pattern_count: int = (
+		tile_set.get_patterns_count()
+	)
+
+	if pattern_count == 0:
+		push_warning(
+			"В Decor TileSet нет паттернов."
+		)
+		return
+
+	var min_count := mini(
+		location_profile.decor_patterns_min,
+		location_profile.decor_patterns_max
+	)
+
+	var max_count := maxi(
+		location_profile.decor_patterns_min,
+		location_profile.decor_patterns_max
+	)
+
+	var patterns_to_place := randi_range(
+		min_count,
+		max_count
+	)
+
+	var occupied_cells: Dictionary = {}
+
+	for i in range(patterns_to_place):
+		var pattern_index := randi_range(
+			0,
+			pattern_count - 1
+		)
+
+		var pattern := tile_set.get_pattern(
+			pattern_index
+		)
+
+		if pattern == null:
+			continue
+
+		if pattern.is_empty():
+			continue
+
+		_try_place_decor_pattern(
+			decor_layer,
+			pattern,
+			occupied_cells
+		)
+		
+func _try_place_decor_pattern(
+	decor_layer: TileMapLayer,
+	pattern: TileMapPattern,
+	occupied_cells: Dictionary
+) -> bool:
+	var tile_size := (
+		decor_layer.tile_set.tile_size
+	)
+
+	var columns := floori(
+		float(GameManager.room_width)
+		/ float(tile_size.x)
+	)
+
+	var rows := floori(
+		float(GameManager.room_height)
+		/ float(tile_size.y)
+	)
+
+	var pattern_size := pattern.get_size()
+
+	# У нас стены имеют толщину примерно 128 px.
+	# При сетке Decor 32 px это 4 клетки.
+	var wall_margin := Vector2i(4, 4)
+
+	var min_x := wall_margin.x
+	var min_y := wall_margin.y
+
+	var max_x := (
+		columns
+		- wall_margin.x
+		- pattern_size.x
+	)
+
+	var max_y := (
+		rows
+		- wall_margin.y
+		- pattern_size.y
+	)
+
+	if max_x < min_x or max_y < min_y:
+		return false
+
+	for attempt in range(
+		location_profile.decor_placement_attempts
+	):
+		var origin := Vector2i(
+			randi_range(min_x, max_x),
+			randi_range(min_y, max_y)
+		)
+
+		if not _can_place_decor_pattern(
+			decor_layer,
+			pattern,
+			origin,
+			occupied_cells
+		):
+			continue
+
+		decor_layer.set_pattern(
+			origin,
+			pattern
+		)
+
+		_reserve_decor_pattern_cells(
+			decor_layer,
+			pattern,
+			origin,
+			occupied_cells
+		)
+
+		return true
+
+	return false
+
+
+func _can_place_decor_pattern(
+	decor_layer: TileMapLayer,
+	pattern: TileMapPattern,
+	origin: Vector2i,
+	occupied_cells: Dictionary
+) -> bool:
+	for pattern_cell in pattern.get_used_cells():
+		var cell := decor_layer.map_pattern(
+			origin,
+			pattern_cell,
+			pattern
+		)
+
+		if occupied_cells.has(cell):
+			return false
+
+		if _is_decor_cell_protected(
+			decor_layer,
+			cell
+		):
+			return false
+
+	return true
+	
+func _is_decor_cell_protected(
+	decor_layer: TileMapLayer,
+	cell: Vector2i
+) -> bool:
+	var markers: Array[Node] = [
+		get_node_or_null("SpawnPoint"),
+		get_node_or_null("ReturnSpawnPoint"),
+		get_node_or_null("ChestSpawnPoint")
+	]
+
+	for marker in markers:
+		if marker == null:
+			continue
+
+		if marker is not Node2D:
+			continue
+
+		var marker_node := marker as Node2D
+
+		var marker_cell := decor_layer.local_to_map(
+			decor_layer.to_local(
+				marker_node.global_position
+			)
+		)
+
+		# 3 клетки = 96 px свободного пространства.
+		if (
+			absi(cell.x - marker_cell.x) <= 3
+			and
+			absi(cell.y - marker_cell.y) <= 3
+		):
+			return true
+
+	for door in doors:
+		var door_node := door as Node2D
+
+		if door_node == null:
+			continue
+
+		var door_cell := decor_layer.local_to_map(
+			decor_layer.to_local(
+				door_node.global_position
+			)
+		)
+
+		# У дверей оставляем больше воздуха.
+		if (
+			absi(cell.x - door_cell.x) <= 5
+			and
+			absi(cell.y - door_cell.y) <= 5
+		):
+			return true
+
+	return false
+
+
+func _reserve_decor_pattern_cells(
+	decor_layer: TileMapLayer,
+	pattern: TileMapPattern,
+	origin: Vector2i,
+	occupied_cells: Dictionary
+) -> void:
+	for pattern_cell in pattern.get_used_cells():
+		var cell := decor_layer.map_pattern(
+			origin,
+			pattern_cell,
+			pattern
+		)
+
+		# Сама клетка.
+		occupied_cells[cell] = true
+
+		# И одна клетка воздуха вокруг неё.
+		for y in range(-1, 2):
+			for x in range(-1, 2):
+				occupied_cells[
+					cell + Vector2i(x, y)
+				] = true

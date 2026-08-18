@@ -202,4 +202,13 @@ const DOOR_TEXTURES := {
 
 @export_group("Decor")
 
-@export var decor_pool: Array[PackedScene] = []
+@export var decor_tile_set: TileSet = null
+
+@export_range(0, 5, 1)
+var decor_patterns_min: int = 1
+
+@export_range(0, 5, 1)
+var decor_patterns_max: int = 3
+
+@export_range(1, 50, 1)
+var decor_placement_attempts: int = 20
