@@ -2,6 +2,15 @@
 
 [ext_resource type="Texture2D" uid="uid://duov7tr1cfv8s" path="res://Assets/Art/Environment/Tiles/farm_decor_tiles.png" id="1_jqngd"]
 
+[sub_resource type="TileMapPattern" id="TileMapPattern_jqngd"]
+tile_data = PackedInt32Array(0, 983040, 10, 65538, 1441792, 13, 4, 1179648, 10)
+
+[sub_resource type="TileMapPattern" id="TileMapPattern_hrjr4"]
+tile_data = PackedInt32Array(65536, 0, 4, 131073, 131072, 4, 3, 327680, 6)
+
+[sub_resource type="TileMapPattern" id="TileMapPattern_4kosm"]
+tile_data = PackedInt32Array(0, 131072, 9, 65538, 196608, 9)
+
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_kwwyi"]
 texture = ExtResource("1_jqngd")
 texture_region_size = Vector2i(32, 32)
@@ -114,6 +123,7 @@ texture_region_size = Vector2i(32, 32)
 13:7/0 = 0
 15:10/size_in_atlas = Vector2i(3, 3)
 15:10/0 = 0
+15:10/0/physics_layer_0/polygon_0/points = PackedVector2Array(-16, -6.7736893, 16, -7.9026337, 18.345398, 27.659218, -16.651978, 27.094742)
 12:11/size_in_atlas = Vector2i(2, 2)
 12:11/0 = 0
 10:14/size_in_atlas = Vector2i(2, 2)
@@ -151,3 +161,6 @@ texture_region_size = Vector2i(32, 32)
 tile_size = Vector2i(32, 32)
 physics_layer_0/collision_layer = 1
 sources/0 = SubResource("TileSetAtlasSource_kwwyi")
+pattern_0 = SubResource("TileMapPattern_jqngd")
+pattern_1 = SubResource("TileMapPattern_hrjr4")
+pattern_2 = SubResource("TileMapPattern_4kosm")
