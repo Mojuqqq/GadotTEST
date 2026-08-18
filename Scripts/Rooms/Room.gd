@@ -1340,6 +1340,11 @@ func _generate_decor() -> void:
 	decor_layer.clear()
 
 	if location_profile.decor_tile_set == null:
+		push_warning(
+			"[DECOR] У LocationProfile "
+			+ location_profile.display_name
+			+ " не назначен decor_tile_set."
+		)
 		return
 
 	decor_layer.tile_set = (
@@ -1395,6 +1400,15 @@ func _generate_decor() -> void:
 			decor_layer,
 			pattern,
 			occupied_cells
+		)
+		
+		print(
+			"[DECOR] ",
+			name,
+			" | location=",
+			location_profile.display_name,
+			" | patterns=",
+			pattern_count
 		)
 		
 func _try_place_decor_pattern(

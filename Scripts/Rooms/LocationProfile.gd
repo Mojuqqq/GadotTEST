@@ -202,7 +202,9 @@ const DOOR_TEXTURES := {
 
 @export_group("Decor")
 
-@export var decor_tile_set: TileSet = null
+@export var decor_tile_set: TileSet = preload(
+	"res://Assets/Tilesets/decor_tile_set.tres"
+)
 
 @export_range(0, 5, 1)
 var decor_patterns_min: int = 1
