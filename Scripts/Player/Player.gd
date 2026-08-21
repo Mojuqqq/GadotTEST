@@ -2,6 +2,9 @@ extends CharacterBody2D
 
 @export var base_speed: float = 300.0
 @export var egg_scene: PackedScene
+@onready var egg_spawn_point: Marker2D = (
+	$EggSpawnPoint
+)
 @export_group("Damage Feedback")
 
 
@@ -458,9 +461,13 @@ func shoot() -> void:
 	else:
 		egg = egg_pool.pop_back()
 
+	var shot_origin: Vector2 = (
+		egg_spawn_point.global_position
+	)
+
 	var dir: Vector2 = (
 		get_global_mouse_position()
-		- global_position
+		- shot_origin
 	).normalized()
 
 	if is_crying:
@@ -503,7 +510,7 @@ func shoot() -> void:
 	)
 	
 	egg.activate(
-		global_position,
+		shot_origin,
 		dir,
 		egg.damage,
 		use_rotten_egg,

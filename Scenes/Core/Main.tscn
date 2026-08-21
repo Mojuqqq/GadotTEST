@@ -43,7 +43,6 @@ position = Vector2(640, 512)
 [node name="Player" parent="." unique_id=1259915293 instance=ExtResource("1_idj7w")]
 light_mask = 4
 visibility_layer = 4
-y_sort_enabled = true
 position = Vector2(640, 512)
 
 [node name="Camera2D" type="Camera2D" parent="." unique_id=2093762753]
