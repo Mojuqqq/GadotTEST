@@ -8,9 +8,11 @@
 [ext_resource type="TileSet" uid="uid://da3um4comhbkc" path="res://Assets/Tilesets/decor_tile_set.tres" id="5_t1fxy"]
 
 [node name="RoomSocket" type="Node2D" unique_id=148011054]
+y_sort_enabled = true
 script = ExtResource("1_yxr5j")
 
 [node name="Floor" type="TileMapLayer" parent="." unique_id=655438323]
+z_index = -10
 texture_filter = 1
 use_parent_material = true
 tile_set = ExtResource("2_ptnqw")
@@ -27,6 +29,7 @@ tile_set = ExtResource("4_ptnqw")
 rendering_quadrant_size = 128
 
 [node name="Decor" type="TileMapLayer" parent="." unique_id=342617787]
+y_sort_enabled = true
 use_parent_material = true
 tile_set = ExtResource("5_t1fxy")
 rendering_quadrant_size = 128

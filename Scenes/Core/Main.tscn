@@ -25,6 +25,7 @@
 [ext_resource type="AudioStream" uid="uid://tkipotldovok" path="res://Assets/Audio/Ambience/crickets.wav" id="23_ij3x7"]
 
 [node name="Main" type="Node2D" unique_id=248219871]
+y_sort_enabled = true
 script = ExtResource("1_vy5pj")
 start_room_scene = ExtResource("6_x4wx4")
 end_room_scene = ExtResource("6_x4wx4")
@@ -36,13 +37,13 @@ boss_pool = Array[PackedScene]([ExtResource("9_ki3rp"), ExtResource("13_n62cl"),
 boss_scene = ExtResource("13_lijq2")
 
 [node name="Rooms" type="Node2D" parent="." unique_id=742137853]
-z_index = -1
+y_sort_enabled = true
 position = Vector2(640, 512)
 
 [node name="Player" parent="." unique_id=1259915293 instance=ExtResource("1_idj7w")]
 light_mask = 4
 visibility_layer = 4
-z_index = 1
+y_sort_enabled = true
 position = Vector2(640, 512)
 
 [node name="Camera2D" type="Camera2D" parent="." unique_id=2093762753]
